@@ -220,6 +220,10 @@ body {
 
     <button class="btn-salvar" onclick="salvarLivro()">Salvar</button>
     <button class="btn-cancelar" onclick="fechar()">Cancelar</button>
+    <button class="btn-excluir" id="btnExcluirLivro" onclick="excluirLivro()" style="display:none">
+    Excluir Livro
+</button>
+
 </div>
 
 <script>
@@ -268,21 +272,40 @@ function renderCatalogo() {
 
         const div = document.createElement("div");
         div.className = "item";
-        div.innerHTML = `
-            <img src="${l.capa}">
-            <div>
-                <div class="nome">${l.titulo}</div>
-                <div class="info-extra">
-                    ${l.autor}
-                    ${l.lancamento ? " · " + l.lancamento : ""}
-                    · ${l.lido ? "Lido" : "Não lido"}
-                    ${l.lido && l.nota ? " · " + estrelas(l.nota) : ""}
-                </div>
-            </div>`;
-        catalogo.appendChild(div);
+        div.onclick = () => editarLivro(l.id);
+    div.innerHTML = `
+    <img src="${l.capa}">
+    <div>
+        <div class="nome">${l.titulo}</div>
+        <div class="info-extra">
+            ${l.autor}
+            ${l.lancamento ? " · " + l.lancamento : ""}
+            · ${l.lido ? "Lido" : "Não lido"}
+            ${l.lido && l.nota ? " · " + estrelas(l.nota) : ""}
+        </div>
+    </div>`;
+    catalogo.appendChild(div);
     });
 
     counter.innerText = total + " livros";
+}
+
+function editarLivro(id) {
+    const l = livros.find(x => x.id === id);
+    if (!l) return;
+
+    tituloForm.innerText = "Editar Livro";
+
+    autorInput.value = l.autor || "";
+    tituloInput.value = l.titulo || "";
+    lancamentoInput.value = l.lancamento || "";
+    lidoInput.value = l.lido ? "true" : "false";
+    notaInput.value = l.nota ?? "";
+    imagemBase64 = l.capa || "";
+
+    overlay.dataset.editando = id;
+    btnExcluirLivro.style.display = "block"; // 👈 AQUI
+    overlay.style.display = "block";
 }
 
 function renderRanking() {
@@ -301,10 +324,48 @@ function renderRanking() {
 }
 
 function escolherEmLeitura() {
-    livros.forEach(l => l.emLeitura = false);
-    const l = livros[0];
-    if (l) l.emLeitura = true;
+    listaLeitura.innerHTML = "";
+
+    livros.forEach(l => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.style.cursor = "pointer";
+
+        div.innerHTML = `
+            <img src="${l.capa}">
+            <div>
+                <strong>${l.titulo}</strong><br>
+                <small>${l.autor}</small>
+                ${l.emLeitura ? "<div style='color:green'>📖 Em leitura</div>" : ""}
+            </div>
+        `;
+
+        div.onclick = () => selecionarLeitura(l.id);
+        listaLeitura.appendChild(div);
+    });
+
+    overlayLeitura.style.display = "block";
+}
+
+function selecionarLeitura(id) {
+    const atual = livros.find(l => l.emLeitura);
+
+    if (atual && atual.id === id) {
+        // clicar no mesmo → remove
+        atual.emLeitura = false;
+    } else {
+        // troca
+        livros.forEach(l => l.emLeitura = false);
+        const novo = livros.find(l => l.id === id);
+        if (novo) novo.emLeitura = true;
+    }
+
     salvar();
+    fecharEscolhaLeitura();
+}
+
+function fecharEscolhaLeitura() {
+    overlayLeitura.style.display = "none";
 }
 
 function novoLivro() {
@@ -315,25 +376,57 @@ function novoLivro() {
     lidoInput.value = "false";
     notaInput.value = "";
     imagemBase64 = "";
+
+    btnExcluirLivro.style.display = "none"; // 👈 AQUI
+
     overlay.style.display = "block";
+}
+
+function excluirLivro() {
+    const id = overlay.dataset.editando;
+    if (!id) return;
+
+    if (!confirm("Tem certeza que deseja excluir este livro?")) return;
+
+    livros = livros.filter(l => l.id != id);
+
+    delete overlay.dataset.editando;
+    salvar();
+    fechar();
 }
 
 function salvarLivro() {
     if (!autorInput.value || !tituloInput.value || !lancamentoInput.value) {
-        alert("Preencha autor, título e data de lançamento");
+        alert("Preencha autor, título e ano de lançamento");
         return;
     }
 
-    livros.push({
-        id: Date.now(),
-        autor: autorInput.value,
-        titulo: tituloInput.value,
-        lancamento: lancamentoInput.value,
-        lido: lidoInput.value === "true",
-        nota: parseFloat(notaInput.value) || 0,
-        capa: imagemBase64,
-        emLeitura: false
-    });
+    if (overlay.dataset.editando) {
+        // 🔵 EDITAR LIVRO EXISTENTE
+        const l = livros.find(x => x.id == overlay.dataset.editando);
+        if (!l) return;
+
+        l.autor = autorInput.value;
+        l.titulo = tituloInput.value;
+        l.lancamento = lancamentoInput.value;
+        l.lido = lidoInput.value === "true";
+        l.nota = parseFloat(notaInput.value) || 0;
+        l.capa = imagemBase64;
+
+        delete overlay.dataset.editando;
+    } else {
+        // ⭐ NOVO LIVRO
+        livros.push({
+            id: Date.now(),
+            autor: autorInput.value,
+            titulo: tituloInput.value,
+            lancamento: lancamentoInput.value,
+            lido: lidoInput.value === "true",
+            nota: parseFloat(notaInput.value) || 0,
+            capa: imagemBase64,
+            emLeitura: false
+        });
+    }
 
     salvar();
     fechar();
@@ -356,5 +449,10 @@ function fechar() {
 
 renderCatalogo();
 </script>
+<div class="overlay" id="overlayLeitura">
+    <h2>Qual livro você está lendo?</h2>
+    <div id="listaLeitura"></div>
+    <button class="btn-cancelar" onclick="fecharEscolhaLeitura()">Cancelar</button>
+</div>
 </body>
 </html>
