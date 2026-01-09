@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha Biblioteca</title>
+
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+}
+
+.header { padding: 20px; }
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tab {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    background: #e5e7eb;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.tab.active {
+    background: #0f172a;
+    color: white;
+}
+
+.btn-topo {
+    width: 100%;
+    padding: 14px;
+    background: #0f172a;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.em-leitura {
+    background: #0f172a;
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.em-leitura img {
+    width: 60px;
+    border-radius: 6px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.counter {
+    font-size: 14px;
+    margin-top: 6px;
+    color: #666;
+}
+
+.secao {
+    background: white;
+    margin-bottom: 10px;
+}
+
+.secao-titulo {
+    padding: 15px 20px;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: #888;
+    border-bottom: 1px solid #eee;
+}
+
+.item {
+    display: flex;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+}
+
+.item img {
+    width: 70px;
+    margin-right: 15px;
+    border-radius: 8px;
+}
+
+.nome {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.info-extra {
+    font-size: 13px;
+    color: #666;
+}
+
+.rank {
+    background: white;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.rank img {
+    width: 70px;
+    margin-right: 15px;
+    border-radius: 8px;
+}
+
+#btnAdd {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    font-size: 28px;
+    background: #0f172a;
+    color: white;
+    border: none;
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: none;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.overlay input,
+.overlay select {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.overlay button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+.btn-salvar { background: #0f172a; color: white; }
+.btn-cancelar { background: #ccc; }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Minha Biblioteca</h1>
+
+    <div class="tabs">
+        <div class="tab active" onclick="trocarAba('catalogo')">Catálogo</div>
+        <div class="tab" onclick="trocarAba('ranking')">Ranking</div>
+    </div>
+
+    <div id="areaCatalogo">
+        <button class="btn-topo" onclick="escolherEmLeitura()">Escolher livro em leitura</button>
+        <div id="emLeituraBox"></div>
+
+        <div class="search-container">
+            <input id="searchInput" placeholder="Buscar..." oninput="renderCatalogo()">
+            <div class="counter" id="counter"></div>
+        </div>
+    </div>
+</div>
+
+<div id="catalogo"></div>
+<div id="ranking" style="display:none"></div>
+
+<button id="btnAdd" onclick="novoLivro()">＋</button>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay">
+    <h2 id="tituloForm">Novo Livro</h2>
+    <input id="autorInput" placeholder="Autor">
+    <input id="tituloInput" placeholder="Título">
+    <input 
+  type="number" 
+  id="lancamentoInput" 
+  placeholder="Ano de lançamento"
+  min="0"
+  max="2100">
+
+<select id="lidoInput">
+    <option value="false">Não lido</option>
+    <option value="true">Lido</option>
+</select>
+
+    <input 
+  type="number" 
+  id="notaInput"
+  placeholder="Nota (0 a 5)"
+  min="0"
+  max="5"
+  step="0.5">
+
+    <input type="file" accept="image/*" id="fotoInput">
+
+    <button class="btn-salvar" onclick="salvarLivro()">Salvar</button>
+    <button class="btn-cancelar" onclick="fechar()">Cancelar</button>
+</div>
+
+<script>
+let livros = JSON.parse(localStorage.getItem("livros")) || [];
+let imagemBase64 = "";
+let abaAtual = "catalogo";
+
+fotoInput.onchange = e => {
+    const r = new FileReader();
+    r.onload = () => imagemBase64 = r.result;
+    r.readAsDataURL(e.target.files[0]);
+};
+
+function trocarAba(a) {
+    abaAtual = a;
+    catalogo.style.display = a === "catalogo" ? "block" : "none";
+    ranking.style.display = a === "ranking" ? "block" : "none";
+    areaCatalogo.style.display = a === "catalogo" ? "block" : "none";
+
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelector(`.tab[onclick*="${a}"]`).classList.add("active");
+
+    a === "catalogo" ? renderCatalogo() : renderRanking();
+}
+
+function renderEmLeitura() {
+    const l = livros.find(x => x.emLeitura);
+    if (!l) return emLeituraBox.innerHTML = "";
+
+    emLeituraBox.innerHTML = `
+        <div class="em-leitura">
+            <img src="${l.capa}">
+            <strong>${l.titulo}</strong>
+        </div>`;
+}
+
+function renderCatalogo() {
+    renderEmLeitura();
+    const busca = searchInput.value.toLowerCase();
+    catalogo.innerHTML = "";
+    let total = 0;
+
+    livros.forEach(l => {
+        if (!`${l.autor} ${l.titulo}`.toLowerCase().includes(busca)) return;
+        total++;
+
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+            <img src="${l.capa}">
+            <div>
+                <div class="nome">${l.titulo}</div>
+                <div class="info-extra">
+                    ${l.autor}
+                    ${l.lancamento ? " · " + l.lancamento : ""}
+                    · ${l.lido ? "Lido" : "Não lido"}
+                    ${l.lido && l.nota ? " · " + estrelas(l.nota) : ""}
+                </div>
+            </div>`;
+        catalogo.appendChild(div);
+    });
+
+    counter.innerText = total + " livros";
+}
+
+function renderRanking() {
+    ranking.innerHTML = "";
+    [...livros].sort((a,b) => (b.nota||0)-(a.nota||0)).forEach((l,i) => {
+        const div = document.createElement("div");
+        div.className = "rank";
+        div.innerHTML = `
+            <img src="${l.capa}">
+            <div>
+                <strong>#${i+1} ${l.titulo}</strong><br>
+                ⭐ ${l.nota || 0}
+            </div>`;
+        ranking.appendChild(div);
+    });
+}
+
+function escolherEmLeitura() {
+    livros.forEach(l => l.emLeitura = false);
+    const l = livros[0];
+    if (l) l.emLeitura = true;
+    salvar();
+}
+
+function novoLivro() {
+    tituloForm.innerText = "Novo Livro";
+    autorInput.value = "";
+    tituloInput.value = "";
+    lancamentoInput.value = "";
+    lidoInput.value = "false";
+    notaInput.value = "";
+    imagemBase64 = "";
+    overlay.style.display = "block";
+}
+
+function salvarLivro() {
+    if (!autorInput.value || !tituloInput.value || !lancamentoInput.value) {
+        alert("Preencha autor, título e data de lançamento");
+        return;
+    }
+
+    livros.push({
+        id: Date.now(),
+        autor: autorInput.value,
+        titulo: tituloInput.value,
+        lancamento: lancamentoInput.value,
+        lido: lidoInput.value === "true",
+        nota: parseFloat(notaInput.value) || 0,
+        capa: imagemBase64,
+        emLeitura: false
+    });
+
+    salvar();
+    fechar();
+}
+
+function estrelas(nota) {
+    const cheias = Math.floor(nota);
+    const meia = nota % 1 >= 0.5;
+    return "⭐".repeat(cheias) + (meia ? "½" : "");
+}
+
+function salvar() {
+    localStorage.setItem("livros", JSON.stringify(livros));
+    renderCatalogo();
+}
+
+function fechar() {
+    overlay.style.display = "none";
+}
+
+renderCatalogo();
+</script>
+</body>
+</html>
