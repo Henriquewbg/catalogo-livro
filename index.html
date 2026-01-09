@@ -8,6 +8,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Minha Biblioteca">
 <link rel="apple-touch-icon" href="bib.png">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <title>Minha Biblioteca</title>
 
 <style>
@@ -336,6 +339,30 @@ body {
 </div>
 
 <script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyAeBcWRX16Oh7ZTR1d5pupq1hVJ0m1eJzs",
+    authDomain: "catalogo-livro-271e5.firebaseapp.com",
+    projectId: "catalogo-livro-271e5",
+    storageBucket: "catalogo-livro-271e5.firebasestorage.app",
+    messagingSenderId: "424175546438",
+    appId: "1:424175546438:web:8c07539bf387f70e451a47"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+auth.onAuthStateChanged(user => {
+    if (user) {
+        usuarioLogado = user.uid;
+        iniciarAppFirebase();
+    } else {
+        loginScreen.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    }
+});
+
     let usuarioLogado = localStorage.getItem("usuarioLogado");
 let usuarios = JSON.parse(localStorage.getItem("usuarios")) || {};
 let livros = JSON.parse(localStorage.getItem(`livros_${usuarioLogado}`)) || [];
@@ -349,46 +376,35 @@ fotoInput.onchange = e => {
 };
 
 function login() {
-    const user = loginUser.value.trim();
-    const pass = loginPass.value;
-
-    if (!usuarios[user] || usuarios[user] !== pass) {
-        alert("Usuário ou senha inválidos");
-        return;
-    }
-
-    usuarioLogado = user;
-    localStorage.setItem("usuarioLogado", user);
-
-    iniciarApp();
+    auth.signInWithEmailAndPassword(
+        loginUser.value.trim(),
+        loginPass.value
+    ).catch(e => alert(e.message));
 }
 
 function registrar() {
-    const user = loginUser.value.trim();
-    const pass = loginPass.value;
-
-    if (!user || !pass) {
-        alert("Preencha usuário e senha");
-        return;
-    }
-
-    if (usuarios[user]) {
-        alert("Usuário já existe");
-        return;
-    }
-
-    usuarios[user] = pass;
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
-
-    alert("Conta criada! Agora faça login.");
+    auth.createUserWithEmailAndPassword(
+        loginUser.value.trim(),
+        loginPass.value
+    )
+    .then(() => alert("Conta criada!"))
+    .catch(e => alert(e.message));
 }
 
-function iniciarApp() {
+function iniciarAppFirebase() {
     loginScreen.style.display = "none";
     document.body.style.overflow = "auto";
 
-    // 👉 AQUI você pode carregar dados do usuário
-    renderCatalogo();
+    db.collection("users")
+      .doc(usuarioLogado)
+      .collection("livros")
+      .onSnapshot(snapshot => {
+          livros = snapshot.docs.map(d => ({
+              id: d.id,
+              ...d.data()
+          }));
+          renderCatalogo();
+      });
 }
 
 function trocarAba(a) {
@@ -549,6 +565,11 @@ function excluirLivro() {
     livros = livros.filter(l => l.id != id);
 
     delete overlay.dataset.editando;
+    db.collection("users")
+  .doc(usuarioLogado)
+  .collection("livros")
+  .doc(String(id))
+  .delete();
     salvar();
     fechar();
 }
@@ -597,8 +618,13 @@ function estrelas(nota) {
 }
 
 function salvar() {
-    localStorage.setItem(`livros_${usuarioLogado}`, JSON.stringify(livros));
-    renderCatalogo();
+    livros.forEach(l => {
+        db.collection("users")
+          .doc(usuarioLogado)
+          .collection("livros")
+          .doc(String(l.id))
+          .set(l);
+    });
 }
 
 function fechar() {
@@ -606,7 +632,7 @@ function fechar() {
 }
 
 if (usuarioLogado) {
-    iniciarApp();
+    iniciarAppFirebase();
 } else {
     document.body.style.overflow = "hidden";
 }
