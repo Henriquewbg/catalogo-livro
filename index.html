@@ -499,9 +499,23 @@ function iniciarAppFirebase() {
 }
 
 fotoInput.onchange = e => {
-    const r = new FileReader();
-    r.onload = () => imagemBase64 = r.result;
-    r.readAsDataURL(e.target.files[0]);
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+            const MAX = 300;
+            const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+            const canvas = document.createElement("canvas");
+            canvas.width  = Math.round(img.width  * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+            imagemBase64 = canvas.toDataURL("image/jpeg", 0.7);
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
 };
 
 function salvarLivro() {
@@ -510,7 +524,11 @@ function salvarLivro() {
         return;
     }
 
-    let id = overlay.dataset.editando || Date.now().toString();
+    const id = overlay.dataset.editando || Date.now().toString();
+
+    // Ao editar sem trocar foto, preserva a capa já existente
+    const livroExistente = livros.find(l => l.id === id);
+    const capaFinal = imagemBase64 || (livroExistente ? livroExistente.capa : "");
 
     const livro = {
         autor: autorInput.value,
@@ -518,8 +536,8 @@ function salvarLivro() {
         lancamento: lancamentoInput.value,
         lido: lidoInput.value === "true",
         nota: parseFloat(notaInput.value) || 0,
-        capa: imagemBase64,
-        emLeitura: false
+        capa: capaFinal,
+        emLeitura: livroExistente ? livroExistente.emLeitura : false
     };
 
     db.collection("users").doc(usuarioLogado).collection("livros").doc(id).set(livro);
