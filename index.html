@@ -16,7 +16,7 @@
 <style>
 body {
     font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-    background: #f5f5f5;
+    background: white;
     margin: 0;
 }
 
@@ -37,6 +37,8 @@ body {
     font-weight: 600;
 }
 
+.tab:hover { cursor: pointer; }
+
 .tab.active {
     background: #0f172a;
     color: white;
@@ -50,7 +52,10 @@ body {
     border: none;
     border-radius: 10px;
     margin-bottom: 10px;
+    font-size: 15px;
 }
+
+.btn-topo:hover { cursor: pointer; }
 
 .em-leitura {
     background: #0f172a;
@@ -73,6 +78,7 @@ body {
     padding: 14px;
     border-radius: 8px;
     border: 1px solid #ddd;
+    box-sizing: border-box;
 }
 
 .counter {
@@ -81,10 +87,7 @@ body {
     color: #666;
 }
 
-.secao {
-    background: white;
-    margin-bottom: 10px;
-}
+.secao { background: white; margin-bottom: 10px; }
 
 .secao-titulo {
     padding: 15px 20px;
@@ -99,12 +102,19 @@ body {
     padding: 15px 20px;
     border-bottom: 1px solid #eee;
     align-items: center;
+    position: relative;
 }
 
 .item img {
     width: 70px;
     margin-right: 15px;
     border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.item-info {
+    flex: 1;
+    cursor: pointer;
 }
 
 .nome {
@@ -115,6 +125,25 @@ body {
 .info-extra {
     font-size: 13px;
     color: #666;
+}
+
+/* Botão apagar no card */
+.btn-apagar-card {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #ccc;
+    padding: 6px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.btn-apagar-card:hover {
+    color: #e53e3e;
+    background: #fff0f0;
 }
 
 .rank {
@@ -144,6 +173,8 @@ body {
     border: none;
 }
 
+#btnAdd:hover { cursor: pointer; }
+
 .overlay {
     position: fixed;
     inset: 0;
@@ -151,6 +182,7 @@ body {
     display: none;
     z-index: 1000;
     padding: 20px;
+    overflow-y: auto;
 }
 
 .overlay input,
@@ -159,6 +191,7 @@ body {
     padding: 14px;
     margin-bottom: 15px;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
 .overlay button {
@@ -166,10 +199,101 @@ body {
     padding: 16px;
     border: none;
     margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
 }
 
 .btn-salvar { background: #0f172a; color: white; }
 .btn-cancelar { background: #ccc; }
+
+.btn-salvar:hover { background: #272c38; }
+.btn-cancelar:hover { background: #8d8b8b; }
+
+.btn-excluir {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.btn-excluir:hover { background: #fecaca; }
+
+/* Overlay escolher leitura */
+#overlayLeitura {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: none;
+    z-index: 1100;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+#overlayLeitura h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.item-leitura {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.item-leitura:hover {
+    border-color: #0f172a;
+    background: #f8fafc;
+}
+
+.item-leitura img {
+    width: 54px;
+    border-radius: 6px;
+    margin-right: 14px;
+    flex-shrink: 0;
+}
+
+.item-leitura .nome-leitura {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.item-leitura .autor-leitura {
+    font-size: 13px;
+    color: #666;
+}
+
+.item-leitura.selecionado {
+    border-color: #0f172a;
+    background: #0f172a;
+    color: white;
+}
+
+.item-leitura.selecionado .autor-leitura {
+    color: #adb5bd;
+}
+
+#overlayLeitura button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.btn-remover-leitura {
+    background: #fee2e2;
+    color: #b91c1c;
+    margin-top: 16px;
+}
+
+.btn-remover-leitura:hover { background: #fecaca; }
+
 
 .login-screen {
     position: fixed;
@@ -196,11 +320,7 @@ body {
     to { transform: scale(1); opacity: 1; }
 }
 
-.login-title {
-    margin: 0;
-    font-size: 24px;
-    text-align: center;
-}
+.login-title { margin: 0; font-size: 24px; text-align: center; }
 
 .login-subtitle {
     margin: 8px 0 24px;
@@ -218,9 +338,7 @@ body {
     margin-bottom: 14px;
 }
 
-.senha-box {
-    position: relative;
-}
+.senha-box { position: relative; }
 
 .senha-box span {
     position: absolute;
@@ -231,9 +349,7 @@ body {
     opacity: .6;
 }
 
-.senha-box span:hover {
-    opacity: 1;
-}
+.senha-box span:hover { opacity: 1; }
 
 .btn-primary {
     width: 100%;
@@ -244,12 +360,10 @@ body {
     color: white;
     font-size: 16px;
     margin-top: 8px;
+    cursor: pointer;
 }
 
-.btn-primary:hover {
-    cursor: pointer;
-    background: #303131;
-}
+.btn-primary:hover { background: #303131; }
 
 .btn-secondary {
     width: 100%;
@@ -259,35 +373,28 @@ body {
     background: #e5e7eb;
     font-size: 15px;
     margin-top: 10px;
-}
-
-.btn-secondary:hover {
     cursor: pointer;
-    background: #bdc0c0;
 }
 
+.btn-secondary:hover { background: #bdc0c0; }
 </style>
 </head>
 
 <body>
 
-    <div id="loginScreen" class="login-screen">
+<div id="loginScreen" class="login-screen">
     <div class="login-card">
         <h1 class="login-title">Minha Biblioteca</h1>
         <p class="login-subtitle">Entre para acessar seus livros</p>
-
         <input id="loginUser" placeholder="Email">
-
         <div class="senha-box">
             <input id="loginPass" type="password" placeholder="Senha">
             <span onclick="toggleSenha()">👁️</span>
         </div>
-
         <button class="btn-primary" onclick="login()">Entrar</button>
         <button class="btn-secondary" onclick="registrar()">Criar conta</button>
     </div>
 </div>
-
 
 <div class="header">
     <h1>Minha Biblioteca</h1>
@@ -300,7 +407,6 @@ body {
     <div id="areaCatalogo">
         <button class="btn-topo" onclick="escolherEmLeitura()">Escolher livro em leitura</button>
         <div id="emLeituraBox"></div>
-
         <div class="search-container">
             <input id="searchInput" placeholder="Buscar..." oninput="renderCatalogo()">
             <div class="counter" id="counter"></div>
@@ -313,39 +419,31 @@ body {
 
 <button id="btnAdd" onclick="novoLivro()">＋</button>
 
-<!-- OVERLAY -->
+<!-- OVERLAY EDITAR/NOVO LIVRO -->
 <div class="overlay" id="overlay">
     <h2 id="tituloForm">Novo Livro</h2>
     <input id="autorInput" placeholder="Autor">
     <input id="tituloInput" placeholder="Título">
-    <input 
-  type="number" 
-  id="lancamentoInput" 
-  placeholder="Ano de lançamento"
-  min="0"
-  max="2100">
-
-<select id="lidoInput">
-    <option value="false">Não lido</option>
-    <option value="true">Lido</option>
-</select>
-
-    <input 
-  type="number" 
-  id="notaInput"
-  placeholder="Nota (0 a 5)"
-  min="0"
-  max="5"
-  step="0.5">
-
+    <input type="number" id="lancamentoInput" placeholder="Ano de lançamento" min="0" max="2100">
+    <select id="lidoInput">
+        <option value="false">Não lido</option>
+        <option value="true">Lido</option>
+    </select>
+    <input type="number" id="notaInput" placeholder="Nota (0 a 5)" min="0" max="5" step="0.5">
     <input type="file" accept="image/*" id="fotoInput">
-
     <button class="btn-salvar" onclick="salvarLivro()">Salvar</button>
     <button class="btn-cancelar" onclick="fechar()">Cancelar</button>
     <button class="btn-excluir" id="btnExcluirLivro" onclick="excluirLivro()" style="display:none">
-    Excluir Livro
-</button>
+        Excluir Livro
+    </button>
+</div>
 
+<!-- OVERLAY ESCOLHER LIVRO EM LEITURA -->
+<div id="overlayLeitura">
+    <h2>Qual livro você está lendo?</h2>
+    <div id="listaLeitura"></div>
+    <button class="btn-remover-leitura" id="btnRemoverLeitura" onclick="removerEmLeitura()" style="display:none">Tirar livro de em leitura</button>
+    <button class="btn-cancelar" onclick="fecharEscolhaLeitura()">Cancelar</button>
 </div>
 
 <script>
@@ -369,7 +467,6 @@ let livros = [];
 let imagemBase64 = "";
 let abaAtual = "catalogo";
 
-// 🔐 LOGIN STATE
 auth.onAuthStateChanged(user => {
     if (user) {
         usuarioLogado = user.uid;
@@ -380,47 +477,33 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-// LOGIN
 function login() {
-    auth.signInWithEmailAndPassword(
-        loginUser.value.trim(),
-        loginPass.value
-    ).catch(e => alert(e.message));
+    auth.signInWithEmailAndPassword(loginUser.value.trim(), loginPass.value)
+        .catch(e => alert(e.message));
 }
 
-// CADASTRO
 function registrar() {
-    auth.createUserWithEmailAndPassword(
-        loginUser.value.trim(),
-        loginPass.value
-    ).catch(e => alert(e.message));
+    auth.createUserWithEmailAndPassword(loginUser.value.trim(), loginPass.value)
+        .catch(e => alert(e.message));
 }
 
-// INICIAR
 function iniciarAppFirebase() {
     loginScreen.style.display = "none";
     document.body.style.overflow = "auto";
 
-    db.collection("users")
-      .doc(usuarioLogado)
-      .collection("livros")
+    db.collection("users").doc(usuarioLogado).collection("livros")
       .onSnapshot(snapshot => {
-          livros = snapshot.docs.map(d => ({
-              id: d.id,
-              ...d.data()
-          }));
+          livros = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
           renderCatalogo();
       });
 }
 
-// IMAGEM
 fotoInput.onchange = e => {
     const r = new FileReader();
     r.onload = () => imagemBase64 = r.result;
     r.readAsDataURL(e.target.files[0]);
 };
 
-// SALVAR LIVRO (CORRETO)
 function salvarLivro() {
     if (!autorInput.value || !tituloInput.value || !lancamentoInput.value) {
         alert("Preencha tudo!");
@@ -439,43 +522,35 @@ function salvarLivro() {
         emLeitura: false
     };
 
-    db.collection("users")
-      .doc(usuarioLogado)
-      .collection("livros")
-      .doc(id)
-      .set(livro);
-
+    db.collection("users").doc(usuarioLogado).collection("livros").doc(id).set(livro);
     delete overlay.dataset.editando;
     fechar();
 }
 
-// EXCLUIR
 function excluirLivro() {
     const id = overlay.dataset.editando;
     if (!id) return;
+    if (!confirm("Tem certeza que deseja excluir este livro?")) return;
 
-    if (!confirm("Tem certeza?")) return;
-
-    db.collection("users")
-      .doc(usuarioLogado)
-      .collection("livros")
-      .doc(id)
-      .delete();
-
+    db.collection("users").doc(usuarioLogado).collection("livros").doc(id).delete();
     delete overlay.dataset.editando;
     fechar();
 }
 
-// RESTO DO TEU CÓDIGO (SEM ALTERAÇÃO)
+// Excluir direto do card (sem abrir overlay)
+function excluirLivroCard(id, titulo, event) {
+    event.stopPropagation();
+    if (!confirm(`Excluir "${titulo}"?`)) return;
+    db.collection("users").doc(usuarioLogado).collection("livros").doc(id).delete();
+}
+
 function trocarAba(a) {
     abaAtual = a;
     catalogo.style.display = a === "catalogo" ? "block" : "none";
     ranking.style.display = a === "ranking" ? "block" : "none";
     areaCatalogo.style.display = a === "catalogo" ? "block" : "none";
-
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     document.querySelector(`.tab[onclick*="${a}"]`).classList.add("active");
-
     a === "catalogo" ? renderCatalogo() : renderRanking();
 }
 
@@ -486,7 +561,6 @@ function toggleSenha() {
 function renderEmLeitura() {
     const l = livros.find(x => x.emLeitura);
     if (!l) return emLeituraBox.innerHTML = "";
-
     emLeituraBox.innerHTML = `
         <div class="em-leitura">
             <img src="${l.capa}">
@@ -506,19 +580,27 @@ function renderCatalogo() {
 
         const div = document.createElement("div");
         div.className = "item";
-        div.onclick = () => editarLivro(l.id);
 
         div.innerHTML = `
-        <img src="${l.capa}">
-        <div>
-            <div class="nome">${l.titulo}</div>
-            <div class="info-extra">
-                ${l.autor}
-                ${l.lancamento ? " · " + l.lancamento : ""}
-                · ${l.lido ? "Lido" : "Não lido"}
-                ${l.lido && l.nota ? " · " + estrelas(l.nota) : ""}
+            <img src="${l.capa}">
+            <div class="item-info">
+                <div class="nome">${l.titulo}</div>
+                <div class="info-extra">
+                    ${l.autor}
+                    ${l.lancamento ? " · " + l.lancamento : ""}
+                    · ${l.lido ? "Lido" : "Não lido"}
+                    ${l.lido && l.nota ? " · " + estrelas(l.nota) : ""}
+                </div>
             </div>
-        </div>`;
+            <button class="btn-apagar-card" title="Excluir livro">🗑️</button>
+        `;
+
+        // Clique na info abre edição
+        div.querySelector(".item-info").onclick = () => editarLivro(l.id);
+        div.querySelector("img").onclick = () => editarLivro(l.id);
+
+        // Botão apagar direto no card
+        div.querySelector(".btn-apagar-card").onclick = (e) => excluirLivroCard(l.id, l.titulo, e);
 
         catalogo.appendChild(div);
     });
@@ -531,7 +613,6 @@ function editarLivro(id) {
     if (!l) return;
 
     tituloForm.innerText = "Editar Livro";
-
     autorInput.value = l.autor || "";
     tituloInput.value = l.titulo || "";
     lancamentoInput.value = l.lancamento || "";
@@ -542,6 +623,66 @@ function editarLivro(id) {
     overlay.dataset.editando = id;
     btnExcluirLivro.style.display = "block";
     overlay.style.display = "block";
+}
+
+function escolherEmLeitura() {
+    const lista = document.getElementById("listaLeitura");
+    lista.innerHTML = "";
+
+    const temEmLeitura = livros.some(l => l.emLeitura);
+    document.getElementById("btnRemoverLeitura").style.display = temEmLeitura ? "block" : "none";
+
+    if (livros.length === 0) {
+        lista.innerHTML = "<p style='color:#888'>Nenhum livro cadastrado.</p>";
+    } else {
+        livros.forEach(l => {
+            const div = document.createElement("div");
+            div.className = "item-leitura" + (l.emLeitura ? " selecionado" : "");
+
+            div.innerHTML = `
+                <img src="${l.capa}">
+                <div>
+                    <div class="nome-leitura">${l.titulo}</div>
+                    <div class="autor-leitura">${l.autor}</div>
+                </div>
+            `;
+
+            div.onclick = () => definirLivroEmLeitura(l.id);
+            lista.appendChild(div);
+        });
+    }
+
+    overlayLeitura.style.display = "block";
+}
+
+function definirLivroEmLeitura(idSelecionado) {
+    const batch = db.batch();
+
+    livros.forEach(l => {
+        const ref = db.collection("users").doc(usuarioLogado).collection("livros").doc(l.id);
+        batch.update(ref, { emLeitura: l.id === idSelecionado });
+    });
+
+    batch.commit().then(() => {
+        fecharEscolhaLeitura();
+    });
+}
+
+function removerEmLeitura() {
+    const batch = db.batch();
+
+    livros.forEach(l => {
+        const ref = db.collection("users").doc(usuarioLogado).collection("livros").doc(l.id);
+        batch.update(ref, { emLeitura: false });
+    });
+
+    batch.commit().then(() => {
+        fecharEscolhaLeitura();
+    });
+}
+
+function fecharEscolhaLeitura() {
+    overlayLeitura.style.display = "none";
 }
 
 function renderRanking() {
@@ -567,7 +708,6 @@ function novoLivro() {
     lidoInput.value = "false";
     notaInput.value = "";
     imagemBase64 = "";
-
     btnExcluirLivro.style.display = "none";
     overlay.style.display = "block";
 }
@@ -584,10 +724,5 @@ function fechar() {
 
 renderCatalogo();
 </script>
-<div class="overlay" id="overlayLeitura">
-    <h2>Qual livro você está lendo?</h2>
-    <div id="listaLeitura"></div>
-    <button class="btn-cancelar" onclick="fecharEscolhaLeitura()">Cancelar</button>
-</div>
 </body>
 </html>
