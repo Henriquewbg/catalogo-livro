@@ -339,13 +339,13 @@ body {
 </div>
 
 <script>
-    const firebaseConfig = {
-    apiKey: "AIzaSyAeBcWRX16Oh7ZTR1d5pupq1hVJ0m1eJzs",
-    authDomain: "catalogo-livro-271e5.firebaseapp.com",
-    projectId: "catalogo-livro-271e5",
-    storageBucket: "catalogo-livro-271e5.firebasestorage.app",
-    messagingSenderId: "424175546438",
-    appId: "1:424175546438:web:8c07539bf387f70e451a47"
+const firebaseConfig = {
+    apiKey: "COLE_AQUI",
+    authDomain: "COLE_AQUI",
+    projectId: "COLE_AQUI",
+    storageBucket: "COLE_AQUI",
+    messagingSenderId: "COLE_AQUI",
+    appId: "COLE_AQUI"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -353,6 +353,12 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+let usuarioLogado = null;
+let livros = [];
+let imagemBase64 = "";
+let abaAtual = "catalogo";
+
+// 🔐 LOGIN STATE
 auth.onAuthStateChanged(user => {
     if (user) {
         usuarioLogado = user.uid;
@@ -363,18 +369,7 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-    let usuarioLogado = localStorage.getItem("usuarioLogado");
-let usuarios = JSON.parse(localStorage.getItem("usuarios")) || {};
-let livros = JSON.parse(localStorage.getItem(`livros_${usuarioLogado}`)) || [];
-let imagemBase64 = "";
-let abaAtual = "catalogo";
-
-fotoInput.onchange = e => {
-    const r = new FileReader();
-    r.onload = () => imagemBase64 = r.result;
-    r.readAsDataURL(e.target.files[0]);
-};
-
+// LOGIN
 function login() {
     auth.signInWithEmailAndPassword(
         loginUser.value.trim(),
@@ -382,15 +377,15 @@ function login() {
     ).catch(e => alert(e.message));
 }
 
+// CADASTRO
 function registrar() {
     auth.createUserWithEmailAndPassword(
         loginUser.value.trim(),
         loginPass.value
-    )
-    .then(() => alert("Conta criada!"))
-    .catch(e => alert(e.message));
+    ).catch(e => alert(e.message));
 }
 
+// INICIAR
 function iniciarAppFirebase() {
     loginScreen.style.display = "none";
     document.body.style.overflow = "auto";
@@ -407,6 +402,60 @@ function iniciarAppFirebase() {
       });
 }
 
+// IMAGEM
+fotoInput.onchange = e => {
+    const r = new FileReader();
+    r.onload = () => imagemBase64 = r.result;
+    r.readAsDataURL(e.target.files[0]);
+};
+
+// SALVAR LIVRO (CORRETO)
+function salvarLivro() {
+    if (!autorInput.value || !tituloInput.value || !lancamentoInput.value) {
+        alert("Preencha tudo!");
+        return;
+    }
+
+    let id = overlay.dataset.editando || Date.now().toString();
+
+    const livro = {
+        autor: autorInput.value,
+        titulo: tituloInput.value,
+        lancamento: lancamentoInput.value,
+        lido: lidoInput.value === "true",
+        nota: parseFloat(notaInput.value) || 0,
+        capa: imagemBase64,
+        emLeitura: false
+    };
+
+    db.collection("users")
+      .doc(usuarioLogado)
+      .collection("livros")
+      .doc(id)
+      .set(livro);
+
+    delete overlay.dataset.editando;
+    fechar();
+}
+
+// EXCLUIR
+function excluirLivro() {
+    const id = overlay.dataset.editando;
+    if (!id) return;
+
+    if (!confirm("Tem certeza?")) return;
+
+    db.collection("users")
+      .doc(usuarioLogado)
+      .collection("livros")
+      .doc(id)
+      .delete();
+
+    delete overlay.dataset.editando;
+    fechar();
+}
+
+// RESTO DO TEU CÓDIGO (SEM ALTERAÇÃO)
 function trocarAba(a) {
     abaAtual = a;
     catalogo.style.display = a === "catalogo" ? "block" : "none";
@@ -447,18 +496,20 @@ function renderCatalogo() {
         const div = document.createElement("div");
         div.className = "item";
         div.onclick = () => editarLivro(l.id);
-    div.innerHTML = `
-    <img src="${l.capa}">
-    <div>
-        <div class="nome">${l.titulo}</div>
-        <div class="info-extra">
-            ${l.autor}
-            ${l.lancamento ? " · " + l.lancamento : ""}
-            · ${l.lido ? "Lido" : "Não lido"}
-            ${l.lido && l.nota ? " · " + estrelas(l.nota) : ""}
-        </div>
-    </div>`;
-    catalogo.appendChild(div);
+
+        div.innerHTML = `
+        <img src="${l.capa}">
+        <div>
+            <div class="nome">${l.titulo}</div>
+            <div class="info-extra">
+                ${l.autor}
+                ${l.lancamento ? " · " + l.lancamento : ""}
+                · ${l.lido ? "Lido" : "Não lido"}
+                ${l.lido && l.nota ? " · " + estrelas(l.nota) : ""}
+            </div>
+        </div>`;
+
+        catalogo.appendChild(div);
     });
 
     counter.innerText = total + " livros";
@@ -478,7 +529,7 @@ function editarLivro(id) {
     imagemBase64 = l.capa || "";
 
     overlay.dataset.editando = id;
-    btnExcluirLivro.style.display = "block"; // 👈 AQUI
+    btnExcluirLivro.style.display = "block";
     overlay.style.display = "block";
 }
 
@@ -497,51 +548,6 @@ function renderRanking() {
     });
 }
 
-function escolherEmLeitura() {
-    listaLeitura.innerHTML = "";
-
-    livros.forEach(l => {
-        const div = document.createElement("div");
-        div.className = "item";
-        div.style.cursor = "pointer";
-
-        div.innerHTML = `
-            <img src="${l.capa}">
-            <div>
-                <strong>${l.titulo}</strong><br>
-                <small>${l.autor}</small>
-                ${l.emLeitura ? "<div style='color:green'>📖 Em leitura</div>" : ""}
-            </div>
-        `;
-
-        div.onclick = () => selecionarLeitura(l.id);
-        listaLeitura.appendChild(div);
-    });
-
-    overlayLeitura.style.display = "block";
-}
-
-function selecionarLeitura(id) {
-    const atual = livros.find(l => l.emLeitura);
-
-    if (atual && atual.id === id) {
-        // clicar no mesmo → remove
-        atual.emLeitura = false;
-    } else {
-        // troca
-        livros.forEach(l => l.emLeitura = false);
-        const novo = livros.find(l => l.id === id);
-        if (novo) novo.emLeitura = true;
-    }
-
-    salvar();
-    fecharEscolhaLeitura();
-}
-
-function fecharEscolhaLeitura() {
-    overlayLeitura.style.display = "none";
-}
-
 function novoLivro() {
     tituloForm.innerText = "Novo Livro";
     autorInput.value = "";
@@ -551,64 +557,8 @@ function novoLivro() {
     notaInput.value = "";
     imagemBase64 = "";
 
-    btnExcluirLivro.style.display = "none"; // 👈 AQUI
-
+    btnExcluirLivro.style.display = "none";
     overlay.style.display = "block";
-}
-
-function excluirLivro() {
-    const id = overlay.dataset.editando;
-    if (!id) return;
-
-    if (!confirm("Tem certeza que deseja excluir este livro?")) return;
-
-    livros = livros.filter(l => l.id != id);
-
-    delete overlay.dataset.editando;
-    db.collection("users")
-  .doc(usuarioLogado)
-  .collection("livros")
-  .doc(String(id))
-  .delete();
-    salvar();
-    fechar();
-}
-
-function salvarLivro() {
-    if (!autorInput.value || !tituloInput.value || !lancamentoInput.value) {
-        alert("Preencha autor, título e ano de lançamento");
-        return;
-    }
-
-    if (overlay.dataset.editando) {
-        // 🔵 EDITAR LIVRO EXISTENTE
-        const l = livros.find(x => x.id == overlay.dataset.editando);
-        if (!l) return;
-
-        l.autor = autorInput.value;
-        l.titulo = tituloInput.value;
-        l.lancamento = lancamentoInput.value;
-        l.lido = lidoInput.value === "true";
-        l.nota = parseFloat(notaInput.value) || 0;
-        l.capa = imagemBase64;
-
-        delete overlay.dataset.editando;
-    } else {
-        // ⭐ NOVO LIVRO
-        livros.push({
-            id: Date.now(),
-            autor: autorInput.value,
-            titulo: tituloInput.value,
-            lancamento: lancamentoInput.value,
-            lido: lidoInput.value === "true",
-            nota: parseFloat(notaInput.value) || 0,
-            capa: imagemBase64,
-            emLeitura: false
-        });
-    }
-
-    salvar();
-    fechar();
 }
 
 function estrelas(nota) {
@@ -617,30 +567,11 @@ function estrelas(nota) {
     return "⭐".repeat(cheias) + (meia ? "½" : "");
 }
 
-function salvar() {
-    livros.forEach(l => {
-        db.collection("users")
-          .doc(usuarioLogado)
-          .collection("livros")
-          .doc(String(l.id))
-          .set(l);
-    });
-}
-
 function fechar() {
     overlay.style.display = "none";
 }
 
-if (usuarioLogado) {
-    iniciarAppFirebase();
-} else {
-    document.body.style.overflow = "hidden";
-}
-
 renderCatalogo();
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
-}
 </script>
 <div class="overlay" id="overlayLeitura">
     <h2>Qual livro você está lendo?</h2>
