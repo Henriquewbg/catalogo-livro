@@ -22,12 +22,103 @@ body {
 
 .header { padding: 40px; }
 
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-top h1 { margin: 0; }
+
+/* Avatar btn */
+.avatar-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #3b82f6;
+    border: 2px solid rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    flex-shrink: 0;
+    user-select: none;
+    transition: transform 0.15s, opacity 0.15s;
+}
+.avatar-btn:hover { transform: scale(1.08); opacity: 0.9; }
+
+/* Perfil dropdown */
+.perfil-dropdown {
+    position: fixed;
+    top: 56px;
+    right: 16px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    width: 230px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.13);
+    z-index: 2500;
+    overflow: hidden;
+    display: none;
+    animation: dropdownEntrar 0.15s ease;
+}
+@keyframes dropdownEntrar {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.perfil-dropdown.aberto { display: block; }
+
+.perfil-dropdown-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+.perfil-dropdown-header:hover { background: #f8fafc; }
+
+.perfil-avatar-grande {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+}
+.perfil-dropdown-nome { font-size: 14px; font-weight: 600; color: #0f172a; }
+.perfil-dropdown-email { font-size: 12px; color: #888; margin-top: 1px; word-break: break-all; }
+
+.perfil-dropdown-item {
+    padding: 13px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+    color: #0f172a;
+}
+.perfil-dropdown-item:last-child { border-bottom: none; }
+.perfil-dropdown-item:hover { background: #f8fafc; }
+.perfil-dropdown-item.perigo { color: #b91c1c; }
+.perfil-dropdown-item.perigo:hover { background: #fff5f5; }
+
+/* Tabs */
 .tabs {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
 }
-
 .tab {
     flex: 1;
     padding: 12px;
@@ -35,14 +126,9 @@ body {
     background: #e5e7eb;
     border-radius: 10px;
     font-weight: 600;
+    cursor: pointer;
 }
-
-.tab:hover { cursor: pointer; }
-
-.tab.active {
-    background: #0f172a;
-    color: white;
-}
+.tab.active { background: #0f172a; color: white; }
 
 .btn-topo {
     width: 100%;
@@ -53,9 +139,8 @@ body {
     border-radius: 10px;
     margin-bottom: 10px;
     font-size: 15px;
+    cursor: pointer;
 }
-
-.btn-topo:hover { cursor: pointer; }
 
 .em-leitura {
     background: #0f172a;
@@ -67,11 +152,7 @@ body {
     gap: 12px;
     align-items: center;
 }
-
-.em-leitura img {
-    width: 60px;
-    border-radius: 6px;
-}
+.em-leitura img { width: 60px; border-radius: 6px; }
 
 .search-container input {
     width: 100%;
@@ -80,24 +161,8 @@ body {
     border: 1px solid #ddd;
     box-sizing: border-box;
 }
+.counter { font-size: 14px; margin-top: 6px; color: #666; }
 
-.counter {
-    font-size: 14px;
-    margin-top: 6px;
-    color: #666;
-}
-
-.secao { background: white; margin-bottom: 10px; }
-
-.secao-titulo {
-    padding: 15px 20px;
-    font-size: 13px;
-    letter-spacing: 3px;
-    color: #888;
-    border-bottom: 1px solid #eee;
-}
-
-/* MUDANÇA 1: item com posição relativa para acomodar botão excluir dentro da capa */
 .item {
     display: flex;
     padding: 15px 20px;
@@ -105,23 +170,22 @@ body {
     align-items: center;
     position: relative;
 }
-
-/* MUDANÇA 1: wrapper da imagem com posição relativa para o botão flutuar sobre ela */
 .item-img-wrapper {
     position: relative;
     width: 70px;
     margin-right: 15px;
     flex-shrink: 0;
 }
-
 .item-img-wrapper img {
     width: 70px;
     border-radius: 8px;
     display: block;
-    cursor: zoom-in; /* MUDANÇA 3: cursor indica que clicando amplia */
+    cursor: zoom-in;
 }
+.item-info { flex: 1; cursor: pointer; }
+.nome { font-size: 18px; font-weight: 600; }
+.info-extra { font-size: 13px; color: #666; }
 
-/* MUDANÇA 2: botão excluir flutuando sobre a imagem */
 .btn-apagar-card {
     background: none;
     border: none;
@@ -134,28 +198,8 @@ body {
     flex-shrink: 0;
     margin-left: 8px;
 }
+.btn-apagar-card:hover { color: #e53e3e; background: #fff0f0; }
 
-.btn-apagar-card:hover {
-    color: #e53e3e;
-    background: #fff0f0;
-}
-
-.item-info {
-    flex: 1;
-    cursor: pointer;
-}
-
-.nome {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.info-extra {
-    font-size: 13px;
-    color: #666;
-}
-
-/* MUDANÇA 3: overlay para ampliar imagem */
 #overlayImagem {
     position: fixed;
     inset: 0;
@@ -166,24 +210,15 @@ body {
     justify-content: center;
     cursor: zoom-out;
 }
-
 #overlayImagem img {
     max-width: 90vw;
     max-height: 90vh;
     border-radius: 12px;
     object-fit: contain;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
 }
 
-/* MUDANÇA 1: drag & drop para reordenar */
-.item.dragging {
-    opacity: 0.4;
-}
-
-.item.drag-over {
-    border-top: 3px solid #0f172a;
-}
-
+.item.dragging { opacity: 0.4; }
+.item.drag-over { border-top: 3px solid #0f172a; }
 .drag-handle {
     font-size: 18px;
     color: #ccc;
@@ -192,7 +227,6 @@ body {
     flex-shrink: 0;
     user-select: none;
 }
-
 .drag-handle:active { cursor: grabbing; }
 
 .rank {
@@ -202,12 +236,7 @@ body {
     display: flex;
     align-items: center;
 }
-
-.rank img {
-    width: 70px;
-    margin-right: 15px;
-    border-radius: 8px;
-}
+.rank img { width: 70px; margin-right: 15px; border-radius: 8px; }
 
 #btnAdd {
     position: fixed;
@@ -217,12 +246,16 @@ body {
     height: 64px;
     border-radius: 50%;
     font-size: 28px;
+    line-height: 1;
     background: #0f172a;
     color: white;
     border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
-
-#btnAdd:hover { cursor: pointer; }
 
 .overlay {
     position: fixed;
@@ -233,16 +266,13 @@ body {
     padding: 20px;
     overflow-y: auto;
 }
-
-.overlay input,
-.overlay select {
+.overlay input, .overlay select {
     width: 100%;
     padding: 14px;
     margin-bottom: 15px;
     font-size: 16px;
     box-sizing: border-box;
 }
-
 .overlay button:not(.estrela-btn) {
     width: 100%;
     padding: 16px;
@@ -252,18 +282,11 @@ body {
     font-size: 15px;
     cursor: pointer;
 }
-
 .btn-salvar { background: #0f172a; color: white; }
 .btn-cancelar { background: #ccc; }
-
 .btn-salvar:hover { background: #272c38; }
 .btn-cancelar:hover { background: #8d8b8b; }
-
-.btn-excluir {
-    background: #fee2e2;
-    color: #b91c1c;
-}
-
+.btn-excluir { background: #fee2e2; color: #b91c1c; }
 .btn-excluir:hover { background: #fecaca; }
 
 #overlayLeitura {
@@ -275,11 +298,7 @@ body {
     padding: 20px;
     overflow-y: auto;
 }
-
-#overlayLeitura h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-}
+#overlayLeitura h2 { margin-top: 0; margin-bottom: 20px; }
 
 .item-leitura {
     display: flex;
@@ -291,38 +310,12 @@ body {
     cursor: pointer;
     transition: border-color 0.15s, background 0.15s;
 }
-
-.item-leitura:hover {
-    border-color: #0f172a;
-    background: #f8fafc;
-}
-
-.item-leitura img {
-    width: 54px;
-    border-radius: 6px;
-    margin-right: 14px;
-    flex-shrink: 0;
-}
-
-.item-leitura .nome-leitura {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.item-leitura .autor-leitura {
-    font-size: 13px;
-    color: #666;
-}
-
-.item-leitura.selecionado {
-    border-color: #0f172a;
-    background: #0f172a;
-    color: white;
-}
-
-.item-leitura.selecionado .autor-leitura {
-    color: #adb5bd;
-}
+.item-leitura:hover { border-color: #0f172a; background: #f8fafc; }
+.item-leitura img { width: 54px; border-radius: 6px; margin-right: 14px; flex-shrink: 0; }
+.item-leitura .nome-leitura { font-size: 16px; font-weight: 600; }
+.item-leitura .autor-leitura { font-size: 13px; color: #666; }
+.item-leitura.selecionado { border-color: #0f172a; background: #0f172a; color: white; }
+.item-leitura.selecionado .autor-leitura { color: #adb5bd; }
 
 #overlayLeitura button {
     width: 100%;
@@ -333,61 +326,244 @@ body {
     font-size: 15px;
     cursor: pointer;
 }
-
-.btn-remover-leitura {
-    background: #fee2e2;
-    color: #b91c1c;
-    margin-top: 16px;
-}
-
+.btn-remover-leitura { background: #fee2e2; color: #b91c1c; margin-top: 16px; }
 .btn-remover-leitura:hover { background: #fecaca; }
 
+/* Estrelas */
+.estrelas-widget { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
+.estrela-btn {
+    background: none; border: none; padding: 0; cursor: pointer;
+    width: 36px; height: 36px; display: flex; align-items: center;
+    justify-content: center; border-radius: 4px; transition: transform 0.1s; flex-shrink: 0;
+}
+.estrela-btn:hover { transform: scale(1.15); }
+.estrela-btn:active { transform: scale(0.95); }
+.estrela-btn svg { display: block; }
+.nota-label { font-size: 14px; color: #888; margin-left: 8px; min-width: 28px; }
 
-/* Widget de estrelas estilo Letterboxd */
-.estrelas-widget {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-    padding: 4px 0;
+/* ── COMUNIDADE ───────────────────────────────────── */
+#areaComunidade { display: none; }
+
+/* ── HUD avaliações recentes ──────────────────────── */
+.hud-recentes { padding: 0 0 4px; margin-bottom: 6px; }
+
+.hud-titulo {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #aaa;
+    text-transform: uppercase;
+    padding: 14px 20px 10px;
 }
 
-.estrela-btn {
-    background: none;
-    border: none;
-    padding: 0;
+.hud-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 0 20px 12px;
+    scrollbar-width: none;
+}
+.hud-scroll::-webkit-scrollbar { display: none; }
+
+.hud-card {
+    flex-shrink: 0;
+    width: 120px;
+    background: #f8fafc;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    overflow: hidden;
     cursor: pointer;
-    width: 36px;
-    height: 36px;
+    transition: border-color 0.15s, background 0.15s;
+}
+.hud-card:hover { border-color: #0f172a; background: #f1f5f9; }
+
+.hud-capa {
+    width: 100%;
+    height: 76px;
+    object-fit: cover;
+    display: block;
+    background: #e5e7eb;
+}
+
+.hud-info { padding: 8px 10px; }
+
+.hud-livro-titulo {
+    font-size: 12px;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.hud-usuario {
+    font-size: 11px;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+}
+
+.hud-divider { border: none; border-top: 1px solid #eee; margin: 0 0 6px; }
+
+/* ── Leitores ─────────────────────────────────────── */
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.user-card:hover { background: #f8fafc; }
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #3b82f6;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
-    transition: transform 0.1s;
+    font-size: 17px;
+    font-weight: 600;
+    color: white;
     flex-shrink: 0;
 }
 
-.estrela-btn:hover { transform: scale(1.15); }
-.estrela-btn:active { transform: scale(0.95); }
+.user-info-nome { font-size: 16px; font-weight: 600; color: #0f172a; }
+.user-info-stats { font-size: 13px; color: #888; margin-top: 2px; }
 
-.estrela-btn svg { display: block; }
-
-.nota-label {
-    font-size: 14px;
-    color: #888;
-    margin-left: 8px;
-    min-width: 28px;
+/* ── OVERLAY PERFIL PÚBLICO ───────────────────────── */
+#overlayPerfil {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: none;
+    z-index: 1200;
+    overflow-y: auto;
 }
 
+.perfil-header {
+    background: #0f172a;
+    color: white;
+    padding: 20px 20px 24px;
+}
+
+.perfil-header-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+.perfil-voltar {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 8px 4px 0;
+    opacity: 0.8;
+    line-height: 1;
+}
+.perfil-voltar:hover { opacity: 1; }
+
+.perfil-header-top span {
+    font-size: 15px;
+    opacity: 0.7;
+}
+
+.perfil-user-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.perfil-avatar-xl {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+    border: 3px solid rgba(255,255,255,0.25);
+}
+
+.perfil-user-nome { font-size: 20px; font-weight: 700; }
+.perfil-user-email { font-size: 13px; opacity: 0.65; margin-top: 3px; }
+
+.perfil-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+}
+.perfil-stat { text-align: center; }
+.perfil-stat-num { font-size: 22px; font-weight: 700; }
+.perfil-stat-label { font-size: 12px; opacity: 0.6; margin-top: 2px; }
+
+.perfil-em-leitura-box { padding: 16px 20px; border-bottom: 1px solid #eee; }
+.perfil-em-leitura-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #888;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.perfil-tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+}
+.perfil-tab {
+    flex: 1;
+    padding: 14px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+}
+.perfil-tab.active { color: #0f172a; border-bottom-color: #0f172a; }
+
+.perfil-conteudo { padding-bottom: 40px; }
+
+/* Item somente leitura (sem drag handle) */
+.item-ro {
+    display: flex;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+}
+.item-ro .item-img-wrapper { margin-right: 15px; }
+.item-ro .item-info { cursor: default; }
+
+/* Login screen */
 .login-screen {
     position: fixed;
     inset: 0;
-    background: linear-gradient(135deg, #1d4800, #04ec4a);
+    background:
+        linear-gradient(to left, #342620 50px, #1b0c06 90px, transparent 95px),
+        linear-gradient(to right, #342620 50px, #1b0c06 90px, transparent 95px),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(0,0,0,0.015) 3px),
+        repeating-linear-gradient(to right, #cecaca 2px, #eeeaea 8px, #c6bebe 10px);
+    box-shadow: inset 0 8px 15px rgba(0,0,0,0.25), inset 0 -8px 15px rgba(0,0,0,0.25);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 3000;
 }
-
 .login-card {
     background: white;
     width: 100%;
@@ -397,69 +573,137 @@ body {
     box-shadow: 0 25px 50px rgba(0,0,0,.3);
     animation: aparecer .3s ease;
 }
-
+.login-card input:focus { outline: none; border: 1px solid rgb(126, 114, 114); }
 @keyframes aparecer {
     from { transform: scale(.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    to   { transform: scale(1); opacity: 1; }
 }
-
 .login-title { margin: 0; font-size: 24px; text-align: center; }
-
-.login-subtitle {
-    margin: 8px 0 24px;
-    text-align: center;
-    color: #666;
-    font-size: 14px;
-}
-
+.login-subtitle { margin: 8px 0 24px; text-align: center; color: #666; font-size: 14px; }
 .login-card input {
-    width: 90%;
-    padding: 13px;
-    font-size: 16px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    margin-bottom: 14px;
+    width: 90%; padding: 13px; font-size: 16px;
+    border-radius: 10px; border: 1px solid #ddd; margin-bottom: 14px;
 }
-
 .senha-box { position: relative; }
-
 .senha-box span {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    opacity: .6;
+    position: absolute; right: 14px; top: 50%;
+    transform: translateY(-50%); cursor: pointer; opacity: .6;
 }
-
 .senha-box span:hover { opacity: 1; }
-
 .btn-primary {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    background: #0f172a;
-    color: white;
-    font-size: 16px;
-    margin-top: 8px;
-    cursor: pointer;
+    width: 100%; padding: 14px; border: none; border-radius: 10px;
+    background: #0f172a; color: white; font-size: 16px; margin-top: 8px; cursor: pointer;
 }
-
 .btn-primary:hover { background: #303131; }
-
 .btn-secondary {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    background: #e5e7eb;
-    font-size: 15px;
-    margin-top: 10px;
-    cursor: pointer;
+    width: 100%; padding: 14px; border: none; border-radius: 10px;
+    background: #e5e7eb; font-size: 15px; margin-top: 10px; cursor: pointer;
+}
+.btn-secondary:hover { background: #bdc0c0; }
+
+.avatar-cores {
+    /* índice 0-4 */
 }
 
-.btn-secondary:hover { background: #bdc0c0; }
+/* Avatar com foto */
+.avatar-btn img, .perfil-avatar-grande img, .perfil-avatar-xl img, .user-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Overlay editar perfil */
+#overlayEditarPerfil {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: none;
+    z-index: 1400;
+    padding: 24px 20px;
+    overflow-y: auto;
+}
+#overlayEditarPerfil h2 { margin: 0 0 24px; }
+
+.editar-avatar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 12px;
+}
+
+.editar-avatar-circulo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+.editar-avatar-circulo img {
+    width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+}
+.editar-avatar-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s;
+    font-size: 22px;
+}
+.editar-avatar-circulo:hover .editar-avatar-overlay { opacity: 1; }
+
+.editar-avatar-hint { font-size: 13px; color: #888; }
+
+#overlayEditarPerfil input[type="text"] {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin-bottom: 16px;
+}
+#overlayEditarPerfil input[type="text"]:focus { outline: none; border-color: #aaa; }
+
+.btn-salvar-perfil {
+    width: 100%; padding: 16px; border: none; border-radius: 10px;
+    background: #0f172a; color: white; font-size: 15px; cursor: pointer; margin-bottom: 10px;
+}
+.btn-salvar-perfil:hover { background: #272c38; }
+.btn-cancelar-perfil {
+    width: 100%; padding: 16px; border: none; border-radius: 10px;
+    background: #e5e7eb; font-size: 15px; cursor: pointer;
+}
+.btn-cancelar-perfil:hover { background: #ccc; }
+
+/* Botão editar no header do perfil */
+.btn-editar-perfil {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.15s;
+}
+.btn-editar-perfil:hover { background: rgba(255,255,255,0.25); }
 </style>
 </head>
 
@@ -480,11 +724,15 @@ body {
 </div>
 
 <div class="header">
-    <h1>Minha Biblioteca</h1>
+    <div class="header-top">
+        <h1>Minha Biblioteca</h1>
+        <div class="avatar-btn" id="avatarBtn" onclick="togglePerfil()">??</div>
+    </div>
 
     <div class="tabs">
         <div class="tab active" onclick="trocarAba('catalogo')">Catálogo</div>
         <div class="tab" onclick="trocarAba('ranking')">Ranking</div>
+        <div class="tab" onclick="trocarAba('comunidade')">Comunidade</div>
     </div>
 
     <div id="areaCatalogo">
@@ -495,10 +743,32 @@ body {
             <div class="counter" id="counter"></div>
         </div>
     </div>
+
+    <div id="areaComunidade">
+        <p style="font-size:13px;color:#888;margin:0 0 10px">Leitores cadastrados</p>
+    </div>
+</div>
+
+<!-- Dropdown de perfil -->
+<div class="perfil-dropdown" id="perfilDropdown">
+    <div class="perfil-dropdown-header" onclick="abrirMeuPerfil()">
+        <div class="perfil-avatar-grande" id="perfilAvatarGrande">??</div>
+        <div>
+            <div class="perfil-dropdown-nome" id="perfilNome">—</div>
+            <div class="perfil-dropdown-email" id="perfilEmail">—</div>
+        </div>
+    </div>
+    <div class="perfil-dropdown-item" onclick="abrirMeuPerfil()">
+        📚 Ver meu perfil
+    </div>
+    <div class="perfil-dropdown-item perigo" onclick="sair()">
+        🚪 Sair da conta
+    </div>
 </div>
 
 <div id="catalogo"></div>
 <div id="ranking" style="display:none"></div>
+<div id="comunidade" style="display:none"></div>
 
 <button id="btnAdd" onclick="novoLivro()">＋</button>
 
@@ -517,9 +787,7 @@ body {
     <input type="file" accept="image/*" id="fotoInput">
     <button class="btn-salvar" onclick="salvarLivro()">Salvar</button>
     <button class="btn-cancelar" onclick="fechar()">Cancelar</button>
-    <button class="btn-excluir" id="btnExcluirLivro" onclick="excluirLivro()" style="display:none">
-        Excluir Livro
-    </button>
+    <button class="btn-excluir" id="btnExcluirLivro" onclick="excluirLivro()" style="display:none">Excluir Livro</button>
 </div>
 
 <!-- OVERLAY ESCOLHER LIVRO EM LEITURA -->
@@ -530,9 +798,74 @@ body {
     <button class="btn-cancelar" onclick="fecharEscolhaLeitura()">Cancelar</button>
 </div>
 
-<!-- MUDANÇA 3: overlay para ampliar imagem -->
+<!-- OVERLAY AMPLIAR IMAGEM -->
 <div id="overlayImagem" onclick="fecharImagem()">
     <img id="imagemAmpliadaSrc" src="" alt="">
+</div>
+
+<!-- ── OVERLAY PERFIL PÚBLICO ───────────────────── -->
+<div id="overlayPerfil">
+    <div class="perfil-header">
+        <div class="perfil-header-top">
+            <button class="perfil-voltar" onclick="fecharPerfil()">‹</button>
+            <span>Perfil</span>
+        </div>
+        <div class="perfil-user-info">
+            <div class="perfil-avatar-xl" id="perfilXlIniciais">??</div>
+            <div>
+                <div class="perfil-user-nome" id="perfilXlNome">—</div>
+                <div class="perfil-user-email" id="perfilXlEmail">—</div>
+                <button class="btn-editar-perfil" id="btnEditarMeuPerfil" style="display:none" onclick="abrirEditarPerfil()">✏️ Editar perfil</button>
+            </div>
+        </div>
+        <div class="perfil-stats">
+            <div class="perfil-stat">
+                <div class="perfil-stat-num" id="perfilStatTotal">0</div>
+                <div class="perfil-stat-label">livros</div>
+            </div>
+            <div class="perfil-stat">
+                <div class="perfil-stat-num" id="perfilStatLidos">0</div>
+                <div class="perfil-stat-label">lidos</div>
+            </div>
+            <div class="perfil-stat">
+                <div class="perfil-stat-num" id="perfilStatNota">—</div>
+                <div class="perfil-stat-label">nota média</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Em leitura -->
+    <div class="perfil-em-leitura-box" id="perfilEmLeituraBox" style="display:none">
+        <div class="perfil-em-leitura-label">Lendo agora</div>
+        <div class="em-leitura" id="perfilEmLeituraConteudo"></div>
+    </div>
+
+    <!-- Tabs catálogo / ranking -->
+    <div class="perfil-tabs">
+        <div class="perfil-tab active" onclick="trocarPerfilTab('catalogo')" id="ptabCatalogo">Catálogo</div>
+        <div class="perfil-tab" onclick="trocarPerfilTab('ranking')" id="ptabRanking">Ranking</div>
+    </div>
+
+    <div class="perfil-conteudo">
+        <div id="perfilCatalogo"></div>
+        <div id="perfilRanking" style="display:none"></div>
+    </div>
+</div>
+
+<!-- ── OVERLAY EDITAR PERFIL ─────────────────────── -->
+<div id="overlayEditarPerfil">
+    <h2>Editar perfil</h2>
+    <div class="editar-avatar-wrap">
+        <div class="editar-avatar-circulo" id="editarAvatarCirculo" onclick="document.getElementById('fotoPerfilInput').click()">
+            <span id="editarAvatarIniciais">??</span>
+            <div class="editar-avatar-overlay">📷</div>
+        </div>
+        <span class="editar-avatar-hint">Toque para trocar a foto</span>
+        <input type="file" accept="image/*" id="fotoPerfilInput" style="display:none">
+    </div>
+    <input type="text" id="editarNomeInput" placeholder="Nome de exibição">
+    <button class="btn-salvar-perfil" onclick="salvarEdicaoPerfil()">Salvar</button>
+    <button class="btn-cancelar-perfil" onclick="fecharEditarPerfil()">Cancelar</button>
 </div>
 
 <script>
@@ -547,21 +880,26 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 const db = firebase.firestore();
 
 let usuarioLogado = null;
+let emailLogado = "";
 let livros = [];
 let imagemBase64 = "";
 let abaAtual = "catalogo";
-
-// MUDANÇA 1: variável para controlar a ordem personalizada
 let ordemPersonalizada = [];
+let fotoPerfilBase64 = "";
+let nomeExibicao = "";
+let fotoPerfilEditando = "";
+
+// Cores para avatares de usuários distintos
+const AVATAR_CORES = ["#3b82f6","#10b981","#f59e0b","#ef4444","#8b5cf6"];
 
 auth.onAuthStateChanged(user => {
     if (user) {
         usuarioLogado = user.uid;
+        emailLogado = user.email || "";
         iniciarAppFirebase();
     } else {
         loginScreen.style.display = "flex";
@@ -576,6 +914,14 @@ function login() {
 
 function registrar() {
     auth.createUserWithEmailAndPassword(loginUser.value.trim(), loginPass.value)
+        .then(cred => {
+            // Salva perfil público
+            db.collection("perfis").doc(cred.user.uid).set({
+                email: cred.user.email,
+                uid: cred.user.uid,
+                criadoEm: Date.now()
+            });
+        })
         .catch(e => alert(e.message));
 }
 
@@ -583,20 +929,91 @@ function iniciarAppFirebase() {
     loginScreen.style.display = "none";
     document.body.style.overflow = "auto";
 
-    // MUDANÇA 1: carrega a ordem salva
+    // Garante que o perfil deste usuário existe na coleção pública
+    db.collection("perfis").doc(usuarioLogado).set({
+        email: emailLogado,
+        uid: usuarioLogado,
+        criadoEm: Date.now()
+    }, { merge: true });
+
+    // Atualiza avatar e dropdown
+    const nomePadrao = emailLogado.split("@")[0];
+    const iniciaisPadrao = nomePadrao.substring(0, 2).toUpperCase();
+
+    // Carrega perfil salvo (nome e foto)
+    db.collection("perfis").doc(usuarioLogado).get().then(doc => {
+        const dados = doc.exists ? doc.data() : {};
+        nomeExibicao = dados.nomeExibicao || nomePadrao;
+        fotoPerfilBase64 = dados.foto || "";
+        atualizarAvatarUI();
+    });
+
     db.collection("users").doc(usuarioLogado).collection("config").doc("ordem")
-      .get().then(doc => {
-          if (doc.exists) ordemPersonalizada = doc.data().ids || [];
-      });
+        .get().then(doc => {
+            if (doc.exists) ordemPersonalizada = doc.data().ids || [];
+        });
 
     db.collection("users").doc(usuarioLogado).collection("livros")
-      .onSnapshot(snapshot => {
-          livros = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          renderCatalogo();
-      });
+        .onSnapshot(snapshot => {
+            livros = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderCatalogo();
+        });
 }
 
-fotoInput.onchange = e => {
+// ── Perfil dropdown ────────────────────────────────
+function togglePerfil() {
+    document.getElementById("perfilDropdown").classList.toggle("aberto");
+}
+
+document.addEventListener("click", e => {
+    if (!e.target.closest("#avatarBtn") && !e.target.closest("#perfilDropdown")) {
+        document.getElementById("perfilDropdown").classList.remove("aberto");
+    }
+});
+
+function sair() {
+    if (confirm("Deseja sair da conta?")) auth.signOut();
+}
+
+// ── Funções de avatar/perfil ───────────────────────
+function atualizarAvatarUI() {
+    const iniciais = nomeExibicao.substring(0, 2).toUpperCase();
+    const avatarBtn = document.getElementById("avatarBtn");
+    const avatarGrande = document.getElementById("perfilAvatarGrande");
+
+    if (fotoPerfilBase64) {
+        avatarBtn.innerHTML = `<img src="${fotoPerfilBase64}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+        avatarGrande.innerHTML = `<img src="${fotoPerfilBase64}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+    } else {
+        avatarBtn.innerText = iniciais;
+        avatarGrande.innerText = iniciais;
+    }
+    document.getElementById("perfilNome").innerText = nomeExibicao;
+    document.getElementById("perfilEmail").innerText = emailLogado;
+}
+
+function abrirEditarPerfil() {
+    fotoPerfilEditando = fotoPerfilBase64;
+
+    // Preenche o círculo de preview
+    const circulo = document.getElementById("editarAvatarCirculo");
+    const iniciais = nomeExibicao.substring(0, 2).toUpperCase();
+    if (fotoPerfilEditando) {
+        circulo.innerHTML = `<img src="${fotoPerfilEditando}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><div class="editar-avatar-overlay">📷</div>`;
+    } else {
+        circulo.innerHTML = `<span id="editarAvatarIniciais">${iniciais}</span><div class="editar-avatar-overlay">📷</div>`;
+    }
+    circulo.onclick = () => document.getElementById("fotoPerfilInput").click();
+
+    document.getElementById("editarNomeInput").value = nomeExibicao;
+    document.getElementById("overlayEditarPerfil").style.display = "block";
+}
+
+function fecharEditarPerfil() {
+    document.getElementById("overlayEditarPerfil").style.display = "none";
+}
+
+document.getElementById("fotoPerfilInput").onchange = e => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
@@ -609,86 +1026,287 @@ fotoInput.onchange = e => {
             canvas.width  = Math.round(img.width  * scale);
             canvas.height = Math.round(img.height * scale);
             canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-            imagemBase64 = canvas.toDataURL("image/jpeg", 0.7);
+            fotoPerfilEditando = canvas.toDataURL("image/jpeg", 0.75);
+            const circulo = document.getElementById("editarAvatarCirculo");
+            circulo.innerHTML = `<img src="${fotoPerfilEditando}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><div class="editar-avatar-overlay">📷</div>`;
+            circulo.onclick = () => document.getElementById("fotoPerfilInput").click();
         };
         img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
 };
 
-function salvarLivro() {
-    if (!autorInput.value || !tituloInput.value || !lancamentoInput.value) {
-        alert("Preencha tudo!");
-        return;
+function salvarEdicaoPerfil() {
+    const novoNome = document.getElementById("editarNomeInput").value.trim() || nomeExibicao;
+    nomeExibicao = novoNome;
+    fotoPerfilBase64 = fotoPerfilEditando;
+
+    db.collection("perfis").doc(usuarioLogado).set({
+        nomeExibicao: novoNome,
+        foto: fotoPerfilBase64
+    }, { merge: true });
+
+    atualizarAvatarUI();
+    fecharEditarPerfil();
+
+    // Atualiza o overlay de perfil se estiver aberto
+    document.getElementById("perfilXlNome").innerText = novoNome;
+    const xlAvatar = document.getElementById("perfilXlIniciais");
+    if (fotoPerfilBase64) {
+        xlAvatar.innerHTML = `<img src="${fotoPerfilBase64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+        xlAvatar.innerText = novoNome.substring(0, 2).toUpperCase();
     }
-
-    const id = overlay.dataset.editando || Date.now().toString();
-    const livroExistente = livros.find(l => l.id === id);
-    const capaFinal = imagemBase64 || (livroExistente ? livroExistente.capa : "");
-
-    const livro = {
-        autor: autorInput.value,
-        titulo: tituloInput.value,
-        lancamento: lancamentoInput.value,
-        lido: lidoInput.value === "true",
-        nota: parseFloat(notaInput.value) || 0,
-        capa: capaFinal,
-        emLeitura: livroExistente ? livroExistente.emLeitura : false
-    };
-
-    db.collection("users").doc(usuarioLogado).collection("livros").doc(id).set(livro);
-    delete overlay.dataset.editando;
-    fechar();
 }
 
-function excluirLivro() {
-    const id = overlay.dataset.editando;
-    if (!id) return;
-    if (!confirm("Tem certeza que deseja excluir este livro?")) return;
-
-    db.collection("users").doc(usuarioLogado).collection("livros").doc(id).delete();
-    // MUDANÇA 1: remove da ordem personalizada ao excluir
-    ordemPersonalizada = ordemPersonalizada.filter(x => x !== id);
-    salvarOrdem();
-    delete overlay.dataset.editando;
-    fechar();
+function abrirMeuPerfil() {
+    document.getElementById("perfilDropdown").classList.remove("aberto");
+    abrirPerfil(usuarioLogado, emailLogado);
 }
 
-function excluirLivroCard(id, titulo, event) {
-    event.stopPropagation();
-    if (!confirm(`Excluir "${titulo}"?`)) return;
-    db.collection("users").doc(usuarioLogado).collection("livros").doc(id).delete();
-    // MUDANÇA 1: remove da ordem personalizada ao excluir pelo card
-    ordemPersonalizada = ordemPersonalizada.filter(x => x !== id);
-    salvarOrdem();
-}
+// ── Comunidade ─────────────────────────────────────
+function renderComunidade() {
+    const cont = document.getElementById("comunidade");
+    cont.innerHTML = '<p style="padding:20px;color:#aaa;font-size:14px">Carregando...</p>';
 
-// MUDANÇA 1: salva a ordem no Firestore
-function salvarOrdem() {
-    db.collection("users").doc(usuarioLogado).collection("config").doc("ordem")
-      .set({ ids: ordemPersonalizada });
-}
+    db.collection("perfis").get().then(snap => {
+        cont.innerHTML = "";
+        const usuarios = snap.docs.map(d => d.data());
 
-// MUDANÇA 1: retorna os livros na ordem personalizada
-function livrosOrdenados(lista) {
-    if (ordemPersonalizada.length === 0) return lista;
-    const mapaOrdem = {};
-    ordemPersonalizada.forEach((id, i) => mapaOrdem[id] = i);
-    return [...lista].sort((a, b) => {
-        const ia = mapaOrdem[a.id] !== undefined ? mapaOrdem[a.id] : 9999;
-        const ib = mapaOrdem[b.id] !== undefined ? mapaOrdem[b.id] : 9999;
-        return ia - ib;
+        if (usuarios.length === 0) {
+            cont.innerHTML = '<p style="padding:20px;color:#888">Nenhum usuário ainda.</p>';
+            return;
+        }
+
+        // ── HUD: coleta avaliações recentes de OUTROS usuários ──
+        const promessas = usuarios
+            .filter(u => u.uid !== usuarioLogado)
+            .map(u =>
+                db.collection("users").doc(u.uid).collection("livros").get().then(livSnap => {
+                    return livSnap.docs
+                        .map(d => ({ ...d.data(), _uid: u.uid, _email: u.email, _nomeExib: u.nomeExibicao || (u.email||"").split("@")[0], _foto: u.foto || "" }))
+                        .filter(l => l.nota > 0 && l.notaAtualizadaEm);
+                })
+            );
+
+        Promise.all(promessas).then(resultados => {
+            const todas = resultados.flat().sort((a, b) => b.notaAtualizadaEm - a.notaAtualizadaEm).slice(0, 10);
+
+            const hud = document.createElement("div");
+            hud.className = "hud-recentes";
+
+            if (todas.length > 0) {
+                hud.innerHTML = `<div class="hud-titulo">Avaliações recentes</div>`;
+                const scroll = document.createElement("div");
+                scroll.className = "hud-scroll";
+
+                todas.forEach(l => {
+                    const card = document.createElement("div");
+                    card.className = "hud-card";
+                    card.innerHTML = `
+                        <img class="hud-capa" src="${l.capa}" alt="${l.titulo}">
+                        <div class="hud-info">
+                            <div class="hud-livro-titulo">${l.titulo}</div>
+                            <div class="hud-usuario">${l._nomeExib}</div>
+                            ${estrelasSVG(l.nota)}
+                        </div>
+                    `;
+                    // Acha cor do usuário
+                    const idx = usuarios.findIndex(u => u.uid === l._uid);
+                    const cor = AVATAR_CORES[idx % AVATAR_CORES.length];
+                    card.onclick = () => abrirPerfil(l._uid, l._email, cor);
+                    scroll.appendChild(card);
+                });
+
+                hud.appendChild(scroll);
+                const div = document.createElement("hr");
+                div.className = "hud-divider";
+                hud.appendChild(div);
+            }
+
+            cont.appendChild(hud);
+
+            // ── Lista de leitores ──
+            const labelLeitores = document.createElement("div");
+            labelLeitores.className = "hud-titulo";
+            labelLeitores.innerText = "Leitores";
+            cont.appendChild(labelLeitores);
+
+            usuarios.forEach((u, idx) => {
+                const nomePadrao = (u.email || "").split("@")[0];
+                const cor = AVATAR_CORES[idx % AVATAR_CORES.length];
+
+                db.collection("users").doc(u.uid).collection("livros").get().then(livSnap => {
+                    const total = livSnap.size;
+                    const lidos = livSnap.docs.filter(d => d.data().lido).length;
+                    const nomeExib = u.nomeExibicao || nomePadrao;
+                    const iniciais = nomeExib.substring(0, 2).toUpperCase();
+                    const foto = u.foto || "";
+
+                    const card = document.createElement("div");
+                    card.className = "user-card";
+
+                    const avatarHtml = foto
+                        ? `<div class="user-avatar" style="background:${cor};overflow:hidden"><img src="${foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>`
+                        : `<div class="user-avatar" style="background:${cor}">${iniciais}</div>`;
+
+                    card.innerHTML = `
+                        ${avatarHtml}
+                        <div>
+                            <div class="user-info-nome">${nomeExib}</div>
+                            <div class="user-info-stats">${total} livros · ${lidos} lidos</div>
+                        </div>
+                    `;
+                    card.onclick = () => abrirPerfil(u.uid, u.email || "", cor);
+                    cont.appendChild(card);
+                });
+            });
+        });
     });
 }
 
+// ── Perfil público ─────────────────────────────────
+function abrirPerfil(uid, email, cor) {
+    cor = cor || "#3b82f6";
+
+    // Botão editar só para o próprio usuário
+    document.getElementById("btnEditarMeuPerfil").style.display =
+        uid === usuarioLogado ? "inline-block" : "none";
+
+    // Busca dados de perfil (nome e foto personalizados)
+    db.collection("perfis").doc(uid).get().then(doc => {
+        const dados = doc.exists ? doc.data() : {};
+        const nomeSalvo = dados.nomeExibicao || email.split("@")[0];
+        const fotoSalva = dados.foto || "";
+        const iniciais = nomeSalvo.substring(0, 2).toUpperCase();
+
+        const xlAvatar = document.getElementById("perfilXlIniciais");
+        if (fotoSalva) {
+            xlAvatar.innerHTML = `<img src="${fotoSalva}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+        } else {
+            xlAvatar.innerText = iniciais;
+            xlAvatar.style.background = cor;
+        }
+        document.getElementById("perfilXlNome").innerText = nomeSalvo;
+        document.getElementById("perfilXlEmail").innerText = email;
+    });
+
+    // Reseta tabs
+    trocarPerfilTab("catalogo");
+
+    // Carrega livros do usuário
+    db.collection("users").doc(uid).collection("livros").get().then(snap => {
+        const livrosUsuario = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // Stats
+        const total = livrosUsuario.length;
+        const lidos = livrosUsuario.filter(l => l.lido).length;
+        const comNota = livrosUsuario.filter(l => l.nota > 0);
+        const mediaNota = comNota.length
+            ? (comNota.reduce((s, l) => s + l.nota, 0) / comNota.length).toFixed(1)
+            : "—";
+
+        document.getElementById("perfilStatTotal").innerText = total;
+        document.getElementById("perfilStatLidos").innerText = lidos;
+        document.getElementById("perfilStatNota").innerText = mediaNota;
+
+        // Em leitura
+        const emLeitura = livrosUsuario.find(l => l.emLeitura);
+        const boxEmLeitura = document.getElementById("perfilEmLeituraBox");
+        if (emLeitura) {
+            boxEmLeitura.style.display = "block";
+            document.getElementById("perfilEmLeituraConteudo").innerHTML = `
+                <img src="${emLeitura.capa}" style="width:54px;border-radius:6px">
+                <strong>${emLeitura.titulo}</strong>
+            `;
+        } else {
+            boxEmLeitura.style.display = "none";
+        }
+
+        // Catálogo (ordem alfabética por título)
+        const catalogo = document.getElementById("perfilCatalogo");
+        catalogo.innerHTML = "";
+        const livrosAlfabeticos = [...livrosUsuario].sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt'));
+        if (livrosAlfabeticos.length === 0) {
+            catalogo.innerHTML = '<p style="padding:20px;color:#888">Nenhum livro ainda.</p>';
+        } else {
+            livrosAlfabeticos.forEach(l => {
+                const div = document.createElement("div");
+                div.className = "item-ro";
+                div.innerHTML = `
+                    <div class="item-img-wrapper">
+                        <img src="${l.capa}" title="Ver capa" onclick="ampliarImagem('${l.capa}', event)">
+                    </div>
+                    <div class="item-info">
+                        <div class="nome">${l.titulo}</div>
+                        <div class="info-extra">
+                            ${l.autor}
+                            ${l.lancamento ? " · " + l.lancamento : ""}
+                            · ${l.lido ? "Lido" : "Não lido"}
+                            ${l.lido && l.nota ? " · " + estrelasSVG(l.nota) : ""}
+                        </div>
+                    </div>
+                `;
+                catalogo.appendChild(div);
+            });
+        }
+
+        // Ranking
+        const rankEl = document.getElementById("perfilRanking");
+        rankEl.innerHTML = "";
+        const comNotaOrdenado = [...livrosUsuario]
+            .filter(l => (l.nota || 0) >= 0.5)
+            .sort((a, b) => (b.nota || 0) - (a.nota || 0));
+
+        if (comNotaOrdenado.length === 0) {
+            rankEl.innerHTML = '<p style="padding:20px;color:#888">Nenhum livro com nota ainda.</p>';
+        } else {
+            comNotaOrdenado.forEach((l, i) => {
+                const div = document.createElement("div");
+                div.className = "rank";
+                div.innerHTML = `
+                    <img src="${l.capa}">
+                    <div>
+                        <strong>#${i+1} ${l.titulo}</strong><br>
+                        ${estrelasSVG(l.nota)}
+                    </div>`;
+                rankEl.appendChild(div);
+            });
+        }
+    });
+
+    document.getElementById("overlayPerfil").style.display = "block";
+    document.body.style.overflow = "hidden";
+}
+
+function fecharPerfil() {
+    document.getElementById("overlayPerfil").style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+function trocarPerfilTab(tab) {
+    document.getElementById("perfilCatalogo").style.display = tab === "catalogo" ? "block" : "none";
+    document.getElementById("perfilRanking").style.display  = tab === "ranking"  ? "block" : "none";
+    document.getElementById("ptabCatalogo").classList.toggle("active", tab === "catalogo");
+    document.getElementById("ptabRanking").classList.toggle("active",  tab === "ranking");
+}
+
+// ── Abas principais ────────────────────────────────
 function trocarAba(a) {
     abaAtual = a;
-    catalogo.style.display = a === "catalogo" ? "block" : "none";
-    ranking.style.display = a === "ranking" ? "block" : "none";
-    areaCatalogo.style.display = a === "catalogo" ? "block" : "none";
+    catalogo.style.display     = a === "catalogo"   ? "block" : "none";
+    ranking.style.display      = a === "ranking"    ? "block" : "none";
+    comunidade.style.display   = a === "comunidade" ? "block" : "none";
+    areaCatalogo.style.display = a === "catalogo"   ? "block" : "none";
+    areaComunidade.style.display = a === "comunidade" ? "block" : "none";
+    btnAdd.style.display       = a === "catalogo"   ? "flex"  : "none";
+
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     document.querySelector(`.tab[onclick*="${a}"]`).classList.add("active");
-    a === "catalogo" ? renderCatalogo() : renderRanking();
+
+    if (a === "catalogo")   renderCatalogo();
+    if (a === "ranking")    renderRanking();
+    if (a === "comunidade") renderComunidade();
 }
 
 function toggleSenha() {
@@ -705,7 +1323,6 @@ function renderEmLeitura() {
         </div>`;
 }
 
-// MUDANÇA 3: abre overlay com imagem ampliada
 function ampliarImagem(src, event) {
     event.stopPropagation();
     document.getElementById("imagemAmpliadaSrc").src = src;
@@ -722,9 +1339,7 @@ function renderCatalogo() {
     catalogo.innerHTML = "";
     let total = 0;
 
-    // MUDANÇA 1: usa lista ordenada
     const lista = livrosOrdenados(livros);
-
     lista.forEach(l => {
         if (!`${l.autor} ${l.titulo}`.toLowerCase().includes(busca)) return;
         total++;
@@ -750,20 +1365,13 @@ function renderCatalogo() {
             </div>
         `;
 
-        // clique na imagem amplia, não abre edição
         div.querySelector(".item-img-wrapper img").onclick = (e) => ampliarImagem(l.capa, e);
-
-        // Clique na info abre edição
         div.querySelector(".item-info").onclick = () => editarLivro(l.id);
 
-
-        // MUDANÇA 1: drag & drop (desktop)
         div.addEventListener("dragstart", onDragStart);
-        div.addEventListener("dragover", onDragOver);
-        div.addEventListener("drop", onDrop);
-        div.addEventListener("dragend", onDragEnd);
-
-        // MUDANÇA 1: drag & drop (touch/mobile)
+        div.addEventListener("dragover",  onDragOver);
+        div.addEventListener("drop",      onDrop);
+        div.addEventListener("dragend",   onDragEnd);
         div.addEventListener("touchstart", onTouchStart, { passive: false });
         div.addEventListener("touchmove",  onTouchMove,  { passive: false });
         div.addEventListener("touchend",   onTouchEnd);
@@ -774,65 +1382,71 @@ function renderCatalogo() {
     counter.innerText = total + " livros";
 }
 
-// MUDANÇA 1: lógica de drag & drop com scroll automático
+// ── Drag & drop ────────────────────────────────────
 let dragSrcId = null;
 let scrollInterval = null;
-const SCROLL_ZONE = 100; // px das bordas que ativa o scroll
-const SCROLL_SPEED = 8;  // px por tick
+const SCROLL_ZONE = 100;
+const SCROLL_SPEED = 8;
 
 function iniciarScrollAutomatico(clientY) {
     pararScrollAutomatico();
     scrollInterval = setInterval(() => {
         const vh = window.innerHeight;
-        if (clientY < SCROLL_ZONE) {
-            window.scrollBy(0, -SCROLL_SPEED);
-        } else if (clientY > vh - SCROLL_ZONE) {
-            window.scrollBy(0, SCROLL_SPEED);
-        }
+        if (clientY < SCROLL_ZONE) window.scrollBy(0, -SCROLL_SPEED);
+        else if (clientY > vh - SCROLL_ZONE) window.scrollBy(0, SCROLL_SPEED);
     }, 16);
 }
-
 function pararScrollAutomatico() {
     if (scrollInterval) { clearInterval(scrollInterval); scrollInterval = null; }
 }
 
+function salvarOrdem() {
+    db.collection("users").doc(usuarioLogado).collection("config").doc("ordem")
+        .set({ ids: ordemPersonalizada });
+}
+
+function livrosOrdenados(lista) {
+    if (ordemPersonalizada.length === 0) return lista;
+    const mapaOrdem = {};
+    ordemPersonalizada.forEach((id, i) => mapaOrdem[id] = i);
+    return [...lista].sort((a, b) => {
+        const ia = mapaOrdem[a.id] !== undefined ? mapaOrdem[a.id] : 9999;
+        const ib = mapaOrdem[b.id] !== undefined ? mapaOrdem[b.id] : 9999;
+        return ia - ib;
+    });
+}
+
 function reordenarPor(dragId, targetId) {
     if (dragId === targetId) return;
-    const listaAtual = livrosOrdenados(livros);
-    const ids = listaAtual.map(l => l.id);
-    const fromIdx = ids.indexOf(dragId);
-    const toIdx   = ids.indexOf(targetId);
-    if (fromIdx === -1 || toIdx === -1) return;
-    ids.splice(fromIdx, 1);
-    ids.splice(toIdx, 0, dragId);
-    const todosIds = livros.map(l => l.id);
-    const naoExibidos = todosIds.filter(id => !ids.includes(id));
+    const lista = livrosOrdenados(livros);
+    const ids = lista.map(l => l.id);
+    const from = ids.indexOf(dragId);
+    const to   = ids.indexOf(targetId);
+    if (from === -1 || to === -1) return;
+    ids.splice(from, 1);
+    ids.splice(to, 0, dragId);
+    const naoExibidos = livros.map(l => l.id).filter(id => !ids.includes(id));
     ordemPersonalizada = [...ids, ...naoExibidos];
     salvarOrdem();
     renderCatalogo();
 }
 
-// ── Drag & drop (desktop) ──────────────────────────────────────────────────
 function onDragStart(e) {
     dragSrcId = this.dataset.id;
     this.classList.add("dragging");
     e.dataTransfer.effectAllowed = "move";
 }
-
 function onDragOver(e) {
     e.preventDefault();
     iniciarScrollAutomatico(e.clientY);
     document.querySelectorAll(".item").forEach(el => el.classList.remove("drag-over"));
     this.classList.add("drag-over");
-    e.dataTransfer.dropEffect = "move";
 }
-
 function onDrop(e) {
     e.preventDefault();
     pararScrollAutomatico();
     reordenarPor(dragSrcId, this.dataset.id);
 }
-
 function onDragEnd() {
     pararScrollAutomatico();
     document.querySelectorAll(".item").forEach(el => {
@@ -841,77 +1455,39 @@ function onDragEnd() {
     });
 }
 
-// ── Touch (mobile) ─────────────────────────────────────────────────────────
-let touchSrcId    = null;
-let touchClone    = null;
-let touchOffsetY  = 0;
-let touchOffsetX  = 0;
+let touchSrcId = null, touchClone = null, touchOffsetY = 0, touchOffsetX = 0;
 
 function onTouchStart(e) {
-    // Só inicia se o toque veio do handle
     if (!e.target.closest(".drag-handle")) return;
     e.preventDefault();
-
     const t = e.touches[0];
-    const item = this;
-    touchSrcId = item.dataset.id;
-
-    // Cria clone visual que segue o dedo
-    const rect = item.getBoundingClientRect();
+    touchSrcId = this.dataset.id;
+    const rect = this.getBoundingClientRect();
     touchOffsetY = t.clientY - rect.top;
     touchOffsetX = t.clientX - rect.left;
-
-    touchClone = item.cloneNode(true);
-    touchClone.style.cssText = `
-        position: fixed;
-        left: ${rect.left}px;
-        top: ${rect.top}px;
-        width: ${rect.width}px;
-        opacity: 0.85;
-        pointer-events: none;
-        z-index: 9999;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-        border-radius: 8px;
-        background: white;
-    `;
+    touchClone = this.cloneNode(true);
+    touchClone.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:0.85;pointer-events:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.18);border-radius:8px;background:white;`;
     document.body.appendChild(touchClone);
-    item.classList.add("dragging");
+    this.classList.add("dragging");
 }
-
 function onTouchMove(e) {
     if (!touchSrcId) return;
     e.preventDefault();
     const t = e.touches[0];
-
-    // Move o clone
     touchClone.style.left = (t.clientX - touchOffsetX) + "px";
     touchClone.style.top  = (t.clientY - touchOffsetY) + "px";
-
-    // Scroll automático
     iniciarScrollAutomatico(t.clientY);
-
-    // Highlight do item abaixo do dedo
     document.querySelectorAll(".item").forEach(el => el.classList.remove("drag-over"));
     const elAbaixo = document.elementFromPoint(t.clientX, t.clientY);
-    const itemAlvo = elAbaixo && elAbaixo.closest(".item");
-    if (itemAlvo && itemAlvo.dataset.id && itemAlvo.dataset.id !== touchSrcId) {
-        itemAlvo.classList.add("drag-over");
-    }
+    const alvo = elAbaixo && elAbaixo.closest(".item");
+    if (alvo && alvo.dataset.id && alvo.dataset.id !== touchSrcId) alvo.classList.add("drag-over");
 }
-
 function onTouchEnd(e) {
     if (!touchSrcId) return;
     pararScrollAutomatico();
-
     const t = e.changedTouches[0];
-    const elAbaixo = document.elementFromPoint(t.clientX, t.clientY);
-    const itemAlvo = elAbaixo && elAbaixo.closest(".item");
-
-    if (itemAlvo && itemAlvo.dataset.id) {
-        reordenarPor(touchSrcId, itemAlvo.dataset.id);
-    }
-
-    // Limpa
+    const alvo = document.elementFromPoint(t.clientX, t.clientY)?.closest(".item");
+    if (alvo && alvo.dataset.id) reordenarPor(touchSrcId, alvo.dataset.id);
     if (touchClone) { touchClone.remove(); touchClone = null; }
     document.querySelectorAll(".item").forEach(el => {
         el.classList.remove("dragging");
@@ -920,10 +1496,67 @@ function onTouchEnd(e) {
     touchSrcId = null;
 }
 
+// ── CRUD livros ────────────────────────────────────
+function salvarLivro() {
+    if (!autorInput.value || !tituloInput.value || !lancamentoInput.value) {
+        alert("Preencha tudo!"); return;
+    }
+    const id = overlay.dataset.editando || Date.now().toString();
+    const livroExistente = livros.find(l => l.id === id);
+    const capaFinal = imagemBase64 || (livroExistente ? livroExistente.capa : "");
+    const notaNova = parseFloat(notaInput.value) || 0;
+    const notaAnterior = livroExistente ? (livroExistente.nota || 0) : 0;
+    const livro = {
+        autor: autorInput.value,
+        titulo: tituloInput.value,
+        lancamento: lancamentoInput.value,
+        lido: lidoInput.value === "true",
+        nota: notaNova,
+        capa: capaFinal,
+        emLeitura: livroExistente ? livroExistente.emLeitura : false,
+        notaAtualizadaEm: notaNova > 0 && notaNova !== notaAnterior
+            ? Date.now()
+            : (livroExistente ? (livroExistente.notaAtualizadaEm || 0) : 0)
+    };
+    db.collection("users").doc(usuarioLogado).collection("livros").doc(id).set(livro);
+    delete overlay.dataset.editando;
+    fechar();
+}
+
+function excluirLivro() {
+    const id = overlay.dataset.editando;
+    if (!id) return;
+    if (!confirm("Tem certeza que deseja excluir este livro?")) return;
+    db.collection("users").doc(usuarioLogado).collection("livros").doc(id).delete();
+    ordemPersonalizada = ordemPersonalizada.filter(x => x !== id);
+    salvarOrdem();
+    delete overlay.dataset.editando;
+    fechar();
+}
+
+fotoInput.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+            const MAX = 300;
+            const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+            const canvas = document.createElement("canvas");
+            canvas.width  = Math.round(img.width  * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+            imagemBase64 = canvas.toDataURL("image/jpeg", 0.7);
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
 function editarLivro(id) {
     const l = livros.find(x => x.id === id);
     if (!l) return;
-
     tituloForm.innerText = "Editar Livro";
     autorInput.value = l.autor || "";
     tituloInput.value = l.titulo || "";
@@ -931,93 +1564,9 @@ function editarLivro(id) {
     lidoInput.value = l.lido ? "true" : "false";
     renderEstrelasWidget(l.nota ?? 0);
     imagemBase64 = l.capa || "";
-
     overlay.dataset.editando = id;
     btnExcluirLivro.style.display = "block";
     overlay.style.display = "block";
-}
-
-function escolherEmLeitura() {
-    const lista = document.getElementById("listaLeitura");
-    lista.innerHTML = "";
-
-    const temEmLeitura = livros.some(l => l.emLeitura);
-    document.getElementById("btnRemoverLeitura").style.display = temEmLeitura ? "block" : "none";
-
-    if (livros.length === 0) {
-        lista.innerHTML = "<p style='color:#888'>Nenhum livro cadastrado.</p>";
-    } else {
-        livros.forEach(l => {
-            const div = document.createElement("div");
-            div.className = "item-leitura" + (l.emLeitura ? " selecionado" : "");
-
-            div.innerHTML = `
-                <img src="${l.capa}">
-                <div>
-                    <div class="nome-leitura">${l.titulo}</div>
-                    <div class="autor-leitura">${l.autor}</div>
-                </div>
-            `;
-
-            div.onclick = () => definirLivroEmLeitura(l.id);
-            lista.appendChild(div);
-        });
-    }
-
-    overlayLeitura.style.display = "block";
-}
-
-function definirLivroEmLeitura(idSelecionado) {
-    const batch = db.batch();
-
-    livros.forEach(l => {
-        const ref = db.collection("users").doc(usuarioLogado).collection("livros").doc(l.id);
-        batch.update(ref, { emLeitura: l.id === idSelecionado });
-    });
-
-    batch.commit().then(() => {
-        fecharEscolhaLeitura();
-    });
-}
-
-function removerEmLeitura() {
-    const batch = db.batch();
-
-    livros.forEach(l => {
-        const ref = db.collection("users").doc(usuarioLogado).collection("livros").doc(l.id);
-        batch.update(ref, { emLeitura: false });
-    });
-
-    batch.commit().then(() => {
-        fecharEscolhaLeitura();
-    });
-}
-
-function fecharEscolhaLeitura() {
-    overlayLeitura.style.display = "none";
-}
-
-// MUDANÇA 4: só aparecem no ranking livros com nota >= 0.5
-function renderRanking() {
-    ranking.innerHTML = "";
-    [...livros]
-        .filter(l => (l.nota || 0) >= 0.5)
-        .sort((a,b) => (b.nota||0)-(a.nota||0))
-        .forEach((l,i) => {
-            const div = document.createElement("div");
-            div.className = "rank";
-            div.innerHTML = `
-                <img src="${l.capa}">
-                <div>
-                    <strong>#${i+1} ${l.titulo}</strong><br>
-                    ${estrelasSVG(l.nota)}
-                </div>`;
-            ranking.appendChild(div);
-        });
-
-    if (ranking.innerHTML === "") {
-        ranking.innerHTML = "<p style='color:#888; padding:20px'>Nenhum livro com nota ainda.</p>";
-    }
 }
 
 function novoLivro() {
@@ -1032,10 +1581,65 @@ function novoLivro() {
     overlay.style.display = "block";
 }
 
+function fechar() { overlay.style.display = "none"; }
 
-// ── Widget de estrelas ─────────────────────────────────────────────────────
-let _notaAtual = 0;
-let _ultimaEstrelaClicada = null;
+function escolherEmLeitura() {
+    const lista = document.getElementById("listaLeitura");
+    lista.innerHTML = "";
+    const temEmLeitura = livros.some(l => l.emLeitura);
+    document.getElementById("btnRemoverLeitura").style.display = temEmLeitura ? "block" : "none";
+    if (livros.length === 0) {
+        lista.innerHTML = "<p style='color:#888'>Nenhum livro cadastrado.</p>";
+    } else {
+        livros.forEach(l => {
+            const div = document.createElement("div");
+            div.className = "item-leitura" + (l.emLeitura ? " selecionado" : "");
+            div.innerHTML = `<img src="${l.capa}"><div><div class="nome-leitura">${l.titulo}</div><div class="autor-leitura">${l.autor}</div></div>`;
+            div.onclick = () => definirLivroEmLeitura(l.id);
+            lista.appendChild(div);
+        });
+    }
+    overlayLeitura.style.display = "block";
+}
+
+function definirLivroEmLeitura(idSelecionado) {
+    const batch = db.batch();
+    livros.forEach(l => {
+        const ref = db.collection("users").doc(usuarioLogado).collection("livros").doc(l.id);
+        batch.update(ref, { emLeitura: l.id === idSelecionado });
+    });
+    batch.commit().then(() => fecharEscolhaLeitura());
+}
+
+function removerEmLeitura() {
+    const batch = db.batch();
+    livros.forEach(l => {
+        const ref = db.collection("users").doc(usuarioLogado).collection("livros").doc(l.id);
+        batch.update(ref, { emLeitura: false });
+    });
+    batch.commit().then(() => fecharEscolhaLeitura());
+}
+
+function fecharEscolhaLeitura() { overlayLeitura.style.display = "none"; }
+
+function renderRanking() {
+    ranking.innerHTML = "";
+    [...livros]
+        .filter(l => (l.nota || 0) >= 0.5)
+        .sort((a, b) => (b.nota || 0) - (a.nota || 0))
+        .forEach((l, i) => {
+            const div = document.createElement("div");
+            div.className = "rank";
+            div.innerHTML = `<img src="${l.capa}"><div><strong>#${i+1} ${l.titulo}</strong><br>${estrelasSVG(l.nota)}</div>`;
+            ranking.appendChild(div);
+        });
+    if (ranking.innerHTML === "") {
+        ranking.innerHTML = "<p style='color:#888; padding:20px'>Nenhum livro com nota ainda.</p>";
+    }
+}
+
+// ── Estrelas ───────────────────────────────────────
+let _notaAtual = 0, _ultimaEstrelaClicada = null;
 
 function renderEstrelasWidget(notaAtual) {
     _notaAtual = notaAtual || 0;
@@ -1046,49 +1650,28 @@ function renderEstrelasWidget(notaAtual) {
 function _desenharEstrelas() {
     const container = document.getElementById("estrelasWidget");
     container.innerHTML = "";
-
     const wrap = document.createElement("div");
     wrap.className = "estrelas-widget";
-
     for (let i = 1; i <= 5; i++) {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "estrela-btn";
         btn.dataset.valor = i;
-        btn.title = i + " estrelas";
-
-        // fill: cheia, meia (gradiente com ID único por estrela) ou vazia
         const gradId = "halfGrad" + i;
-        const fill = _notaAtual >= i ? "#f5a623"
-                   : _notaAtual >= i - 0.5 ? `url(#${gradId})` : "#ddd";
-
-        btn.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24">
-            <defs>
-                <linearGradient id="${gradId}">
-                    <stop offset="50%" stop-color="#f5a623"/>
-                    <stop offset="50%" stop-color="#ddd"/>
-                </linearGradient>
-            </defs>
-            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-                fill="${fill}" stroke="#f5a623" stroke-width="1.2"/>
-        </svg>`;
-
+        const fill = _notaAtual >= i ? "#f5a623" : _notaAtual >= i - 0.5 ? `url(#${gradId})` : "#ddd";
+        btn.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24"><defs><linearGradient id="${gradId}"><stop offset="50%" stop-color="#f5a623"/><stop offset="50%" stop-color="#ddd"/></linearGradient></defs><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="${fill}" stroke="#f5a623" stroke-width="1.2"/></svg>`;
         btn.onclick = () => _clicouEstrela(i);
         wrap.appendChild(btn);
     }
-
     const label = document.createElement("span");
     label.className = "nota-label";
     label.id = "notaLabel";
     label.innerText = _notaAtual > 0 ? _notaAtual : "";
     wrap.appendChild(label);
-
-    // Hover: preview
     wrap.querySelectorAll(".estrela-btn").forEach(btn => {
         btn.addEventListener("mouseenter", () => _previewNota(parseInt(btn.dataset.valor)));
         btn.addEventListener("mouseleave", () => _desenharEstrelas());
     });
-
     container.appendChild(wrap);
     document.getElementById("notaInput").value = _notaAtual;
 }
@@ -1097,25 +1680,18 @@ function _previewNota(i) {
     const container = document.getElementById("estrelasWidget");
     container.querySelectorAll(".estrela-btn").forEach(btn => {
         const v = parseInt(btn.dataset.valor);
-        const fill = v <= i ? "#f5a623" : "#ddd";
-        btn.querySelector("polygon").setAttribute("fill", fill);
+        btn.querySelector("polygon").setAttribute("fill", v <= i ? "#f5a623" : "#ddd");
     });
     const lbl = document.getElementById("notaLabel");
     if (lbl) lbl.innerText = i;
 }
 
 function _clicouEstrela(i) {
-    if (_ultimaEstrelaClicada === i && _notaAtual === i) {
-        // segundo clique na mesma estrela: vira meia a menos
-        _notaAtual = i - 0.5;
-    } else {
-        _notaAtual = i;
-    }
+    _notaAtual = (_ultimaEstrelaClicada === i && _notaAtual === i) ? i - 0.5 : i;
     _ultimaEstrelaClicada = i;
     document.getElementById("notaInput").value = _notaAtual;
     _desenharEstrelas();
 }
-// ──────────────────────────────────────────────────────────────────────────
 
 let _svgUid = 0;
 function estrelasSVG(nota) {
@@ -1123,31 +1699,10 @@ function estrelasSVG(nota) {
     let html = '<span style="display:inline-flex;gap:2px;vertical-align:middle">';
     for (let i = 1; i <= 5; i++) {
         const gradId = "sg_" + uid + "_" + i;
-        let fill;
-        if (nota >= i) fill = "#f5a623";
-        else if (nota >= i - 0.5) fill = "url(#" + gradId + ")";
-        else fill = "#ddd";
-        html += `<svg width="14" height="14" viewBox="0 0 24 24" style="display:block">
-            <defs><linearGradient id="${gradId}">
-                <stop offset="50%" stop-color="#f5a623"/>
-                <stop offset="50%" stop-color="#ddd"/>
-            </linearGradient></defs>
-            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-                fill="${fill}" stroke="#f5a623" stroke-width="1.5"/>
-        </svg>`;
+        const fill = nota >= i ? "#f5a623" : nota >= i - 0.5 ? `url(#${gradId})` : "#ddd";
+        html += `<svg width="14" height="14" viewBox="0 0 24 24" style="display:block"><defs><linearGradient id="${gradId}"><stop offset="50%" stop-color="#f5a623"/><stop offset="50%" stop-color="#ddd"/></linearGradient></defs><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="${fill}" stroke="#f5a623" stroke-width="1.5"/></svg>`;
     }
-    html += '</span>';
-    return html;
-}
-
-function estrelas(nota) {
-    const cheias = Math.floor(nota);
-    const meia = nota % 1 >= 0.5;
-    return "⭐".repeat(cheias) + (meia ? "½" : "");
-}
-
-function fechar() {
-    overlay.style.display = "none";
+    return html + '</span>';
 }
 
 renderCatalogo();
