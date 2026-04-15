@@ -97,6 +97,7 @@ body {
     border-bottom: 1px solid #eee;
 }
 
+/* MUDANÇA 1: item com posição relativa para acomodar botão excluir dentro da capa */
 .item {
     display: flex;
     padding: 15px 20px;
@@ -105,29 +106,22 @@ body {
     position: relative;
 }
 
-.item img {
+/* MUDANÇA 1: wrapper da imagem com posição relativa para o botão flutuar sobre ela */
+.item-img-wrapper {
+    position: relative;
     width: 70px;
     margin-right: 15px;
-    border-radius: 8px;
     flex-shrink: 0;
 }
 
-.item-info {
-    flex: 1;
-    cursor: pointer;
+.item-img-wrapper img {
+    width: 70px;
+    border-radius: 8px;
+    display: block;
+    cursor: zoom-in; /* MUDANÇA 3: cursor indica que clicando amplia */
 }
 
-.nome {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.info-extra {
-    font-size: 13px;
-    color: #666;
-}
-
-/* Botão apagar no card */
+/* MUDANÇA 2: botão excluir flutuando sobre a imagem */
 .btn-apagar-card {
     background: none;
     border: none;
@@ -145,6 +139,61 @@ body {
     color: #e53e3e;
     background: #fff0f0;
 }
+
+.item-info {
+    flex: 1;
+    cursor: pointer;
+}
+
+.nome {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.info-extra {
+    font-size: 13px;
+    color: #666;
+}
+
+/* MUDANÇA 3: overlay para ampliar imagem */
+#overlayImagem {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+}
+
+#overlayImagem img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 12px;
+    object-fit: contain;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+
+/* MUDANÇA 1: drag & drop para reordenar */
+.item.dragging {
+    opacity: 0.4;
+}
+
+.item.drag-over {
+    border-top: 3px solid #0f172a;
+}
+
+.drag-handle {
+    font-size: 18px;
+    color: #ccc;
+    cursor: grab;
+    padding: 6px 8px 6px 0;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.drag-handle:active { cursor: grabbing; }
 
 .rank {
     background: white;
@@ -194,7 +243,7 @@ body {
     box-sizing: border-box;
 }
 
-.overlay button {
+.overlay button:not(.estrela-btn) {
     width: 100%;
     padding: 16px;
     border: none;
@@ -217,7 +266,6 @@ body {
 
 .btn-excluir:hover { background: #fecaca; }
 
-/* Overlay escolher leitura */
 #overlayLeitura {
     position: fixed;
     inset: 0;
@@ -294,6 +342,41 @@ body {
 
 .btn-remover-leitura:hover { background: #fecaca; }
 
+
+/* Widget de estrelas estilo Letterboxd */
+.estrelas-widget {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.estrela-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: transform 0.1s;
+    flex-shrink: 0;
+}
+
+.estrela-btn:hover { transform: scale(1.15); }
+.estrela-btn:active { transform: scale(0.95); }
+
+.estrela-btn svg { display: block; }
+
+.nota-label {
+    font-size: 14px;
+    color: #888;
+    margin-left: 8px;
+    min-width: 28px;
+}
 
 .login-screen {
     position: fixed;
@@ -429,7 +512,8 @@ body {
         <option value="false">Não lido</option>
         <option value="true">Lido</option>
     </select>
-    <input type="number" id="notaInput" placeholder="Nota (0 a 5)" min="0" max="5" step="0.5">
+    <div id="estrelasWidget" style="margin-bottom:15px"></div>
+    <input type="hidden" id="notaInput">
     <input type="file" accept="image/*" id="fotoInput">
     <button class="btn-salvar" onclick="salvarLivro()">Salvar</button>
     <button class="btn-cancelar" onclick="fechar()">Cancelar</button>
@@ -444,6 +528,11 @@ body {
     <div id="listaLeitura"></div>
     <button class="btn-remover-leitura" id="btnRemoverLeitura" onclick="removerEmLeitura()" style="display:none">Tirar livro de em leitura</button>
     <button class="btn-cancelar" onclick="fecharEscolhaLeitura()">Cancelar</button>
+</div>
+
+<!-- MUDANÇA 3: overlay para ampliar imagem -->
+<div id="overlayImagem" onclick="fecharImagem()">
+    <img id="imagemAmpliadaSrc" src="" alt="">
 </div>
 
 <script>
@@ -466,6 +555,9 @@ let usuarioLogado = null;
 let livros = [];
 let imagemBase64 = "";
 let abaAtual = "catalogo";
+
+// MUDANÇA 1: variável para controlar a ordem personalizada
+let ordemPersonalizada = [];
 
 auth.onAuthStateChanged(user => {
     if (user) {
@@ -490,6 +582,12 @@ function registrar() {
 function iniciarAppFirebase() {
     loginScreen.style.display = "none";
     document.body.style.overflow = "auto";
+
+    // MUDANÇA 1: carrega a ordem salva
+    db.collection("users").doc(usuarioLogado).collection("config").doc("ordem")
+      .get().then(doc => {
+          if (doc.exists) ordemPersonalizada = doc.data().ids || [];
+      });
 
     db.collection("users").doc(usuarioLogado).collection("livros")
       .onSnapshot(snapshot => {
@@ -525,8 +623,6 @@ function salvarLivro() {
     }
 
     const id = overlay.dataset.editando || Date.now().toString();
-
-    // Ao editar sem trocar foto, preserva a capa já existente
     const livroExistente = livros.find(l => l.id === id);
     const capaFinal = imagemBase64 || (livroExistente ? livroExistente.capa : "");
 
@@ -551,15 +647,38 @@ function excluirLivro() {
     if (!confirm("Tem certeza que deseja excluir este livro?")) return;
 
     db.collection("users").doc(usuarioLogado).collection("livros").doc(id).delete();
+    // MUDANÇA 1: remove da ordem personalizada ao excluir
+    ordemPersonalizada = ordemPersonalizada.filter(x => x !== id);
+    salvarOrdem();
     delete overlay.dataset.editando;
     fechar();
 }
 
-// Excluir direto do card (sem abrir overlay)
 function excluirLivroCard(id, titulo, event) {
     event.stopPropagation();
     if (!confirm(`Excluir "${titulo}"?`)) return;
     db.collection("users").doc(usuarioLogado).collection("livros").doc(id).delete();
+    // MUDANÇA 1: remove da ordem personalizada ao excluir pelo card
+    ordemPersonalizada = ordemPersonalizada.filter(x => x !== id);
+    salvarOrdem();
+}
+
+// MUDANÇA 1: salva a ordem no Firestore
+function salvarOrdem() {
+    db.collection("users").doc(usuarioLogado).collection("config").doc("ordem")
+      .set({ ids: ordemPersonalizada });
+}
+
+// MUDANÇA 1: retorna os livros na ordem personalizada
+function livrosOrdenados(lista) {
+    if (ordemPersonalizada.length === 0) return lista;
+    const mapaOrdem = {};
+    ordemPersonalizada.forEach((id, i) => mapaOrdem[id] = i);
+    return [...lista].sort((a, b) => {
+        const ia = mapaOrdem[a.id] !== undefined ? mapaOrdem[a.id] : 9999;
+        const ib = mapaOrdem[b.id] !== undefined ? mapaOrdem[b.id] : 9999;
+        return ia - ib;
+    });
 }
 
 function trocarAba(a) {
@@ -586,44 +705,219 @@ function renderEmLeitura() {
         </div>`;
 }
 
+// MUDANÇA 3: abre overlay com imagem ampliada
+function ampliarImagem(src, event) {
+    event.stopPropagation();
+    document.getElementById("imagemAmpliadaSrc").src = src;
+    document.getElementById("overlayImagem").style.display = "flex";
+}
+
+function fecharImagem() {
+    document.getElementById("overlayImagem").style.display = "none";
+}
+
 function renderCatalogo() {
     renderEmLeitura();
     const busca = searchInput.value.toLowerCase();
     catalogo.innerHTML = "";
     let total = 0;
 
-    livros.forEach(l => {
+    // MUDANÇA 1: usa lista ordenada
+    const lista = livrosOrdenados(livros);
+
+    lista.forEach(l => {
         if (!`${l.autor} ${l.titulo}`.toLowerCase().includes(busca)) return;
         total++;
 
         const div = document.createElement("div");
         div.className = "item";
+        div.draggable = true;
+        div.dataset.id = l.id;
 
         div.innerHTML = `
-            <img src="${l.capa}">
+            <span class="drag-handle" title="Arrastar para reordenar">⠿</span>
+            <div class="item-img-wrapper">
+                <img src="${l.capa}" title="Ver capa">
+            </div>
             <div class="item-info">
                 <div class="nome">${l.titulo}</div>
                 <div class="info-extra">
                     ${l.autor}
                     ${l.lancamento ? " · " + l.lancamento : ""}
                     · ${l.lido ? "Lido" : "Não lido"}
-                    ${l.lido && l.nota ? " · " + estrelas(l.nota) : ""}
+                    ${l.lido && l.nota ? " · " + estrelasSVG(l.nota) : ""}
                 </div>
             </div>
-            <button class="btn-apagar-card" title="Excluir livro">🗑️</button>
         `;
+
+        // clique na imagem amplia, não abre edição
+        div.querySelector(".item-img-wrapper img").onclick = (e) => ampliarImagem(l.capa, e);
 
         // Clique na info abre edição
         div.querySelector(".item-info").onclick = () => editarLivro(l.id);
-        div.querySelector("img").onclick = () => editarLivro(l.id);
 
-        // Botão apagar direto no card
-        div.querySelector(".btn-apagar-card").onclick = (e) => excluirLivroCard(l.id, l.titulo, e);
+
+        // MUDANÇA 1: drag & drop (desktop)
+        div.addEventListener("dragstart", onDragStart);
+        div.addEventListener("dragover", onDragOver);
+        div.addEventListener("drop", onDrop);
+        div.addEventListener("dragend", onDragEnd);
+
+        // MUDANÇA 1: drag & drop (touch/mobile)
+        div.addEventListener("touchstart", onTouchStart, { passive: false });
+        div.addEventListener("touchmove",  onTouchMove,  { passive: false });
+        div.addEventListener("touchend",   onTouchEnd);
 
         catalogo.appendChild(div);
     });
 
     counter.innerText = total + " livros";
+}
+
+// MUDANÇA 1: lógica de drag & drop com scroll automático
+let dragSrcId = null;
+let scrollInterval = null;
+const SCROLL_ZONE = 100; // px das bordas que ativa o scroll
+const SCROLL_SPEED = 8;  // px por tick
+
+function iniciarScrollAutomatico(clientY) {
+    pararScrollAutomatico();
+    scrollInterval = setInterval(() => {
+        const vh = window.innerHeight;
+        if (clientY < SCROLL_ZONE) {
+            window.scrollBy(0, -SCROLL_SPEED);
+        } else if (clientY > vh - SCROLL_ZONE) {
+            window.scrollBy(0, SCROLL_SPEED);
+        }
+    }, 16);
+}
+
+function pararScrollAutomatico() {
+    if (scrollInterval) { clearInterval(scrollInterval); scrollInterval = null; }
+}
+
+function reordenarPor(dragId, targetId) {
+    if (dragId === targetId) return;
+    const listaAtual = livrosOrdenados(livros);
+    const ids = listaAtual.map(l => l.id);
+    const fromIdx = ids.indexOf(dragId);
+    const toIdx   = ids.indexOf(targetId);
+    if (fromIdx === -1 || toIdx === -1) return;
+    ids.splice(fromIdx, 1);
+    ids.splice(toIdx, 0, dragId);
+    const todosIds = livros.map(l => l.id);
+    const naoExibidos = todosIds.filter(id => !ids.includes(id));
+    ordemPersonalizada = [...ids, ...naoExibidos];
+    salvarOrdem();
+    renderCatalogo();
+}
+
+// ── Drag & drop (desktop) ──────────────────────────────────────────────────
+function onDragStart(e) {
+    dragSrcId = this.dataset.id;
+    this.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+}
+
+function onDragOver(e) {
+    e.preventDefault();
+    iniciarScrollAutomatico(e.clientY);
+    document.querySelectorAll(".item").forEach(el => el.classList.remove("drag-over"));
+    this.classList.add("drag-over");
+    e.dataTransfer.dropEffect = "move";
+}
+
+function onDrop(e) {
+    e.preventDefault();
+    pararScrollAutomatico();
+    reordenarPor(dragSrcId, this.dataset.id);
+}
+
+function onDragEnd() {
+    pararScrollAutomatico();
+    document.querySelectorAll(".item").forEach(el => {
+        el.classList.remove("dragging");
+        el.classList.remove("drag-over");
+    });
+}
+
+// ── Touch (mobile) ─────────────────────────────────────────────────────────
+let touchSrcId    = null;
+let touchClone    = null;
+let touchOffsetY  = 0;
+let touchOffsetX  = 0;
+
+function onTouchStart(e) {
+    // Só inicia se o toque veio do handle
+    if (!e.target.closest(".drag-handle")) return;
+    e.preventDefault();
+
+    const t = e.touches[0];
+    const item = this;
+    touchSrcId = item.dataset.id;
+
+    // Cria clone visual que segue o dedo
+    const rect = item.getBoundingClientRect();
+    touchOffsetY = t.clientY - rect.top;
+    touchOffsetX = t.clientX - rect.left;
+
+    touchClone = item.cloneNode(true);
+    touchClone.style.cssText = `
+        position: fixed;
+        left: ${rect.left}px;
+        top: ${rect.top}px;
+        width: ${rect.width}px;
+        opacity: 0.85;
+        pointer-events: none;
+        z-index: 9999;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        border-radius: 8px;
+        background: white;
+    `;
+    document.body.appendChild(touchClone);
+    item.classList.add("dragging");
+}
+
+function onTouchMove(e) {
+    if (!touchSrcId) return;
+    e.preventDefault();
+    const t = e.touches[0];
+
+    // Move o clone
+    touchClone.style.left = (t.clientX - touchOffsetX) + "px";
+    touchClone.style.top  = (t.clientY - touchOffsetY) + "px";
+
+    // Scroll automático
+    iniciarScrollAutomatico(t.clientY);
+
+    // Highlight do item abaixo do dedo
+    document.querySelectorAll(".item").forEach(el => el.classList.remove("drag-over"));
+    const elAbaixo = document.elementFromPoint(t.clientX, t.clientY);
+    const itemAlvo = elAbaixo && elAbaixo.closest(".item");
+    if (itemAlvo && itemAlvo.dataset.id && itemAlvo.dataset.id !== touchSrcId) {
+        itemAlvo.classList.add("drag-over");
+    }
+}
+
+function onTouchEnd(e) {
+    if (!touchSrcId) return;
+    pararScrollAutomatico();
+
+    const t = e.changedTouches[0];
+    const elAbaixo = document.elementFromPoint(t.clientX, t.clientY);
+    const itemAlvo = elAbaixo && elAbaixo.closest(".item");
+
+    if (itemAlvo && itemAlvo.dataset.id) {
+        reordenarPor(touchSrcId, itemAlvo.dataset.id);
+    }
+
+    // Limpa
+    if (touchClone) { touchClone.remove(); touchClone = null; }
+    document.querySelectorAll(".item").forEach(el => {
+        el.classList.remove("dragging");
+        el.classList.remove("drag-over");
+    });
+    touchSrcId = null;
 }
 
 function editarLivro(id) {
@@ -635,7 +929,7 @@ function editarLivro(id) {
     tituloInput.value = l.titulo || "";
     lancamentoInput.value = l.lancamento || "";
     lidoInput.value = l.lido ? "true" : "false";
-    notaInput.value = l.nota ?? "";
+    renderEstrelasWidget(l.nota ?? 0);
     imagemBase64 = l.capa || "";
 
     overlay.dataset.editando = id;
@@ -703,19 +997,27 @@ function fecharEscolhaLeitura() {
     overlayLeitura.style.display = "none";
 }
 
+// MUDANÇA 4: só aparecem no ranking livros com nota >= 0.5
 function renderRanking() {
     ranking.innerHTML = "";
-    [...livros].sort((a,b) => (b.nota||0)-(a.nota||0)).forEach((l,i) => {
-        const div = document.createElement("div");
-        div.className = "rank";
-        div.innerHTML = `
-            <img src="${l.capa}">
-            <div>
-                <strong>#${i+1} ${l.titulo}</strong><br>
-                ⭐ ${l.nota || 0}
-            </div>`;
-        ranking.appendChild(div);
-    });
+    [...livros]
+        .filter(l => (l.nota || 0) >= 0.5)
+        .sort((a,b) => (b.nota||0)-(a.nota||0))
+        .forEach((l,i) => {
+            const div = document.createElement("div");
+            div.className = "rank";
+            div.innerHTML = `
+                <img src="${l.capa}">
+                <div>
+                    <strong>#${i+1} ${l.titulo}</strong><br>
+                    ${estrelasSVG(l.nota)}
+                </div>`;
+            ranking.appendChild(div);
+        });
+
+    if (ranking.innerHTML === "") {
+        ranking.innerHTML = "<p style='color:#888; padding:20px'>Nenhum livro com nota ainda.</p>";
+    }
 }
 
 function novoLivro() {
@@ -724,10 +1026,118 @@ function novoLivro() {
     tituloInput.value = "";
     lancamentoInput.value = "";
     lidoInput.value = "false";
-    notaInput.value = "";
+    renderEstrelasWidget(0);
     imagemBase64 = "";
     btnExcluirLivro.style.display = "none";
     overlay.style.display = "block";
+}
+
+
+// ── Widget de estrelas ─────────────────────────────────────────────────────
+let _notaAtual = 0;
+let _ultimaEstrelaClicada = null;
+
+function renderEstrelasWidget(notaAtual) {
+    _notaAtual = notaAtual || 0;
+    _ultimaEstrelaClicada = null;
+    _desenharEstrelas();
+}
+
+function _desenharEstrelas() {
+    const container = document.getElementById("estrelasWidget");
+    container.innerHTML = "";
+
+    const wrap = document.createElement("div");
+    wrap.className = "estrelas-widget";
+
+    for (let i = 1; i <= 5; i++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "estrela-btn";
+        btn.dataset.valor = i;
+        btn.title = i + " estrelas";
+
+        // fill: cheia, meia (gradiente com ID único por estrela) ou vazia
+        const gradId = "halfGrad" + i;
+        const fill = _notaAtual >= i ? "#f5a623"
+                   : _notaAtual >= i - 0.5 ? `url(#${gradId})` : "#ddd";
+
+        btn.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24">
+            <defs>
+                <linearGradient id="${gradId}">
+                    <stop offset="50%" stop-color="#f5a623"/>
+                    <stop offset="50%" stop-color="#ddd"/>
+                </linearGradient>
+            </defs>
+            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                fill="${fill}" stroke="#f5a623" stroke-width="1.2"/>
+        </svg>`;
+
+        btn.onclick = () => _clicouEstrela(i);
+        wrap.appendChild(btn);
+    }
+
+    const label = document.createElement("span");
+    label.className = "nota-label";
+    label.id = "notaLabel";
+    label.innerText = _notaAtual > 0 ? _notaAtual : "";
+    wrap.appendChild(label);
+
+    // Hover: preview
+    wrap.querySelectorAll(".estrela-btn").forEach(btn => {
+        btn.addEventListener("mouseenter", () => _previewNota(parseInt(btn.dataset.valor)));
+        btn.addEventListener("mouseleave", () => _desenharEstrelas());
+    });
+
+    container.appendChild(wrap);
+    document.getElementById("notaInput").value = _notaAtual;
+}
+
+function _previewNota(i) {
+    const container = document.getElementById("estrelasWidget");
+    container.querySelectorAll(".estrela-btn").forEach(btn => {
+        const v = parseInt(btn.dataset.valor);
+        const fill = v <= i ? "#f5a623" : "#ddd";
+        btn.querySelector("polygon").setAttribute("fill", fill);
+    });
+    const lbl = document.getElementById("notaLabel");
+    if (lbl) lbl.innerText = i;
+}
+
+function _clicouEstrela(i) {
+    if (_ultimaEstrelaClicada === i && _notaAtual === i) {
+        // segundo clique na mesma estrela: vira meia a menos
+        _notaAtual = i - 0.5;
+    } else {
+        _notaAtual = i;
+    }
+    _ultimaEstrelaClicada = i;
+    document.getElementById("notaInput").value = _notaAtual;
+    _desenharEstrelas();
+}
+// ──────────────────────────────────────────────────────────────────────────
+
+let _svgUid = 0;
+function estrelasSVG(nota) {
+    const uid = _svgUid++;
+    let html = '<span style="display:inline-flex;gap:2px;vertical-align:middle">';
+    for (let i = 1; i <= 5; i++) {
+        const gradId = "sg_" + uid + "_" + i;
+        let fill;
+        if (nota >= i) fill = "#f5a623";
+        else if (nota >= i - 0.5) fill = "url(#" + gradId + ")";
+        else fill = "#ddd";
+        html += `<svg width="14" height="14" viewBox="0 0 24 24" style="display:block">
+            <defs><linearGradient id="${gradId}">
+                <stop offset="50%" stop-color="#f5a623"/>
+                <stop offset="50%" stop-color="#ddd"/>
+            </linearGradient></defs>
+            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                fill="${fill}" stroke="#f5a623" stroke-width="1.5"/>
+        </svg>`;
+    }
+    html += '</span>';
+    return html;
 }
 
 function estrelas(nota) {
