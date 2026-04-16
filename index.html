@@ -367,45 +367,138 @@ body {
 .hud-card {
     flex-shrink: 0;
     width: 120px;
-    background: #f8fafc;
-    border: 1px solid #eee;
+    height: 160px;
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+    transition: transform 0.15s;
 }
-.hud-card:hover { border-color: #0f172a; background: #f1f5f9; }
+.hud-card:hover { transform: scale(1.03); }
 
 .hud-capa {
     width: 100%;
-    height: 76px;
+    height: 100%;
     object-fit: cover;
     display: block;
     background: #e5e7eb;
 }
 
-.hud-info { padding: 8px 10px; }
+.hud-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.0) 100%);
+}
 
 .hud-livro-titulo {
     font-size: 12px;
     font-weight: 600;
-    color: #0f172a;
+    color: white;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
 }
 
 .hud-usuario {
     font-size: 11px;
-    color: #888;
+    color: rgba(255,255,255,0.75);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .hud-divider { border: none; border-top: 1px solid #eee; margin: 0 0 6px; }
+
+.hud-info span svg { width: 11px !important; height: 11px !important; }
+
+.hud-badge-descricao {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    background: rgba(0,0,0,0.55);
+    color: white;
+    font-size: 12px;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+
+/* Textarea de descrição no form */
+.overlay textarea {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 100px;
+}
+.overlay textarea:focus { outline: none; border-color: #aaa; }
+
+/* Overlay descrição do livro */
+#overlayDescricao {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: none;
+    z-index: 1500;
+    overflow-y: auto;
+}
+.descricao-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid #eee;
+}
+.descricao-header img {
+    width: 60px;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.descricao-header-info { flex: 1; }
+.descricao-titulo { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.descricao-autor { font-size: 14px; color: #666; margin-bottom: 6px; }
+.descricao-voltar {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #0f172a;
+    padding: 0 10px 0 0;
+    opacity: 0.7;
+    flex-shrink: 0;
+    align-self: center;
+}
+.descricao-voltar:hover { opacity: 1; }
+.descricao-corpo {
+    padding: 20px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #333;
+    white-space: pre-wrap;
+}
+
+/* Item clicável no perfil quando tem descrição */
+.item-ro.tem-descricao { cursor: pointer; }
+.item-ro.tem-descricao:hover { background: #f8fafc; }
+.badge-descricao-item {
+    font-size: 14px;
+    margin-left: 4px;
+    opacity: 0.6;
+}
 
 /* ── Leitores ─────────────────────────────────────── */
 .user-card {
@@ -446,11 +539,183 @@ body {
     overflow-y: auto;
 }
 
+/* ── PERSONALIZAÇÃO DE PERFIL ─────────────────────── */
+
+/* Banner de fundo no header do perfil */
 .perfil-header {
-    background: #0f172a;
     color: white;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.perfil-banner {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.45) saturate(1.2);
+}
+
+.perfil-header-inner {
+    position: relative;
+    z-index: 1;
     padding: 20px 20px 24px;
 }
+
+/* Cor de destaque dinâmica via CSS var */
+.perfil-tabs .perfil-tab.active {
+    color: var(--cor-destaque, #0f172a);
+    border-bottom-color: var(--cor-destaque, #0f172a);
+}
+
+/* Seletor de cor no editar perfil */
+.cor-picker-wrap {
+    margin-bottom: 18px;
+}
+.cor-picker-label {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+}
+.cor-opcoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.cor-opcao {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: transform 0.1s, border-color 0.1s;
+}
+.cor-opcao:hover { transform: scale(1.15); }
+.cor-opcao.selecionada { border-color: #333; transform: scale(1.1); }
+
+/* Banner picker */
+.banner-picker-wrap { margin-bottom: 18px; }
+.banner-picker-label { font-size: 13px; color: #666; margin-bottom: 8px; }
+.banner-preview {
+    width: 100%;
+    height: 80px;
+    border-radius: 10px;
+    background: #e5e7eb;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    border: 1px dashed #ccc;
+    transition: border-color 0.15s;
+}
+.banner-preview:hover { border-color: #888; }
+.banner-preview-hint {
+    font-size: 13px;
+    color: #aaa;
+    pointer-events: none;
+}
+.banner-preview-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+.banner-preview:hover .banner-preview-overlay { opacity: 1; }
+
+/* Seção livros favoritos */
+.favoritos-secao {
+    padding: 14px 20px 6px;
+    border-bottom: 1px solid #eee;
+}
+.favoritos-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+.favoritos-capas {
+    display: flex;
+    gap: 10px;
+}
+.favorito-capa {
+    width: 64px;
+    height: 96px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #e5e7eb;
+    cursor: pointer;
+    transition: transform 0.15s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.favorito-capa:hover { transform: scale(1.06); }
+
+/* Livros favoritos no editar perfil */
+.favoritos-edit-wrap { margin-bottom: 18px; }
+.favoritos-edit-label { font-size: 13px; color: #666; margin-bottom: 8px; }
+.favoritos-edit-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.favorito-edit-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+.favorito-edit-item:hover { background: #f8fafc; border-color: #ccc; }
+.favorito-edit-item.selecionado { background: #0f172a; color: white; border-color: #0f172a; }
+.favorito-edit-item img { width: 36px; border-radius: 4px; flex-shrink: 0; }
+.favorito-edit-nome { font-size: 14px; font-weight: 500; }
+.favorito-edit-num {
+    margin-left: auto;
+    font-size: 12px;
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+/* Livros em comum */
+.em-comum-secao {
+    padding: 14px 20px;
+    border-bottom: 1px solid #eee;
+    background: #f8fafc;
+}
+.em-comum-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.em-comum-capas {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.em-comum-capa {
+    width: 48px;
+    height: 72px;
+    border-radius: 5px;
+    object-fit: cover;
+    background: #e5e7eb;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+.em-comum-vazio { font-size: 13px; color: #aaa; }
 
 .perfil-header-top {
     display: flex;
@@ -784,6 +1049,7 @@ body {
     </select>
     <div id="estrelasWidget" style="margin-bottom:15px"></div>
     <input type="hidden" id="notaInput">
+    <textarea id="descricaoInput" placeholder="Descrição / resenha (opcional)"></textarea>
     <input type="file" accept="image/*" id="fotoInput">
     <button class="btn-salvar" onclick="salvarLivro()">Salvar</button>
     <button class="btn-cancelar" onclick="fechar()">Cancelar</button>
@@ -805,33 +1071,48 @@ body {
 
 <!-- ── OVERLAY PERFIL PÚBLICO ───────────────────── -->
 <div id="overlayPerfil">
-    <div class="perfil-header">
-        <div class="perfil-header-top">
-            <button class="perfil-voltar" onclick="fecharPerfil()">‹</button>
-            <span>Perfil</span>
-        </div>
-        <div class="perfil-user-info">
-            <div class="perfil-avatar-xl" id="perfilXlIniciais">??</div>
-            <div>
-                <div class="perfil-user-nome" id="perfilXlNome">—</div>
-                <div class="perfil-user-email" id="perfilXlEmail">—</div>
-                <button class="btn-editar-perfil" id="btnEditarMeuPerfil" style="display:none" onclick="abrirEditarPerfil()">✏️ Editar perfil</button>
+    <div class="perfil-header" id="perfilHeader">
+        <div class="perfil-banner" id="perfilBanner"></div>
+        <div class="perfil-header-inner">
+            <div class="perfil-header-top">
+                <button class="perfil-voltar" onclick="fecharPerfil()">‹</button>
+                <span>Perfil</span>
+            </div>
+            <div class="perfil-user-info">
+                <div class="perfil-avatar-xl" id="perfilXlIniciais">??</div>
+                <div>
+                    <div class="perfil-user-nome" id="perfilXlNome">—</div>
+                    <div class="perfil-user-email" id="perfilXlEmail">—</div>
+                    <button class="btn-editar-perfil" id="btnEditarMeuPerfil" style="display:none" onclick="abrirEditarPerfil()">✏️ Editar perfil</button>
+                </div>
+            </div>
+            <div class="perfil-stats">
+                <div class="perfil-stat">
+                    <div class="perfil-stat-num" id="perfilStatTotal">0</div>
+                    <div class="perfil-stat-label">livros</div>
+                </div>
+                <div class="perfil-stat">
+                    <div class="perfil-stat-num" id="perfilStatLidos">0</div>
+                    <div class="perfil-stat-label">lidos</div>
+                </div>
+                <div class="perfil-stat">
+                    <div class="perfil-stat-num" id="perfilStatNota">—</div>
+                    <div class="perfil-stat-label">nota média</div>
+                </div>
             </div>
         </div>
-        <div class="perfil-stats">
-            <div class="perfil-stat">
-                <div class="perfil-stat-num" id="perfilStatTotal">0</div>
-                <div class="perfil-stat-label">livros</div>
-            </div>
-            <div class="perfil-stat">
-                <div class="perfil-stat-num" id="perfilStatLidos">0</div>
-                <div class="perfil-stat-label">lidos</div>
-            </div>
-            <div class="perfil-stat">
-                <div class="perfil-stat-num" id="perfilStatNota">—</div>
-                <div class="perfil-stat-label">nota média</div>
-            </div>
-        </div>
+    </div>
+
+    <!-- Livros favoritos -->
+    <div class="favoritos-secao" id="perfilFavoritosBox" style="display:none">
+        <div class="favoritos-label">Favoritos</div>
+        <div class="favoritos-capas" id="perfilFavoritosCapas"></div>
+    </div>
+
+    <!-- Livros em comum (só ao visitar outro perfil) -->
+    <div class="em-comum-secao" id="perfilEmComumBox" style="display:none">
+        <div class="em-comum-label" id="perfilEmComumLabel">Livros em comum</div>
+        <div class="em-comum-capas" id="perfilEmComumCapas"></div>
     </div>
 
     <!-- Em leitura -->
@@ -841,7 +1122,7 @@ body {
     </div>
 
     <!-- Tabs catálogo / ranking -->
-    <div class="perfil-tabs">
+    <div class="perfil-tabs" id="perfilTabsEl">
         <div class="perfil-tab active" onclick="trocarPerfilTab('catalogo')" id="ptabCatalogo">Catálogo</div>
         <div class="perfil-tab" onclick="trocarPerfilTab('ranking')" id="ptabRanking">Ranking</div>
     </div>
@@ -855,6 +1136,18 @@ body {
 <!-- ── OVERLAY EDITAR PERFIL ─────────────────────── -->
 <div id="overlayEditarPerfil">
     <h2>Editar perfil</h2>
+
+    <!-- Banner -->
+    <div class="banner-picker-wrap">
+        <div class="banner-picker-label">Imagem de fundo</div>
+        <div class="banner-preview" id="bannerPreview" onclick="document.getElementById('bannerInput').click()">
+            <span class="banner-preview-hint" id="bannerHint">Toque para escolher uma imagem</span>
+            <div class="banner-preview-overlay">🖼️</div>
+        </div>
+        <input type="file" accept="image/*" id="bannerInput" style="display:none">
+    </div>
+
+    <!-- Avatar -->
     <div class="editar-avatar-wrap">
         <div class="editar-avatar-circulo" id="editarAvatarCirculo" onclick="document.getElementById('fotoPerfilInput').click()">
             <span id="editarAvatarIniciais">??</span>
@@ -863,9 +1156,38 @@ body {
         <span class="editar-avatar-hint">Toque para trocar a foto</span>
         <input type="file" accept="image/*" id="fotoPerfilInput" style="display:none">
     </div>
+
+    <!-- Nome -->
     <input type="text" id="editarNomeInput" placeholder="Nome de exibição">
+
+    <!-- Cor de destaque -->
+    <div class="cor-picker-wrap">
+        <div class="cor-picker-label">Cor de destaque</div>
+        <div class="cor-opcoes" id="corOpcoes"></div>
+    </div>
+
+    <!-- Livros favoritos -->
+    <div class="favoritos-edit-wrap">
+        <div class="favoritos-edit-label">Livros favoritos (até 3)</div>
+        <div class="favoritos-edit-lista" id="favoritosEditLista"></div>
+    </div>
+
     <button class="btn-salvar-perfil" onclick="salvarEdicaoPerfil()">Salvar</button>
     <button class="btn-cancelar-perfil" onclick="fecharEditarPerfil()">Cancelar</button>
+</div>
+
+<!-- ── OVERLAY DESCRIÇÃO DO LIVRO ────────────────── -->
+<div id="overlayDescricao">
+    <div class="descricao-header">
+        <button class="descricao-voltar" onclick="fecharDescricao()">‹</button>
+        <img id="descricaoCapaImg" src="">
+        <div class="descricao-header-info">
+            <div class="descricao-titulo" id="descricaoTitulo"></div>
+            <div class="descricao-autor" id="descricaoAutor"></div>
+            <div id="descricaoNota"></div>
+        </div>
+    </div>
+    <div class="descricao-corpo" id="descricaoCorpo"></div>
 </div>
 
 <script>
@@ -892,6 +1214,17 @@ let ordemPersonalizada = [];
 let fotoPerfilBase64 = "";
 let nomeExibicao = "";
 let fotoPerfilEditando = "";
+let bannerBase64 = "";
+let bannerEditando = "";
+let corDestaque = "#0f172a";
+let corEditando = "#0f172a";
+let favoritosIds = [];
+let favoritosEditando = [];
+
+const CORES_DISPONIVEIS = [
+    "#0f172a","#3b82f6","#10b981","#f59e0b","#ef4444",
+    "#8b5cf6","#ec4899","#14b8a6","#f97316","#6366f1"
+];
 
 // Cores para avatares de usuários distintos
 const AVATAR_CORES = ["#3b82f6","#10b981","#f59e0b","#ef4444","#8b5cf6"];
@@ -945,6 +1278,9 @@ function iniciarAppFirebase() {
         const dados = doc.exists ? doc.data() : {};
         nomeExibicao = dados.nomeExibicao || nomePadrao;
         fotoPerfilBase64 = dados.foto || "";
+        bannerBase64 = dados.banner || "";
+        corDestaque = dados.corDestaque || "#0f172a";
+        favoritosIds = dados.favoritos || [];
         atualizarAvatarUI();
     });
 
@@ -994,18 +1330,84 @@ function atualizarAvatarUI() {
 
 function abrirEditarPerfil() {
     fotoPerfilEditando = fotoPerfilBase64;
+    bannerEditando = bannerBase64;
+    favoritosEditando = [...favoritosIds];
 
-    // Preenche o círculo de preview
+    // Avatar
     const circulo = document.getElementById("editarAvatarCirculo");
     const iniciais = nomeExibicao.substring(0, 2).toUpperCase();
     if (fotoPerfilEditando) {
         circulo.innerHTML = `<img src="${fotoPerfilEditando}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><div class="editar-avatar-overlay">📷</div>`;
     } else {
-        circulo.innerHTML = `<span id="editarAvatarIniciais">${iniciais}</span><div class="editar-avatar-overlay">📷</div>`;
+        circulo.innerHTML = `<span>${iniciais}</span><div class="editar-avatar-overlay">📷</div>`;
     }
     circulo.onclick = () => document.getElementById("fotoPerfilInput").click();
 
+    // Nome
     document.getElementById("editarNomeInput").value = nomeExibicao;
+
+    // Banner preview
+    const bannerPreview = document.getElementById("bannerPreview");
+    const bannerHint = document.getElementById("bannerHint");
+    if (bannerEditando) {
+        bannerPreview.style.backgroundImage = `url(${bannerEditando})`;
+        if (bannerHint) bannerHint.style.display = "none";
+    } else {
+        bannerPreview.style.backgroundImage = "";
+        if (bannerHint) bannerHint.style.display = "";
+    }
+
+    // Cores
+    const CORES = ["#0f172a","#1d4ed8","#7c3aed","#be185d","#b45309","#15803d","#0e7490","#9f1239","#374151"];
+    const corOpcoes = document.getElementById("corOpcoes");
+    corOpcoes.innerHTML = "";
+    CORES.forEach(c => {
+        const el = document.createElement("div");
+        el.className = "cor-opcao" + (corDestaque === c ? " selecionada" : "");
+        el.style.background = c;
+        el.onclick = () => {
+            corDestaque = c;
+            corOpcoes.querySelectorAll(".cor-opcao").forEach(x => x.classList.remove("selecionada"));
+            el.classList.add("selecionada");
+        };
+        corOpcoes.appendChild(el);
+    });
+
+    // Favoritos
+    const lista = document.getElementById("favoritosEditLista");
+    lista.innerHTML = "";
+    if (livros.length === 0) {
+        lista.innerHTML = '<p style="font-size:13px;color:#aaa">Nenhum livro cadastrado ainda.</p>';
+    } else {
+        [...livros].sort((a,b) => a.titulo.localeCompare(b.titulo,'pt')).forEach(l => {
+            const idx = favoritosEditando.indexOf(l.id);
+            const sel = idx !== -1;
+            const item = document.createElement("div");
+            item.className = "favorito-edit-item" + (sel ? " selecionado" : "");
+            item.innerHTML = `
+                <img src="${l.capa}">
+                <span class="favorito-edit-nome">${l.titulo}</span>
+                ${sel ? `<span class="favorito-edit-num">#${idx+1}</span>` : ""}
+            `;
+            item.onclick = () => {
+                const i = favoritosEditando.indexOf(l.id);
+                if (i !== -1) {
+                    favoritosEditando.splice(i, 1);
+                    item.classList.remove("selecionado");
+                    item.querySelector(".favorito-edit-num")?.remove();
+                } else if (favoritosEditando.length < 3) {
+                    favoritosEditando.push(l.id);
+                    item.classList.add("selecionado");
+                    const num = document.createElement("span");
+                    num.className = "favorito-edit-num";
+                    num.innerText = "#" + favoritosEditando.length;
+                    item.appendChild(num);
+                }
+            };
+            lista.appendChild(item);
+        });
+    }
+
     document.getElementById("overlayEditarPerfil").style.display = "block";
 }
 
@@ -1036,27 +1438,49 @@ document.getElementById("fotoPerfilInput").onchange = e => {
     reader.readAsDataURL(file);
 };
 
+document.getElementById("bannerInput").onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+            const MAX_W = 1200, MAX_H = 400;
+            const scale = Math.min(1, MAX_W / img.width, MAX_H / img.height);
+            const canvas = document.createElement("canvas");
+            canvas.width  = Math.round(img.width  * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+            bannerEditando = canvas.toDataURL("image/jpeg", 0.75);
+            const bp = document.getElementById("bannerPreview");
+            bp.style.backgroundImage = `url(${bannerEditando})`;
+            const hint = document.getElementById("bannerHint");
+            if (hint) hint.style.display = "none";
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
 function salvarEdicaoPerfil() {
     const novoNome = document.getElementById("editarNomeInput").value.trim() || nomeExibicao;
     nomeExibicao = novoNome;
     fotoPerfilBase64 = fotoPerfilEditando;
+    bannerBase64 = bannerEditando;
+    favoritosIds = [...favoritosEditando];
 
     db.collection("perfis").doc(usuarioLogado).set({
         nomeExibicao: novoNome,
-        foto: fotoPerfilBase64
+        foto: fotoPerfilBase64,
+        banner: bannerBase64,
+        corDestaque: corDestaque,
+        favoritos: favoritosIds
     }, { merge: true });
 
     atualizarAvatarUI();
     fecharEditarPerfil();
-
-    // Atualiza o overlay de perfil se estiver aberto
-    document.getElementById("perfilXlNome").innerText = novoNome;
-    const xlAvatar = document.getElementById("perfilXlIniciais");
-    if (fotoPerfilBase64) {
-        xlAvatar.innerHTML = `<img src="${fotoPerfilBase64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-    } else {
-        xlAvatar.innerText = novoNome.substring(0, 2).toUpperCase();
-    }
+    // Reabre o perfil para refletir mudanças
+    abrirPerfil(usuarioLogado, emailLogado);
 }
 
 function abrirMeuPerfil() {
@@ -1084,37 +1508,48 @@ function renderComunidade() {
             .map(u =>
                 db.collection("users").doc(u.uid).collection("livros").get().then(livSnap => {
                     return livSnap.docs
-                        .map(d => ({ ...d.data(), _uid: u.uid, _email: u.email, _nomeExib: u.nomeExibicao || (u.email||"").split("@")[0], _foto: u.foto || "" }))
+                        .map(d => {
+                            const nomeExib = u.nomeExibicao || (u.email||"").split("@")[0];
+                            return { ...d.data(), _uid: u.uid, _email: u.email, _nomeExib: nomeExib, _foto: u.foto || "" };
+                        })
                         .filter(l => l.nota > 0 && l.notaAtualizadaEm);
                 })
             );
 
         Promise.all(promessas).then(resultados => {
-            const todas = resultados.flat().sort((a, b) => b.notaAtualizadaEm - a.notaAtualizadaEm).slice(0, 10);
+            const todas = resultados.flat().sort((a, b) => b.notaAtualizadaEm - a.notaAtualizadaEm);
+
+            // Um livro por usuário (o mais recente)
+            const vistos = new Set();
+            const semRepetir = todas.filter(l => {
+                if (vistos.has(l._uid)) return false;
+                vistos.add(l._uid);
+                return true;
+            }).slice(0, 10);
 
             const hud = document.createElement("div");
             hud.className = "hud-recentes";
 
-            if (todas.length > 0) {
+            if (semRepetir.length > 0) {
                 hud.innerHTML = `<div class="hud-titulo">Avaliações recentes</div>`;
                 const scroll = document.createElement("div");
                 scroll.className = "hud-scroll";
 
-                todas.forEach(l => {
+                semRepetir.forEach(l => {
                     const card = document.createElement("div");
                     card.className = "hud-card";
                     card.innerHTML = `
-                        <img class="hud-capa" src="${l.capa}" alt="${l.titulo}">
+                        <img class="hud-capa" src="${l.capa}">
+                        ${l.descricao ? '<div class="hud-badge-descricao">💬</div>' : ""}
                         <div class="hud-info">
                             <div class="hud-livro-titulo">${l.titulo}</div>
                             <div class="hud-usuario">${l._nomeExib}</div>
                             ${estrelasSVG(l.nota)}
                         </div>
                     `;
-                    // Acha cor do usuário
                     const idx = usuarios.findIndex(u => u.uid === l._uid);
                     const cor = AVATAR_CORES[idx % AVATAR_CORES.length];
-                    card.onclick = () => abrirPerfil(l._uid, l._email, cor);
+                    card.onclick = () => l.descricao ? abrirDescricao(l) : abrirPerfil(l._uid, l._email, cor);
                     scroll.appendChild(card);
                 });
 
@@ -1169,110 +1604,165 @@ function renderComunidade() {
 function abrirPerfil(uid, email, cor) {
     cor = cor || "#3b82f6";
 
-    // Botão editar só para o próprio usuário
     document.getElementById("btnEditarMeuPerfil").style.display =
         uid === usuarioLogado ? "inline-block" : "none";
-
-    // Busca dados de perfil (nome e foto personalizados)
-    db.collection("perfis").doc(uid).get().then(doc => {
-        const dados = doc.exists ? doc.data() : {};
-        const nomeSalvo = dados.nomeExibicao || email.split("@")[0];
-        const fotoSalva = dados.foto || "";
-        const iniciais = nomeSalvo.substring(0, 2).toUpperCase();
-
-        const xlAvatar = document.getElementById("perfilXlIniciais");
-        if (fotoSalva) {
-            xlAvatar.innerHTML = `<img src="${fotoSalva}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-        } else {
-            xlAvatar.innerText = iniciais;
-            xlAvatar.style.background = cor;
-        }
-        document.getElementById("perfilXlNome").innerText = nomeSalvo;
-        document.getElementById("perfilXlEmail").innerText = email;
-    });
 
     // Reseta tabs
     trocarPerfilTab("catalogo");
 
-    // Carrega livros do usuário
-    db.collection("users").doc(uid).collection("livros").get().then(snap => {
-        const livrosUsuario = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Busca dados de perfil
+    db.collection("perfis").doc(uid).get().then(doc => {
+        const dados = doc.exists ? doc.data() : {};
+        const nomeSalvo   = dados.nomeExibicao || email.split("@")[0];
+        const fotoSalva   = dados.foto || "";
+        const bannerSalvo = dados.banner || "";
+        const corSalva    = dados.corDestaque || "#0f172a";
+        const favs        = dados.favoritos || [];
+        const iniciais    = nomeSalvo.substring(0, 2).toUpperCase();
 
-        // Stats
-        const total = livrosUsuario.length;
-        const lidos = livrosUsuario.filter(l => l.lido).length;
-        const comNota = livrosUsuario.filter(l => l.nota > 0);
-        const mediaNota = comNota.length
-            ? (comNota.reduce((s, l) => s + l.nota, 0) / comNota.length).toFixed(1)
-            : "—";
-
-        document.getElementById("perfilStatTotal").innerText = total;
-        document.getElementById("perfilStatLidos").innerText = lidos;
-        document.getElementById("perfilStatNota").innerText = mediaNota;
-
-        // Em leitura
-        const emLeitura = livrosUsuario.find(l => l.emLeitura);
-        const boxEmLeitura = document.getElementById("perfilEmLeituraBox");
-        if (emLeitura) {
-            boxEmLeitura.style.display = "block";
-            document.getElementById("perfilEmLeituraConteudo").innerHTML = `
-                <img src="${emLeitura.capa}" style="width:54px;border-radius:6px">
-                <strong>${emLeitura.titulo}</strong>
-            `;
+        // Header: banner + cor
+        const header = document.getElementById("perfilHeader");
+        header.style.background = corSalva;
+        const banner = document.getElementById("perfilBanner");
+        if (bannerSalvo) {
+            banner.style.backgroundImage = `url(${bannerSalvo})`;
+            banner.style.display = "block";
         } else {
-            boxEmLeitura.style.display = "none";
+            banner.style.backgroundImage = "";
+            banner.style.display = "none";
         }
 
-        // Catálogo (ordem alfabética por título)
-        const catalogo = document.getElementById("perfilCatalogo");
-        catalogo.innerHTML = "";
-        const livrosAlfabeticos = [...livrosUsuario].sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt'));
-        if (livrosAlfabeticos.length === 0) {
-            catalogo.innerHTML = '<p style="padding:20px;color:#888">Nenhum livro ainda.</p>';
+        // Cor de destaque nas tabs
+        document.getElementById("overlayPerfil").style.setProperty("--cor-destaque", corSalva);
+
+        // Avatar
+        const xlAvatar = document.getElementById("perfilXlIniciais");
+        xlAvatar.style.background = fotoSalva ? "transparent" : cor;
+        if (fotoSalva) {
+            xlAvatar.innerHTML = `<img src="${fotoSalva}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
         } else {
-            livrosAlfabeticos.forEach(l => {
-                const div = document.createElement("div");
-                div.className = "item-ro";
-                div.innerHTML = `
-                    <div class="item-img-wrapper">
-                        <img src="${l.capa}" title="Ver capa" onclick="ampliarImagem('${l.capa}', event)">
-                    </div>
-                    <div class="item-info">
-                        <div class="nome">${l.titulo}</div>
-                        <div class="info-extra">
-                            ${l.autor}
-                            ${l.lancamento ? " · " + l.lancamento : ""}
-                            · ${l.lido ? "Lido" : "Não lido"}
-                            ${l.lido && l.nota ? " · " + estrelasSVG(l.nota) : ""}
-                        </div>
-                    </div>
+            xlAvatar.innerText = iniciais;
+        }
+        document.getElementById("perfilXlNome").innerText = nomeSalvo;
+        document.getElementById("perfilXlEmail").innerText = email;
+
+        // Carrega livros e renderiza favoritos + catálogo + ranking
+        db.collection("users").doc(uid).collection("livros").get().then(snap => {
+            const livrosUsuario = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+            // Stats
+            const total = livrosUsuario.length;
+            const lidos = livrosUsuario.filter(l => l.lido).length;
+            const comNota = livrosUsuario.filter(l => l.nota > 0);
+            const mediaNota = comNota.length
+                ? (comNota.reduce((s, l) => s + l.nota, 0) / comNota.length).toFixed(1)
+                : "—";
+            document.getElementById("perfilStatTotal").innerText = total;
+            document.getElementById("perfilStatLidos").innerText = lidos;
+            document.getElementById("perfilStatNota").innerText = mediaNota;
+
+            // Em leitura
+            const emLeitura = livrosUsuario.find(l => l.emLeitura);
+            const boxEmLeitura = document.getElementById("perfilEmLeituraBox");
+            if (emLeitura) {
+                boxEmLeitura.style.display = "block";
+                document.getElementById("perfilEmLeituraConteudo").innerHTML = `
+                    <img src="${emLeitura.capa}" style="width:54px;border-radius:6px">
+                    <strong>${emLeitura.titulo}</strong>
                 `;
-                catalogo.appendChild(div);
-            });
-        }
+            } else {
+                boxEmLeitura.style.display = "none";
+            }
 
-        // Ranking
-        const rankEl = document.getElementById("perfilRanking");
-        rankEl.innerHTML = "";
-        const comNotaOrdenado = [...livrosUsuario]
-            .filter(l => (l.nota || 0) >= 0.5)
-            .sort((a, b) => (b.nota || 0) - (a.nota || 0));
+            // Favoritos
+            const favsBox = document.getElementById("perfilFavoritosBox");
+            const favsCapas = document.getElementById("perfilFavoritosCapas");
+            const livrosFavs = favs.map(id => livrosUsuario.find(l => l.id === id)).filter(Boolean);
+            if (livrosFavs.length > 0) {
+                favsBox.style.display = "block";
+                favsCapas.innerHTML = "";
+                livrosFavs.forEach(l => {
+                    const img = document.createElement("img");
+                    img.className = "favorito-capa";
+                    img.src = l.capa;
+                    img.title = l.titulo;
+                    img.onclick = () => l.descricao ? abrirDescricao(l) : ampliarImagem(l.capa, event);
+                    favsCapas.appendChild(img);
+                });
+            } else {
+                favsBox.style.display = "none";
+            }
 
-        if (comNotaOrdenado.length === 0) {
-            rankEl.innerHTML = '<p style="padding:20px;color:#888">Nenhum livro com nota ainda.</p>';
-        } else {
-            comNotaOrdenado.forEach((l, i) => {
-                const div = document.createElement("div");
-                div.className = "rank";
-                div.innerHTML = `
-                    <img src="${l.capa}">
-                    <div>
-                        <strong>#${i+1} ${l.titulo}</strong><br>
-                        ${estrelasSVG(l.nota)}
-                    </div>`;
-                rankEl.appendChild(div);
-            });
-        }
+            // Livros em comum (só ao visitar outro)
+            const emComumBox = document.getElementById("perfilEmComumBox");
+            if (uid !== usuarioLogado && livros.length > 0) {
+                const titulosProprioS = new Set(livros.map(l => l.titulo.trim().toLowerCase()));
+                const emComum = livrosUsuario.filter(l => titulosProprioS.has(l.titulo.trim().toLowerCase()));
+                if (emComum.length > 0) {
+                    emComumBox.style.display = "block";
+                    document.getElementById("perfilEmComumLabel").innerText = `${emComum.length} livro${emComum.length > 1 ? "s" : ""} em comum`;
+                    const capas = document.getElementById("perfilEmComumCapas");
+                    capas.innerHTML = "";
+                    emComum.forEach(l => {
+                        const img = document.createElement("img");
+                        img.className = "em-comum-capa";
+                        img.src = l.capa;
+                        img.title = l.titulo;
+                        capas.appendChild(img);
+                    });
+                } else {
+                    emComumBox.style.display = "none";
+                }
+            } else {
+                emComumBox.style.display = "none";
+            }
+
+            // Catálogo (ordem alfabética)
+            const catalogoEl = document.getElementById("perfilCatalogo");
+            catalogoEl.innerHTML = "";
+            const livrosAlfabeticos = [...livrosUsuario].sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt'));
+            if (livrosAlfabeticos.length === 0) {
+                catalogoEl.innerHTML = '<p style="padding:20px;color:#888">Nenhum livro ainda.</p>';
+            } else {
+                livrosAlfabeticos.forEach(l => {
+                    const div = document.createElement("div");
+                    div.className = "item-ro" + (l.descricao ? " tem-descricao" : "");
+                    div.innerHTML = `
+                        <div class="item-img-wrapper">
+                            <img src="${l.capa}" title="Ver capa" onclick="ampliarImagem('${l.capa}', event)">
+                        </div>
+                        <div class="item-info">
+                            <div class="nome">${l.titulo}${l.descricao ? ' <span class="badge-descricao-item">💬</span>' : ""}</div>
+                            <div class="info-extra">
+                                ${l.autor}
+                                ${l.lancamento ? " · " + l.lancamento : ""}
+                                · ${l.lido ? "Lido" : "Não lido"}
+                                ${l.lido && l.nota ? " · " + estrelasSVG(l.nota) : ""}
+                            </div>
+                        </div>
+                    `;
+                    if (l.descricao) div.onclick = (e) => { if (!e.target.closest("img")) abrirDescricao(l); };
+                    catalogoEl.appendChild(div);
+                });
+            }
+
+            // Ranking
+            const rankEl = document.getElementById("perfilRanking");
+            rankEl.innerHTML = "";
+            const comNotaOrdenado = [...livrosUsuario]
+                .filter(l => (l.nota || 0) >= 0.5)
+                .sort((a, b) => (b.nota || 0) - (a.nota || 0));
+            if (comNotaOrdenado.length === 0) {
+                rankEl.innerHTML = '<p style="padding:20px;color:#888">Nenhum livro com nota ainda.</p>';
+            } else {
+                comNotaOrdenado.forEach((l, i) => {
+                    const div = document.createElement("div");
+                    div.className = "rank";
+                    div.innerHTML = `<img src="${l.capa}"><div><strong>#${i+1} ${l.titulo}</strong><br>${estrelasSVG(l.nota)}</div>`;
+                    rankEl.appendChild(div);
+                });
+            }
+        });
     });
 
     document.getElementById("overlayPerfil").style.display = "block";
@@ -1513,6 +2003,7 @@ function salvarLivro() {
         lido: lidoInput.value === "true",
         nota: notaNova,
         capa: capaFinal,
+        descricao: descricaoInput.value.trim(),
         emLeitura: livroExistente ? livroExistente.emLeitura : false,
         notaAtualizadaEm: notaNova > 0 && notaNova !== notaAnterior
             ? Date.now()
@@ -1563,6 +2054,7 @@ function editarLivro(id) {
     lancamentoInput.value = l.lancamento || "";
     lidoInput.value = l.lido ? "true" : "false";
     renderEstrelasWidget(l.nota ?? 0);
+    descricaoInput.value = l.descricao || "";
     imagemBase64 = l.capa || "";
     overlay.dataset.editando = id;
     btnExcluirLivro.style.display = "block";
@@ -1576,12 +2068,26 @@ function novoLivro() {
     lancamentoInput.value = "";
     lidoInput.value = "false";
     renderEstrelasWidget(0);
+    descricaoInput.value = "";
     imagemBase64 = "";
     btnExcluirLivro.style.display = "none";
     overlay.style.display = "block";
 }
 
 function fechar() { overlay.style.display = "none"; }
+
+function abrirDescricao(l) {
+    document.getElementById("descricaoCapaImg").src = l.capa || "";
+    document.getElementById("descricaoTitulo").innerText = l.titulo;
+    document.getElementById("descricaoAutor").innerText = l.autor + (l.lancamento ? " · " + l.lancamento : "");
+    document.getElementById("descricaoNota").innerHTML = l.nota ? estrelasSVG(l.nota) : "";
+    document.getElementById("descricaoCorpo").innerText = l.descricao || "";
+    document.getElementById("overlayDescricao").style.display = "block";
+}
+
+function fecharDescricao() {
+    document.getElementById("overlayDescricao").style.display = "none";
+}
 
 function escolherEmLeitura() {
     const lista = document.getElementById("listaLeitura");
@@ -1670,10 +2176,22 @@ function _desenharEstrelas() {
     wrap.appendChild(label);
     wrap.querySelectorAll(".estrela-btn").forEach(btn => {
         btn.addEventListener("mouseenter", () => _previewNota(parseInt(btn.dataset.valor)));
-        btn.addEventListener("mouseleave", () => _desenharEstrelas());
+        btn.addEventListener("mouseleave", () => _restaurarEstrelas());
     });
     container.appendChild(wrap);
     document.getElementById("notaInput").value = _notaAtual;
+}
+
+function _restaurarEstrelas() {
+    const container = document.getElementById("estrelasWidget");
+    container.querySelectorAll(".estrela-btn").forEach(btn => {
+        const i = parseInt(btn.dataset.valor);
+        const gradId = "halfGrad" + i;
+        let fill = _notaAtual >= i ? "#f5a623" : _notaAtual >= i - 0.5 ? `url(#${gradId})` : "#ddd";
+        btn.querySelector("polygon").setAttribute("fill", fill);
+    });
+    const lbl = document.getElementById("notaLabel");
+    if (lbl) lbl.innerText = _notaAtual > 0 ? _notaAtual : "";
 }
 
 function _previewNota(i) {
