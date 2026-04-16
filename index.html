@@ -2867,72 +2867,80 @@ let _notaAtual = 0;
 
 function renderEstrelasWidget(notaAtual) {
     _notaAtual = notaAtual || 0;
+    // Força recriação do DOM ao abrir um novo livro
+    const container = document.getElementById("estrelasWidget");
+    container.innerHTML = "";
     _desenharEstrelas();
 }
 
 function _desenharEstrelas() {
     const container = document.getElementById("estrelasWidget");
-    container.innerHTML = "";
-    const wrap = document.createElement("div");
-    wrap.className = "estrelas-widget";
-    wrap.style.cssText = "display:flex;align-items:center;gap:2px;padding:4px 0";
 
-    for (let i = 1; i <= 5; i++) {
-        const gradId = "halfGrad" + i;
-        const fill = _notaAtual >= i ? "#f5a623"
-                   : _notaAtual >= i - 0.5 ? `url(#${gradId})` : "#ddd";
+    // Só cria o DOM se ainda não existir
+    if (!container.querySelector(".estrelas-widget")) {
+        container.innerHTML = "";
+        const wrap = document.createElement("div");
+        wrap.className = "estrelas-widget";
+        wrap.style.cssText = "display:flex;align-items:center;gap:2px;padding:4px 0";
 
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.style.cssText = "background:none;border:none;padding:0;cursor:pointer;width:36px;height:36px;flex-shrink:0;transition:transform 0.1s";
-        btn.innerHTML = `
-            <svg width="36" height="36" viewBox="0 0 24 24" style="display:block;pointer-events:none">
-                <defs>
-                    <linearGradient id="${gradId}">
-                        <stop offset="50%" stop-color="#f5a623"/>
-                        <stop offset="50%" stop-color="#ddd"/>
-                    </linearGradient>
-                </defs>
-                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-                    fill="${fill}" stroke="#f5a623" stroke-width="1.2"/>
-            </svg>`;
+        for (let i = 1; i <= 5; i++) {
+            const gradId = "halfGrad" + i;
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.dataset.estrela = i;
+            btn.style.cssText = "background:none;border:none;padding:0;cursor:pointer;width:36px;height:36px;flex-shrink:0;transition:transform 0.1s";
+            btn.innerHTML = `
+                <svg width="36" height="36" viewBox="0 0 24 24" style="display:block;pointer-events:none">
+                    <defs>
+                        <linearGradient id="${gradId}">
+                            <stop offset="50%" stop-color="#f5a623"/>
+                            <stop offset="50%" stop-color="#ddd"/>
+                        </linearGradient>
+                    </defs>
+                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                        fill="#ddd" stroke="#f5a623" stroke-width="1.2"/>
+                </svg>`;
 
-        btn.onclick = () => {
-            // ciclo: cheia → meia → cheia → meia...
-            if (_notaAtual === i)            _notaAtual = i - 0.5;
-            else if (_notaAtual === i - 0.5) _notaAtual = i;
-            else                             _notaAtual = i;
-            document.getElementById("notaInput").value = _notaAtual;
-            _desenharEstrelas();
-        };
+            btn.onclick = () => {
+                if (_notaAtual === i)            _notaAtual = i - 0.5;
+                else if (_notaAtual === i - 0.5) _notaAtual = i;
+                else                             _notaAtual = i;
+                document.getElementById("notaInput").value = _notaAtual;
+                _atualizarFills();
+            };
 
-        btn.addEventListener("mouseenter", () => _previewNota(i));
-        btn.addEventListener("mouseleave", () => _restaurarEstrelas());
+            btn.addEventListener("mouseenter", () => _previewNota(i));
+            btn.addEventListener("mouseleave", () => _atualizarFills());
 
-        wrap.appendChild(btn);
+            wrap.appendChild(btn);
+        }
+
+        const label = document.createElement("span");
+        label.className = "nota-label";
+        label.id = "notaLabel";
+        wrap.appendChild(label);
+        container.appendChild(wrap);
     }
 
-    const label = document.createElement("span");
-    label.className = "nota-label";
-    label.id = "notaLabel";
-    label.innerText = _notaAtual > 0 ? _notaAtual : "";
-    wrap.appendChild(label);
-
-    container.appendChild(wrap);
+    _atualizarFills();
     document.getElementById("notaInput").value = _notaAtual;
 }
 
-function _restaurarEstrelas() {
+function _atualizarFills() {
     const container = document.getElementById("estrelasWidget");
     container.querySelectorAll("svg polygon").forEach((poly, idx) => {
         const i = idx + 1;
         const gradId = "halfGrad" + i;
         poly.setAttribute("fill",
-            _notaAtual >= i ? "#f5a623" :
+            _notaAtual >= i       ? "#f5a623" :
             _notaAtual >= i - 0.5 ? `url(#${gradId})` : "#ddd");
     });
     const lbl = document.getElementById("notaLabel");
     if (lbl) lbl.innerText = _notaAtual > 0 ? _notaAtual : "";
+}
+
+function _restaurarEstrelas() {
+    _atualizarFills();
 }
 
 function _previewNota(nota) {
