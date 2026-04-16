@@ -1247,6 +1247,20 @@ body {
     <div class="autor-hud-lista" id="autorHudLista"></div>
 </div>
 
+<!-- HUD de gêneros do catálogo -->
+<div class="autor-hud-backdrop" id="generoHudBackdrop" onclick="fecharGeneroHud()"></div>
+<div class="autor-hud" id="generoHud">
+    <div class="autor-hud-handle"></div>
+    <div class="autor-hud-header">
+        <span class="autor-hud-titulo">Filtrar por gênero</span>
+        <button class="autor-hud-fechar" onclick="fecharGeneroHud()">×</button>
+    </div>
+    <div class="autor-hud-busca">
+        <input id="generoHudBusca" placeholder="Buscar gênero..." oninput="filtrarGeneroHud()">
+    </div>
+    <div class="autor-hud-lista" id="generoHudLista"></div>
+</div>
+
     <div id="areaRanking" style="display:none">
         <div class="search-container">
             <input id="rankingSearchInput" placeholder="Buscar no ranking..." oninput="renderRanking()">
@@ -1536,9 +1550,9 @@ function generoBadges(l) {
 
 const GENEROS = [
     "Romance","Fantasia","Ficção Científica","Terror","Mistério",
-    "Thriller","Aventura","Drama","História","Biografia",
+    "Thriller","Suspense","Aventura","Drama","Biografia",
     "Autoajuda","Filosofia","Poesia","Infantil","Humor",
-    "Policial","Distopia","Mitologia","Clássico","Outro"
+    "Policial","Distopia","Mitologia","Outro"
 ];
 
 // Filtros ativos no catálogo
@@ -2396,17 +2410,16 @@ function renderFiltros() {
         statusEl.appendChild(pAutor);
     }
 
-    // Gêneros presentes na biblioteca
-    const generosPresentes = [...new Set(livros.flatMap(l => l.generos && l.generos.length > 0 ? l.generos : (l.genero ? [l.genero] : [])))].sort();
+    // Gênero — botão que abre HUD
     const generoEl = document.getElementById("filtrosGenero");
     generoEl.innerHTML = "";
-    generosPresentes.forEach(g => {
-        const p = document.createElement("span");
-        p.className = "filtro-pill" + (filtroGenero === g ? " ativo" : "");
-        p.innerText = g;
-        p.onclick = () => { filtroGenero = filtroGenero === g ? "" : g; renderCatalogo(); };
-        generoEl.appendChild(p);
-    });
+    const pGenero = document.createElement("span");
+    pGenero.className = "filtro-pill" + (filtroGenero ? " ativo" : "");
+    pGenero.innerText = filtroGenero ? `✕ ${filtroGenero}` : "Gênero ▾";
+    pGenero.onclick = filtroGenero
+        ? () => { filtroGenero = ""; renderCatalogo(); }
+        : abrirGeneroHud;
+    generoEl.appendChild(pGenero);
 }
 
 function abrirAutorHud() {
@@ -2420,6 +2433,42 @@ function abrirAutorHud() {
 function fecharAutorHud() {
     document.getElementById("autorHud").classList.remove("aberto");
     document.getElementById("autorHudBackdrop").classList.remove("aberto");
+}
+
+function abrirGeneroHud() {
+    document.getElementById("generoHudBusca").value = "";
+    document.getElementById("generoHud").classList.add("aberto");
+    document.getElementById("generoHudBackdrop").classList.add("aberto");
+    filtrarGeneroHud();
+    document.getElementById("generoHudBusca").focus();
+}
+
+function fecharGeneroHud() {
+    document.getElementById("generoHud").classList.remove("aberto");
+    document.getElementById("generoHudBackdrop").classList.remove("aberto");
+}
+
+function filtrarGeneroHud() {
+    const busca = document.getElementById("generoHudBusca").value.toLowerCase();
+    const lista = document.getElementById("generoHudLista");
+    lista.innerHTML = "";
+    GENEROS.filter(g => !busca || g.toLowerCase().includes(busca)).forEach(g => {
+        const count = livros.filter(l =>
+            (l.generos && l.generos.includes(g)) || l.genero === g
+        ).length;
+        const item = document.createElement("div");
+        item.className = "autor-hud-item" + (filtroGenero === g ? " selecionado" : "");
+        item.innerHTML = `<span class="autor-hud-nome">${g}</span><span class="autor-hud-count">${count} livro${count !== 1 ? "s" : ""}</span>`;
+        item.onclick = () => {
+            filtroGenero = filtroGenero === g ? "" : g;
+            fecharGeneroHud();
+            renderCatalogo();
+        };
+        lista.appendChild(item);
+    });
+    if (lista.innerHTML === "") {
+        lista.innerHTML = '<p style="padding:12px 8px;color:#aaa;font-size:14px">Nenhum gênero encontrado.</p>';
+    }
 }
 
 function filtrarAutorHud() {
