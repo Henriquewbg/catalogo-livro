@@ -2580,11 +2580,13 @@ function novoDesejo() {
     tituloForm.innerText = "Adicionar desejo";
     autorInput.value = "";
     tituloInput.value = "";
+    descricaoInput.value = "";
     renderGeneroPicker("");
     imagemBase64 = "";
     document.getElementById("camposCatalogo").style.display = "none";
     document.getElementById("lancamentoInput").style.display = "none";
-    document.getElementById("descricaoInput").style.display = "none";
+    document.getElementById("descricaoInput").style.display = "";
+    document.getElementById("descricaoInput").placeholder = "Descrição (opcional)";
     document.getElementById("btnMoverCatalogo").style.display = "none";
     document.getElementById("btnExcluirLivro").style.display = "none";
     delete overlay.dataset.editando;
@@ -2599,11 +2601,13 @@ function editarDesejo(id) {
     tituloForm.innerText = "Editar desejo";
     autorInput.value = l.autor || "";
     tituloInput.value = l.titulo || "";
+    descricaoInput.value = l.descricao || "";
     renderGeneroPicker(l.generos || l.genero || []);
     imagemBase64 = l.capa || "";
     document.getElementById("camposCatalogo").style.display = "none";
     document.getElementById("lancamentoInput").style.display = "none";
-    document.getElementById("descricaoInput").style.display = "none";
+    document.getElementById("descricaoInput").style.display = "";
+    document.getElementById("descricaoInput").placeholder = "Descrição (opcional)";
     document.getElementById("btnMoverCatalogo").style.display = "block";
     document.getElementById("btnExcluirLivro").style.display = "block";
     overlay.dataset.editando = id;
@@ -3023,6 +3027,7 @@ function editarLivro(id) {
     document.getElementById("camposCatalogo").style.display = "block";
     document.getElementById("lancamentoInput").style.display = "";
     document.getElementById("descricaoInput").style.display = "";
+    document.getElementById("descricaoInput").placeholder = "Descrição / resenha (opcional)";
     document.getElementById("btnMoverCatalogo").style.display = "none";
     overlay.dataset.editando = id;
     btnExcluirLivro.style.display = "block";
@@ -3044,6 +3049,7 @@ function novoLivro() {
     document.getElementById("camposCatalogo").style.display = "block";
     document.getElementById("lancamentoInput").style.display = "";
     document.getElementById("descricaoInput").style.display = "";
+    document.getElementById("descricaoInput").placeholder = "Descrição / resenha (opcional)";
     document.getElementById("btnMoverCatalogo").style.display = "none";
     btnExcluirLivro.style.display = "none";
     overlay.style.zIndex = "1000";
