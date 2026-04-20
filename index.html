@@ -1408,7 +1408,7 @@ body {
         <input id="tituloInput" placeholder="Título">
         <input type="number" id="lancamentoInput" placeholder="Ano de lançamento" min="0" max="2100">
         <div id="camposCatalogo">
-            <select id="lidoInput">
+            <select id="lidoInput" onchange="atualizarCamposLido()">
                 <option value="false">Não lido</option>
                 <option value="true">Lido</option>
             </select>
@@ -1419,7 +1419,10 @@ body {
             <div class="genero-picker-label">Gênero</div>
             <div class="genero-opcoes" id="generoPicker"></div>
         </div>
-        <textarea id="descricaoInput" placeholder="Descrição / resenha (opcional)"></textarea>
+        <textarea id="sinopseInput" placeholder="Sinopse (opcional)"></textarea>
+        <div id="campoResenha">
+            <textarea id="descricaoInput" placeholder="Resenha (opcional)"></textarea>
+        </div>
         <input type="file" accept="image/*" id="fotoInput" style="margin-bottom:8px">
     </div>
     <div class="overlay-footer">
@@ -1629,7 +1632,14 @@ body {
             <div id="descricaoNota"></div>
         </div>
     </div>
-    <div class="descricao-corpo" id="descricaoCorpo"></div>
+    <div id="descricaoSinopseBox" style="display:none">
+        <div style="padding:16px 20px 4px;font-size:11px;letter-spacing:2px;color:#aaa;text-transform:uppercase">Sinopse</div>
+        <div class="descricao-corpo" id="descricaoSinopse"></div>
+    </div>
+    <div id="descricaoResenhaBox" style="display:none">
+        <div style="padding:16px 20px 4px;font-size:11px;letter-spacing:2px;color:#aaa;text-transform:uppercase">Resenha</div>
+        <div class="descricao-corpo" id="descricaoCorpo"></div>
+    </div>
 </div>
 
 <script>
@@ -2178,7 +2188,7 @@ function abrirPerfil(uid, email, cor) {
                     img.className = "favorito-capa";
                     img.src = l.capa;
                     img.title = l.titulo;
-                    img.onclick = () => l.descricao ? abrirDescricao(l) : ampliarImagem(l.capa, event);
+                    img.onclick = (e) => ampliarImagem(l.capa, e, l);
                     favsCapas.appendChild(img);
                 });
             } else {
@@ -2197,7 +2207,7 @@ function abrirPerfil(uid, email, cor) {
                     img.className = "desejo-capa";
                     img.src = l.capa;
                     img.title = `${l.titulo} · ${l.autor}`;
-                    img.onclick = (e) => ampliarImagem(l.capa, e);
+                    img.onclick = (e) => ampliarImagem(l.capa, e, l);
                     capas.appendChild(img);
                 });
             } else {
@@ -2238,13 +2248,13 @@ function abrirPerfil(uid, email, cor) {
             } else {
                 livrosAlfabeticos.forEach(l => {
                     const div = document.createElement("div");
-                    div.className = "item-ro" + (l.descricao ? " tem-descricao" : "");
+                    div.className = "item-ro" + ((l.descricao || l.sinopse) ? " tem-descricao" : "");
                     div.innerHTML = `
                         <div class="item-img-wrapper">
-                            <img src="${l.capa}" title="Ver capa" onclick="ampliarImagem('${l.capa}', event)">
+                            <img src="${l.capa}" title="Ver capa">
                         </div>
                         <div class="item-info">
-                            <div class="nome">${l.titulo}${l.descricao ? ' <span class="badge-descricao-item">💬</span>' : ""}</div>
+                            <div class="nome">${l.titulo}${(l.descricao || l.sinopse) ? ' <span class="badge-descricao-item">💬</span>' : ""}</div>
                             <div class="info-extra">
                                 ${l.autor}
                                 ${l.lancamento ? " · " + l.lancamento : ""}
@@ -2254,6 +2264,7 @@ function abrirPerfil(uid, email, cor) {
                             </div>
                         </div>
                     `;
+                    div.querySelector("img").onclick = (e) => ampliarImagem(l.capa, e, l);
                     if (l.descricao) div.onclick = (e) => { if (!e.target.closest("img")) abrirDescricao(l); };
                     catalogoEl.appendChild(div);
                 });
@@ -2412,13 +2423,13 @@ function filtrarPerfilAtual() {
         } else {
             lista.forEach(l => {
                 const div = document.createElement("div");
-                div.className = "item-ro" + (l.descricao ? " tem-descricao" : "");
+                div.className = "item-ro" + ((l.descricao || l.sinopse) ? " tem-descricao" : "");
                 div.innerHTML = `
                     <div class="item-img-wrapper">
-                        <img src="${l.capa}" onclick="ampliarImagem('${l.capa}', event)">
+                        <img src="${l.capa}">
                     </div>
                     <div class="item-info">
-                        <div class="nome">${l.titulo}${l.descricao ? ' <span class="badge-descricao-item">💬</span>' : ""}</div>
+                        <div class="nome">${l.titulo}${(l.descricao || l.sinopse) ? ' <span class="badge-descricao-item">💬</span>' : ""}</div>
                         <div class="info-extra">
                             ${l.autor}${l.lancamento ? " · " + l.lancamento : ""}
                             · ${l.lido ? "Lido" : "Não lido"}
@@ -2426,6 +2437,7 @@ function filtrarPerfilAtual() {
                             ${generoBadges(l)}
                         </div>
                     </div>`;
+                div.querySelector("img").onclick = (e) => ampliarImagem(l.capa, e, l);
                 if (l.descricao) div.onclick = (e) => { if (!e.target.closest("img")) abrirDescricao(l); };
                 catalogoEl.appendChild(div);
             });
@@ -2524,8 +2536,12 @@ function renderEmLeitura() {
         </div>`;
 }
 
-function ampliarImagem(src, event) {
+function ampliarImagem(src, event, livro) {
     event.stopPropagation();
+    if (livro && (livro.sinopse || livro.descricao)) {
+        abrirDescricao(livro);
+        return;
+    }
     document.getElementById("imagemAmpliadaSrc").src = src;
     document.getElementById("overlayImagem").style.display = "flex";
 }
@@ -2564,12 +2580,13 @@ function renderDesejos() {
         div.className = "item-desejo";
         div.innerHTML = `
             <div class="item-img-wrapper" style="width:54px;margin-right:14px;flex-shrink:0">
-                <img src="${l.capa}" style="width:54px;border-radius:6px;cursor:zoom-in" onclick="ampliarImagem('${l.capa}', event)">
+                <img src="${l.capa}" style="width:54px;border-radius:6px;cursor:zoom-in">
             </div>
             <div class="item-info" style="flex:1">
                 <div class="nome" style="font-size:16px">${l.titulo}</div>
                 <div class="info-extra">${l.autor}${l.lancamento ? " · " + l.lancamento : ""}${l.genero || (l.generos && l.generos.length) ? " · " + generoBadges(l) : ""}</div>
             </div>`;
+        div.querySelector("img").onclick = (e) => ampliarImagem(l.capa, e, l);
         div.querySelector(".item-info").onclick = () => editarDesejo(l.id);
         cont.appendChild(div);
     });
@@ -2581,12 +2598,13 @@ function novoDesejo() {
     autorInput.value = "";
     tituloInput.value = "";
     descricaoInput.value = "";
+    document.getElementById("sinopseInput").value = "";
     renderGeneroPicker("");
     imagemBase64 = "";
     document.getElementById("camposCatalogo").style.display = "none";
     document.getElementById("lancamentoInput").style.display = "none";
-    document.getElementById("descricaoInput").style.display = "";
-    document.getElementById("descricaoInput").placeholder = "Descrição (opcional)";
+    document.getElementById("sinopseInput").style.display = "";
+    document.getElementById("campoResenha").style.display = "none";
     document.getElementById("btnMoverCatalogo").style.display = "none";
     document.getElementById("btnExcluirLivro").style.display = "none";
     delete overlay.dataset.editando;
@@ -2601,13 +2619,13 @@ function editarDesejo(id) {
     tituloForm.innerText = "Editar desejo";
     autorInput.value = l.autor || "";
     tituloInput.value = l.titulo || "";
-    descricaoInput.value = l.descricao || "";
+    document.getElementById("sinopseInput").value = l.sinopse || "";
     renderGeneroPicker(l.generos || l.genero || []);
     imagemBase64 = l.capa || "";
     document.getElementById("camposCatalogo").style.display = "none";
     document.getElementById("lancamentoInput").style.display = "none";
-    document.getElementById("descricaoInput").style.display = "";
-    document.getElementById("descricaoInput").placeholder = "Descrição (opcional)";
+    document.getElementById("sinopseInput").style.display = "";
+    document.getElementById("campoResenha").style.display = "none";
     document.getElementById("btnMoverCatalogo").style.display = "block";
     document.getElementById("btnExcluirLivro").style.display = "block";
     overlay.dataset.editando = id;
@@ -2622,8 +2640,7 @@ function moverParaCatalogo() {
         desejo: false,
         lido: false,
         nota: 0,
-        lancamento: "",
-        descricao: ""
+        lancamento: ""
     }).then(() => {
         fechar();
         fecharDesejos();
@@ -2783,7 +2800,7 @@ function renderCatalogo() {
             </div>
         `;
 
-        div.querySelector(".item-img-wrapper img").onclick = (e) => ampliarImagem(l.capa, e);
+        div.querySelector(".item-img-wrapper img").onclick = (e) => ampliarImagem(l.capa, e, l);
         div.querySelector(".item-info").onclick = () => editarLivro(l.id);
 
         div.addEventListener("dragstart", onDragStart);
@@ -2936,7 +2953,8 @@ function salvarLivro() {
         lido: _editandoDesejo ? false : (lidoInput.value === "true"),
         nota: notaNova,
         capa: capaFinal,
-        descricao: descricaoInput.value.trim(),
+        descricao: _editandoDesejo ? "" : descricaoInput.value.trim(),
+        sinopse: document.getElementById("sinopseInput").value.trim(),
         generos: generoSelecionado.length > 0 ? [...generoSelecionado] : [],
         genero: generoSelecionado[0] || "",
         desejo: _editandoDesejo,
@@ -3011,6 +3029,11 @@ function renderGeneroPicker(selecionados) {
     });
 }
 
+function atualizarCamposLido() {
+    const lido = document.getElementById("lidoInput").value === "true";
+    document.getElementById("campoResenha").style.display = lido ? "block" : "none";
+}
+
 function editarLivro(id) {
     const l = livros.find(x => x.id === id);
     if (!l) return;
@@ -3022,12 +3045,13 @@ function editarLivro(id) {
     lidoInput.value = l.lido ? "true" : "false";
     renderEstrelasWidget(l.nota ?? 0);
     descricaoInput.value = l.descricao || "";
+    document.getElementById("sinopseInput").value = l.sinopse || "";
     renderGeneroPicker(l.generos || l.genero || []);
     imagemBase64 = l.capa || "";
     document.getElementById("camposCatalogo").style.display = "block";
     document.getElementById("lancamentoInput").style.display = "";
-    document.getElementById("descricaoInput").style.display = "";
-    document.getElementById("descricaoInput").placeholder = "Descrição / resenha (opcional)";
+    document.getElementById("sinopseInput").style.display = "";
+    document.getElementById("campoResenha").style.display = l.lido ? "block" : "none";
     document.getElementById("btnMoverCatalogo").style.display = "none";
     overlay.dataset.editando = id;
     btnExcluirLivro.style.display = "block";
@@ -3044,12 +3068,13 @@ function novoLivro() {
     lidoInput.value = "false";
     renderEstrelasWidget(0);
     descricaoInput.value = "";
+    document.getElementById("sinopseInput").value = "";
     renderGeneroPicker("");
     imagemBase64 = "";
     document.getElementById("camposCatalogo").style.display = "block";
     document.getElementById("lancamentoInput").style.display = "";
-    document.getElementById("descricaoInput").style.display = "";
-    document.getElementById("descricaoInput").placeholder = "Descrição / resenha (opcional)";
+    document.getElementById("sinopseInput").style.display = "";
+    document.getElementById("campoResenha").style.display = "none";
     document.getElementById("btnMoverCatalogo").style.display = "none";
     btnExcluirLivro.style.display = "none";
     overlay.style.zIndex = "1000";
@@ -3060,7 +3085,7 @@ function fechar() {
     overlay.style.display = "none";
     overlay.style.zIndex = "1000";
     document.getElementById("lancamentoInput").style.display = "";
-    document.getElementById("descricaoInput").style.display = "";
+    document.getElementById("sinopseInput").style.display = "";
     _editandoDesejo = false;
 }
 
@@ -3069,7 +3094,21 @@ function abrirDescricao(l) {
     document.getElementById("descricaoTitulo").innerText = l.titulo;
     document.getElementById("descricaoAutor").innerText = l.autor + (l.lancamento ? " · " + l.lancamento : "");
     document.getElementById("descricaoNota").innerHTML = (l.nota ? estrelasSVG(l.nota) : "") + (generoBadges(l) ? " " + generoBadges(l) : "");
-    document.getElementById("descricaoCorpo").innerText = l.descricao || "";
+
+    const sinopseBox = document.getElementById("descricaoSinopseBox");
+    const resenhaBox = document.getElementById("descricaoResenhaBox");
+    if (l.sinopse) {
+        sinopseBox.style.display = "block";
+        document.getElementById("descricaoSinopse").innerText = l.sinopse;
+    } else {
+        sinopseBox.style.display = "none";
+    }
+    if (l.descricao) {
+        resenhaBox.style.display = "block";
+        document.getElementById("descricaoCorpo").innerText = l.descricao;
+    } else {
+        resenhaBox.style.display = "none";
+    }
     document.getElementById("overlayDescricao").style.display = "block";
 }
 
