@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1296,6 +1297,7 @@ body {
 }
 .btn-editar-perfil:hover { background: rgba(255,255,255,0.25); }
 </style>
+
 </head>
 
 <body>
@@ -1320,26 +1322,29 @@ body {
         <div class="avatar-btn" id="avatarBtn" onclick="togglePerfil()">??</div>
     </div>
 
-    <div class="tabs">
-        <div class="tab active" onclick="trocarAba('catalogo')">Catálogo</div>
-        <div class="tab" onclick="trocarAba('ranking')">Ranking</div>
-        <div class="tab" onclick="trocarAba('comunidade')">Comunidade</div>
-    </div>
+```
+<div class="tabs">
+    <div class="tab active" onclick="trocarAba('catalogo')">Catálogo</div>
+    <div class="tab" onclick="trocarAba('ranking')">Ranking</div>
+    <div class="tab" onclick="trocarAba('comunidade')">Comunidade</div>
+</div>
 
-    <div id="areaCatalogo">
-        <button class="btn-topo" onclick="escolherEmLeitura()">Escolher livro em leitura</button>
-        <div id="emLeituraBox"></div>
-        <div class="search-container">
-            <input id="searchInput" placeholder="Buscar..." oninput="renderCatalogo()">
-            <div class="counter" id="counter"></div>
-        </div>
-        <div id="filtrosArea" style="margin-top:6px">
-            <div class="filtros-linha" id="filtrosStatus"></div>
-            <div class="filtros-linha" id="filtrosGenero"></div>
-        </div>
+<div id="areaCatalogo">
+    <button class="btn-topo" onclick="escolherEmLeitura()">Escolher livro em leitura</button>
+    <div id="emLeituraBox"></div>
+    <div class="search-container">
+        <input id="searchInput" placeholder="Buscar..." oninput="renderCatalogo()">
+        <div class="counter" id="counter"></div>
     </div>
+    <div id="filtrosArea" style="margin-top:6px">
+        <div class="filtros-linha" id="filtrosStatus"></div>
+        <div class="filtros-linha" id="filtrosGenero"></div>
+    </div>
+</div>
+```
 
 <!-- HUD de autores -->
+
 <div class="autor-hud-backdrop" id="autorHudBackdrop" onclick="fecharAutorHud()"></div>
 <div class="autor-hud" id="autorHud">
     <div class="autor-hud-handle"></div>
@@ -1354,6 +1359,7 @@ body {
 </div>
 
 <!-- HUD de gêneros do catálogo -->
+
 <div class="autor-hud-backdrop" id="generoHudBackdrop" onclick="fecharGeneroHud()"></div>
 <div class="autor-hud" id="generoHud">
     <div class="autor-hud-handle"></div>
@@ -1367,17 +1373,21 @@ body {
     <div class="autor-hud-lista" id="generoHudLista"></div>
 </div>
 
-    <div id="areaRanking" style="display:none">
-        <div class="search-container">
-            <input id="rankingSearchInput" placeholder="Buscar no ranking..." oninput="renderRanking()">
-        </div>
-    </div>
-
-    <div id="areaComunidade">
+```
+<div id="areaRanking" style="display:none">
+    <div class="search-container">
+        <input id="rankingSearchInput" placeholder="Buscar no ranking..." oninput="renderRanking()">
     </div>
 </div>
 
+<div id="areaComunidade">
+</div>
+```
+
+</div>
+
 <!-- Dropdown de perfil -->
+
 <div class="perfil-dropdown" id="perfilDropdown">
     <div class="perfil-dropdown-header" onclick="abrirMeuPerfil()">
         <div class="perfil-avatar-grande" id="perfilAvatarGrande">??</div>
@@ -1401,6 +1411,7 @@ body {
 <button id="btnAdd" onclick="novoLivro()">＋</button>
 
 <!-- OVERLAY EDITAR/NOVO LIVRO -->
+
 <div class="overlay" id="overlay">
     <div class="overlay-body">
         <h2 id="tituloForm">Novo Livro</h2>
@@ -1434,6 +1445,7 @@ body {
 </div>
 
 <!-- OVERLAY LISTA DE DESEJOS -->
+
 <div id="overlayDesejos">
     <div class="desejos-header">
         <button class="desejos-voltar" onclick="fecharDesejos()">‹</button>
@@ -1444,6 +1456,7 @@ body {
 </div>
 
 <!-- OVERLAY ESCOLHER LIVRO EM LEITURA -->
+
 <div id="overlayLeitura">
     <div class="leitura-body">
         <h2>Qual livro você está lendo?</h2>
@@ -1458,11 +1471,13 @@ body {
 </div>
 
 <!-- OVERLAY AMPLIAR IMAGEM -->
+
 <div id="overlayImagem" onclick="fecharImagem()">
     <img id="imagemAmpliadaSrc" src="" alt="">
 </div>
 
 <!-- ── OVERLAY PERFIL PÚBLICO ───────────────────── -->
+
 <div id="overlayPerfil">
     <div class="perfil-header" id="perfilHeader">
         <div class="perfil-banner" id="perfilBanner"></div>
@@ -1499,129 +1514,137 @@ body {
         </div>
     </div>
 
-    <!-- Livros favoritos -->
-    <div class="favoritos-secao" id="perfilFavoritosBox" style="display:none">
-        <div class="favoritos-label">Favoritos</div>
-        <div class="favoritos-capas" id="perfilFavoritosCapas"></div>
-    </div>
+```
+<!-- Livros favoritos -->
+<div class="favoritos-secao" id="perfilFavoritosBox" style="display:none">
+    <div class="favoritos-label">Favoritos</div>
+    <div class="favoritos-capas" id="perfilFavoritosCapas"></div>
+</div>
 
-    <!-- Lista de desejos no perfil -->
-    <div class="desejos-perfil-secao" id="perfilDesejosBox" style="display:none">
-        <div class="desejos-perfil-label">🤍 Lista de desejos</div>
-        <div class="desejos-perfil-capas" id="perfilDesejosCapas"></div>
-    </div>
+<!-- Lista de desejos no perfil -->
+<div class="desejos-perfil-secao" id="perfilDesejosBox" style="display:none">
+    <div class="desejos-perfil-label">🤍 Lista de desejos</div>
+    <div class="desejos-perfil-capas" id="perfilDesejosCapas"></div>
+</div>
 
-    <!-- Livros em comum (só ao visitar outro perfil) -->
-    <div class="em-comum-secao" id="perfilEmComumBox" style="display:none">
-        <div class="em-comum-label" id="perfilEmComumLabel">Livros em comum</div>
-        <div class="em-comum-capas" id="perfilEmComumCapas"></div>
-    </div>
+<!-- Livros em comum (só ao visitar outro perfil) -->
+<div class="em-comum-secao" id="perfilEmComumBox" style="display:none">
+    <div class="em-comum-label" id="perfilEmComumLabel">Livros em comum</div>
+    <div class="em-comum-capas" id="perfilEmComumCapas"></div>
+</div>
 
-    <!-- Em leitura -->
-    <div class="perfil-em-leitura-box" id="perfilEmLeituraBox" style="display:none">
-        <div class="perfil-em-leitura-label">Lendo agora</div>
-        <div class="em-leitura" id="perfilEmLeituraConteudo"></div>
-    </div>
+<!-- Em leitura -->
+<div class="perfil-em-leitura-box" id="perfilEmLeituraBox" style="display:none">
+    <div class="perfil-em-leitura-label">Lendo agora</div>
+    <div class="em-leitura" id="perfilEmLeituraConteudo"></div>
+</div>
 
-    <!-- Tabs catálogo / ranking -->
-    <div class="perfil-tabs" id="perfilTabsEl">
-        <div class="perfil-tab active" onclick="trocarPerfilTab('catalogo')" id="ptabCatalogo">Catálogo</div>
-        <div class="perfil-tab" onclick="trocarPerfilTab('ranking')" id="ptabRanking">Ranking</div>
-    </div>
+<!-- Tabs catálogo / ranking -->
+<div class="perfil-tabs" id="perfilTabsEl">
+    <div class="perfil-tab active" onclick="trocarPerfilTab('catalogo')" id="ptabCatalogo">Catálogo</div>
+    <div class="perfil-tab" onclick="trocarPerfilTab('ranking')" id="ptabRanking">Ranking</div>
+</div>
 
-    <div style="padding:10px 20px 0">
-        <input id="perfilSearchInput" placeholder="Buscar..." oninput="filtrarPerfilAtual()"
-            style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid #ddd;box-sizing:border-box;font-size:15px">
-    </div>
+<div style="padding:10px 20px 0">
+    <input id="perfilSearchInput" placeholder="Buscar..." oninput="filtrarPerfilAtual()"
+        style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid #ddd;box-sizing:border-box;font-size:15px">
+</div>
 
-    <div id="perfilFiltrosArea" style="padding:6px 20px 0">
-        <div class="filtros-linha" id="perfilFiltrosStatus"></div>
-        <div class="filtros-linha" id="perfilFiltrosGenero"></div>
-    </div>
+<div id="perfilFiltrosArea" style="padding:6px 20px 0">
+    <div class="filtros-linha" id="perfilFiltrosStatus"></div>
+    <div class="filtros-linha" id="perfilFiltrosGenero"></div>
+</div>
 
-    <!-- HUD autor do perfil -->
-    <div class="autor-hud-backdrop" id="perfilAutorHudBackdrop" onclick="fecharPerfilAutorHud()"></div>
-    <div class="autor-hud" id="perfilAutorHud">
-        <div class="autor-hud-handle"></div>
-        <div class="autor-hud-header">
-            <span class="autor-hud-titulo">Filtrar por autor</span>
-            <button class="autor-hud-fechar" onclick="fecharPerfilAutorHud()">×</button>
-        </div>
-        <div class="autor-hud-busca">
-            <input id="perfilAutorHudBusca" placeholder="Buscar autor..." oninput="filtrarPerfilAutorHud()">
-        </div>
-        <div class="autor-hud-lista" id="perfilAutorHudLista"></div>
+<!-- HUD autor do perfil -->
+<div class="autor-hud-backdrop" id="perfilAutorHudBackdrop" onclick="fecharPerfilAutorHud()"></div>
+<div class="autor-hud" id="perfilAutorHud">
+    <div class="autor-hud-handle"></div>
+    <div class="autor-hud-header">
+        <span class="autor-hud-titulo">Filtrar por autor</span>
+        <button class="autor-hud-fechar" onclick="fecharPerfilAutorHud()">×</button>
     </div>
+    <div class="autor-hud-busca">
+        <input id="perfilAutorHudBusca" placeholder="Buscar autor..." oninput="filtrarPerfilAutorHud()">
+    </div>
+    <div class="autor-hud-lista" id="perfilAutorHudLista"></div>
+</div>
 
-    <!-- HUD gênero do perfil -->
-    <div class="autor-hud-backdrop" id="perfilGeneroHudBackdrop" onclick="fecharPerfilGeneroHud()"></div>
-    <div class="autor-hud" id="perfilGeneroHud">
-        <div class="autor-hud-handle"></div>
-        <div class="autor-hud-header">
-            <span class="autor-hud-titulo">Filtrar por gênero</span>
-            <button class="autor-hud-fechar" onclick="fecharPerfilGeneroHud()">×</button>
-        </div>
-        <div class="autor-hud-busca">
-            <input id="perfilGeneroHudBusca" placeholder="Buscar gênero..." oninput="filtrarPerfilGeneroHud()">
-        </div>
-        <div class="autor-hud-lista" id="perfilGeneroHudLista"></div>
+<!-- HUD gênero do perfil -->
+<div class="autor-hud-backdrop" id="perfilGeneroHudBackdrop" onclick="fecharPerfilGeneroHud()"></div>
+<div class="autor-hud" id="perfilGeneroHud">
+    <div class="autor-hud-handle"></div>
+    <div class="autor-hud-header">
+        <span class="autor-hud-titulo">Filtrar por gênero</span>
+        <button class="autor-hud-fechar" onclick="fecharPerfilGeneroHud()">×</button>
     </div>
+    <div class="autor-hud-busca">
+        <input id="perfilGeneroHudBusca" placeholder="Buscar gênero..." oninput="filtrarPerfilGeneroHud()">
+    </div>
+    <div class="autor-hud-lista" id="perfilGeneroHudLista"></div>
+</div>
 
-    <div class="perfil-conteudo">
-        <div id="perfilCatalogo"></div>
-        <div id="perfilRanking" style="display:none"></div>
-    </div>
+<div class="perfil-conteudo">
+    <div id="perfilCatalogo"></div>
+    <div id="perfilRanking" style="display:none"></div>
+</div>
+```
+
 </div>
 
 <!-- ── OVERLAY EDITAR PERFIL ─────────────────────── -->
+
 <div id="overlayEditarPerfil">
     <div class="editar-body">
         <h2>Editar perfil</h2>
 
-        <!-- Banner -->
-        <div class="banner-picker-wrap">
-            <div class="banner-picker-label">Imagem de fundo</div>
-            <div class="banner-preview" id="bannerPreview" onclick="document.getElementById('bannerInput').click()">
-                <span class="banner-preview-hint" id="bannerHint">Toque para escolher uma imagem</span>
-                <div class="banner-preview-overlay">🖼️</div>
-            </div>
-            <input type="file" accept="image/*" id="bannerInput" style="display:none">
+```
+    <!-- Banner -->
+    <div class="banner-picker-wrap">
+        <div class="banner-picker-label">Imagem de fundo</div>
+        <div class="banner-preview" id="bannerPreview" onclick="document.getElementById('bannerInput').click()">
+            <span class="banner-preview-hint" id="bannerHint">Toque para escolher uma imagem</span>
+            <div class="banner-preview-overlay">🖼️</div>
         </div>
-
-        <!-- Avatar -->
-        <div class="editar-avatar-wrap">
-            <div class="editar-avatar-circulo" id="editarAvatarCirculo" onclick="document.getElementById('fotoPerfilInput').click()">
-                <span id="editarAvatarIniciais">??</span>
-                <div class="editar-avatar-overlay">📷</div>
-            </div>
-            <span class="editar-avatar-hint">Toque para trocar a foto</span>
-            <input type="file" accept="image/*" id="fotoPerfilInput" style="display:none">
-        </div>
-
-        <!-- Nome -->
-        <input type="text" id="editarNomeInput" placeholder="Nome de exibição">
-
-        <!-- Cor de destaque -->
-        <div class="cor-picker-wrap">
-            <div class="cor-picker-label">Cor de destaque</div>
-            <div class="cor-opcoes" id="corOpcoes"></div>
-        </div>
-
-        <!-- Livros favoritos -->
-        <div class="favoritos-edit-wrap">
-            <div class="favoritos-edit-label">Livros favoritos (até 3)</div>
-            <input id="favSearchInput" placeholder="Buscar livro..." oninput="filtrarFavoritos()"
-                style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;box-sizing:border-box;font-size:14px;margin-bottom:10px">
-            <div class="favoritos-edit-lista" id="favoritosEditLista"></div>
-        </div>
+        <input type="file" accept="image/*" id="bannerInput" style="display:none">
     </div>
-    <div class="editar-footer">
-        <button class="btn-salvar-perfil" onclick="salvarEdicaoPerfil()">Salvar</button>
-        <button class="btn-cancelar-perfil" onclick="fecharEditarPerfil()">Cancelar</button>
+
+    <!-- Avatar -->
+    <div class="editar-avatar-wrap">
+        <div class="editar-avatar-circulo" id="editarAvatarCirculo" onclick="document.getElementById('fotoPerfilInput').click()">
+            <span id="editarAvatarIniciais">??</span>
+            <div class="editar-avatar-overlay">📷</div>
+        </div>
+        <span class="editar-avatar-hint">Toque para trocar a foto</span>
+        <input type="file" accept="image/*" id="fotoPerfilInput" style="display:none">
     </div>
+
+    <!-- Nome -->
+    <input type="text" id="editarNomeInput" placeholder="Nome de exibição">
+
+    <!-- Cor de destaque -->
+    <div class="cor-picker-wrap">
+        <div class="cor-picker-label">Cor de destaque</div>
+        <div class="cor-opcoes" id="corOpcoes"></div>
+    </div>
+
+    <!-- Livros favoritos -->
+    <div class="favoritos-edit-wrap">
+        <div class="favoritos-edit-label">Livros favoritos (até 3)</div>
+        <input id="favSearchInput" placeholder="Buscar livro..." oninput="filtrarFavoritos()"
+            style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;box-sizing:border-box;font-size:14px;margin-bottom:10px">
+        <div class="favoritos-edit-lista" id="favoritosEditLista"></div>
+    </div>
+</div>
+<div class="editar-footer">
+    <button class="btn-salvar-perfil" onclick="salvarEdicaoPerfil()">Salvar</button>
+    <button class="btn-cancelar-perfil" onclick="fecharEditarPerfil()">Cancelar</button>
+</div>
+```
+
 </div>
 
 <!-- ── OVERLAY DESCRIÇÃO DO LIVRO ────────────────── -->
+
 <div id="overlayDescricao">
     <div class="descricao-header">
         <button class="descricao-voltar" onclick="fecharDescricao()">‹</button>
@@ -3121,12 +3144,13 @@ function escolherEmLeitura() {
     lista.innerHTML = "";
     const inp = document.getElementById("leituraSearchInput");
     if (inp) inp.value = "";
-    const temEmLeitura = livros.some(l => l.emLeitura);
+    const livrosCatalogo = livros.filter(l => !l.desejo);
+    const temEmLeitura = livrosCatalogo.some(l => l.emLeitura);
     document.getElementById("btnRemoverLeitura").style.display = temEmLeitura ? "block" : "none";
-    if (livros.length === 0) {
+    if (livrosCatalogo.length === 0) {
         lista.innerHTML = "<p style='color:#888'>Nenhum livro cadastrado.</p>";
     } else {
-        livros.forEach(l => {
+        livrosCatalogo.forEach(l => {
             const div = document.createElement("div");
             div.className = "item-leitura" + (l.emLeitura ? " selecionado" : "");
             div.innerHTML = `<img src="${l.capa}"><div><div class="nome-leitura">${l.titulo}</div><div class="autor-leitura">${l.autor}</div></div>`;
@@ -3279,5 +3303,6 @@ function estrelasSVG(nota) {
 
 renderCatalogo();
 </script>
+
 </body>
 </html>
