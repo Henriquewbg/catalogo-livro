@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -642,7 +641,143 @@ body {
     opacity: 0.6;
 }
 
-/* ── Filtros do catálogo ──────────────────────────── */
+/* ── Google Books busca ───────────────────────────── */
+.gbooks-busca-wrap {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.gbooks-busca-wrap input {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    margin: 0;
+}
+.gbooks-busca-wrap input:focus { outline: none; border-color: #aaa; }
+.gbooks-btn {
+    padding: 0 16px;
+    background: #0f172a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.gbooks-btn:hover { background: #272c38; }
+.gbooks-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* HUD de resultados */
+.gbooks-hud-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 1400;
+    display: none;
+}
+.gbooks-hud-backdrop.aberto { display: block; }
+
+.gbooks-hud {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: white;
+    border-radius: 18px 18px 0 0;
+    z-index: 1401;
+    display: none;
+    max-height: 70vh;
+    flex-direction: column;
+}
+.gbooks-hud.aberto { display: flex; animation: slideUpHud 0.2s ease; }
+
+.gbooks-hud-handle {
+    width: 36px; height: 4px;
+    background: #ddd; border-radius: 2px;
+    margin: 10px auto 4px; flex-shrink: 0;
+}
+.gbooks-hud-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 20px 12px;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0;
+}
+.gbooks-hud-titulo { font-size: 15px; font-weight: 600; color: #0f172a; }
+.gbooks-hud-fechar {
+    background: none; border: none; font-size: 22px;
+    cursor: pointer; color: #bbb; padding: 0; line-height: 1;
+}
+.gbooks-hud-lista {
+    overflow-y: auto;
+    padding: 8px 16px 24px;
+    flex: 1;
+}
+.gbooks-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.1s;
+    align-items: flex-start;
+}
+.gbooks-item:hover { background: #f8fafc; }
+.gbooks-item img {
+    width: 50px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 5px;
+    flex-shrink: 0;
+    background: #e5e7eb;
+}
+.gbooks-item-titulo { font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 3px; }
+.gbooks-item-autor  { font-size: 13px; color: #666; margin-bottom: 2px; }
+.gbooks-item-ano    { font-size: 12px; color: #aaa; }
+.gbooks-vazio { padding: 20px; text-align: center; color: #aaa; font-size: 14px; }
+
+/* ── Progresso de leitura ─────────────────────────── */
+.progresso-wrap {
+    margin-top: 10px;
+}
+.progresso-barra-bg {
+    height: 5px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+.progresso-barra-fill {
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+.progresso-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+.progresso-input {
+    width: 64px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    outline: none;
+}
+.progresso-input::placeholder { color: rgba(255,255,255,0.5); }
+.progresso-input:focus { background: rgba(255,255,255,0.25); }
+.progresso-sep { color: rgba(255,255,255,0.6); font-size: 14px; }
+.progresso-pct { font-size: 14px; font-weight: 600; min-width: 40px; }
+
 .filtros-wrap {
     display: flex;
     gap: 6px;
@@ -1297,7 +1432,6 @@ body {
 }
 .btn-editar-perfil:hover { background: rgba(255,255,255,0.25); }
 </style>
-
 </head>
 
 <body>
@@ -1322,26 +1456,26 @@ body {
         <div class="avatar-btn" id="avatarBtn" onclick="togglePerfil()">??</div>
     </div>
 
-<div class="tabs">
-    <div class="tab active" onclick="trocarAba('catalogo')">Catálogo</div>
-    <div class="tab" onclick="trocarAba('ranking')">Ranking</div>
-    <div class="tab" onclick="trocarAba('comunidade')">Comunidade</div>
-</div>
+    <div class="tabs">
+        <div class="tab active" onclick="trocarAba('catalogo')">Catálogo</div>
+        <div class="tab" onclick="trocarAba('ranking')">Ranking</div>
+        <div class="tab" onclick="trocarAba('comunidade')">Comunidade</div>
+    </div>
 
-<div id="areaCatalogo">
-    <button class="btn-topo" onclick="escolherEmLeitura()">Escolher livro em leitura</button>
-    <div id="emLeituraBox"></div>
-    <div class="search-container">
-        <input id="searchInput" placeholder="Buscar..." oninput="renderCatalogo()">
-        <div class="counter" id="counter"></div>
+    <div id="areaCatalogo">
+        <button class="btn-topo" onclick="escolherEmLeitura()">Escolher livro em leitura</button>
+        <div id="emLeituraBox"></div>
+        <div class="search-container">
+            <input id="searchInput" placeholder="Buscar..." oninput="renderCatalogo()">
+            <div class="counter" id="counter"></div>
+        </div>
+        <div id="filtrosArea" style="margin-top:6px">
+            <div class="filtros-linha" id="filtrosStatus"></div>
+            <div class="filtros-linha" id="filtrosGenero"></div>
+        </div>
     </div>
-    <div id="filtrosArea" style="margin-top:6px">
-        <div class="filtros-linha" id="filtrosStatus"></div>
-        <div class="filtros-linha" id="filtrosGenero"></div>
-    </div>
-</div>
+
 <!-- HUD de autores -->
-
 <div class="autor-hud-backdrop" id="autorHudBackdrop" onclick="fecharAutorHud()"></div>
 <div class="autor-hud" id="autorHud">
     <div class="autor-hud-handle"></div>
@@ -1356,7 +1490,6 @@ body {
 </div>
 
 <!-- HUD de gêneros do catálogo -->
-
 <div class="autor-hud-backdrop" id="generoHudBackdrop" onclick="fecharGeneroHud()"></div>
 <div class="autor-hud" id="generoHud">
     <div class="autor-hud-handle"></div>
@@ -1370,19 +1503,17 @@ body {
     <div class="autor-hud-lista" id="generoHudLista"></div>
 </div>
 
-<div id="areaRanking" style="display:none">
-    <div class="search-container">
-        <input id="rankingSearchInput" placeholder="Buscar no ranking..." oninput="renderRanking()">
+    <div id="areaRanking" style="display:none">
+        <div class="search-container">
+            <input id="rankingSearchInput" placeholder="Buscar no ranking..." oninput="renderRanking()">
+        </div>
+    </div>
+
+    <div id="areaComunidade">
     </div>
 </div>
 
-<div id="areaComunidade">
-</div>
-
-</div>
-
 <!-- Dropdown de perfil -->
-
 <div class="perfil-dropdown" id="perfilDropdown">
     <div class="perfil-dropdown-header" onclick="abrirMeuPerfil()">
         <div class="perfil-avatar-grande" id="perfilAvatarGrande">??</div>
@@ -1406,7 +1537,6 @@ body {
 <button id="btnAdd" onclick="novoLivro()">＋</button>
 
 <!-- OVERLAY EDITAR/NOVO LIVRO -->
-
 <div class="overlay" id="overlay">
     <div class="overlay-body">
         <h2 id="tituloForm">Novo Livro</h2>
@@ -1440,7 +1570,6 @@ body {
 </div>
 
 <!-- OVERLAY LISTA DE DESEJOS -->
-
 <div id="overlayDesejos">
     <div class="desejos-header">
         <button class="desejos-voltar" onclick="fecharDesejos()">‹</button>
@@ -1451,7 +1580,6 @@ body {
 </div>
 
 <!-- OVERLAY ESCOLHER LIVRO EM LEITURA -->
-
 <div id="overlayLeitura">
     <div class="leitura-body">
         <h2>Qual livro você está lendo?</h2>
@@ -1466,13 +1594,11 @@ body {
 </div>
 
 <!-- OVERLAY AMPLIAR IMAGEM -->
-
 <div id="overlayImagem" onclick="fecharImagem()">
     <img id="imagemAmpliadaSrc" src="" alt="">
 </div>
 
 <!-- ── OVERLAY PERFIL PÚBLICO ───────────────────── -->
-
 <div id="overlayPerfil">
     <div class="perfil-header" id="perfilHeader">
         <div class="perfil-banner" id="perfilBanner"></div>
@@ -1509,132 +1635,129 @@ body {
         </div>
     </div>
 
-<!-- Livros favoritos -->
-<div class="favoritos-secao" id="perfilFavoritosBox" style="display:none">
-    <div class="favoritos-label">Favoritos</div>
-    <div class="favoritos-capas" id="perfilFavoritosCapas"></div>
-</div>
-
-<!-- Lista de desejos no perfil -->
-<div class="desejos-perfil-secao" id="perfilDesejosBox" style="display:none">
-    <div class="desejos-perfil-label">🤍 Lista de desejos</div>
-    <div class="desejos-perfil-capas" id="perfilDesejosCapas"></div>
-</div>
-
-<!-- Livros em comum (só ao visitar outro perfil) -->
-<div class="em-comum-secao" id="perfilEmComumBox" style="display:none">
-    <div class="em-comum-label" id="perfilEmComumLabel">Livros em comum</div>
-    <div class="em-comum-capas" id="perfilEmComumCapas"></div>
-</div>
-
-<!-- Em leitura -->
-<div class="perfil-em-leitura-box" id="perfilEmLeituraBox" style="display:none">
-    <div class="perfil-em-leitura-label">Lendo agora</div>
-    <div class="em-leitura" id="perfilEmLeituraConteudo"></div>
-</div>
-
-<!-- Tabs catálogo / ranking -->
-<div class="perfil-tabs" id="perfilTabsEl">
-    <div class="perfil-tab active" onclick="trocarPerfilTab('catalogo')" id="ptabCatalogo">Catálogo</div>
-    <div class="perfil-tab" onclick="trocarPerfilTab('ranking')" id="ptabRanking">Ranking</div>
-</div>
-
-<div style="padding:10px 20px 0">
-    <input id="perfilSearchInput" placeholder="Buscar..." oninput="filtrarPerfilAtual()"
-        style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid #ddd;box-sizing:border-box;font-size:15px">
-</div>
-
-<div id="perfilFiltrosArea" style="padding:6px 20px 0">
-    <div class="filtros-linha" id="perfilFiltrosStatus"></div>
-    <div class="filtros-linha" id="perfilFiltrosGenero"></div>
-</div>
-
-<!-- HUD autor do perfil -->
-<div class="autor-hud-backdrop" id="perfilAutorHudBackdrop" onclick="fecharPerfilAutorHud()"></div>
-<div class="autor-hud" id="perfilAutorHud">
-    <div class="autor-hud-handle"></div>
-    <div class="autor-hud-header">
-        <span class="autor-hud-titulo">Filtrar por autor</span>
-        <button class="autor-hud-fechar" onclick="fecharPerfilAutorHud()">×</button>
+    <!-- Livros favoritos -->
+    <div class="favoritos-secao" id="perfilFavoritosBox" style="display:none">
+        <div class="favoritos-label">Favoritos</div>
+        <div class="favoritos-capas" id="perfilFavoritosCapas"></div>
     </div>
-    <div class="autor-hud-busca">
-        <input id="perfilAutorHudBusca" placeholder="Buscar autor..." oninput="filtrarPerfilAutorHud()">
-    </div>
-    <div class="autor-hud-lista" id="perfilAutorHudLista"></div>
-</div>
 
-<!-- HUD gênero do perfil -->
-<div class="autor-hud-backdrop" id="perfilGeneroHudBackdrop" onclick="fecharPerfilGeneroHud()"></div>
-<div class="autor-hud" id="perfilGeneroHud">
-    <div class="autor-hud-handle"></div>
-    <div class="autor-hud-header">
-        <span class="autor-hud-titulo">Filtrar por gênero</span>
-        <button class="autor-hud-fechar" onclick="fecharPerfilGeneroHud()">×</button>
+    <!-- Lista de desejos no perfil -->
+    <div class="desejos-perfil-secao" id="perfilDesejosBox" style="display:none">
+        <div class="desejos-perfil-label">🤍 Lista de desejos</div>
+        <div class="desejos-perfil-capas" id="perfilDesejosCapas"></div>
     </div>
-    <div class="autor-hud-busca">
-        <input id="perfilGeneroHudBusca" placeholder="Buscar gênero..." oninput="filtrarPerfilGeneroHud()">
+
+    <!-- Livros em comum (só ao visitar outro perfil) -->
+    <div class="em-comum-secao" id="perfilEmComumBox" style="display:none">
+        <div class="em-comum-label" id="perfilEmComumLabel">Livros em comum</div>
+        <div class="em-comum-capas" id="perfilEmComumCapas"></div>
     </div>
-    <div class="autor-hud-lista" id="perfilGeneroHudLista"></div>
-</div>
 
-<div class="perfil-conteudo">
-    <div id="perfilCatalogo"></div>
-    <div id="perfilRanking" style="display:none"></div>
-</div>
+    <!-- Em leitura -->
+    <div class="perfil-em-leitura-box" id="perfilEmLeituraBox" style="display:none">
+        <div class="perfil-em-leitura-label">Lendo agora</div>
+        <div class="em-leitura" id="perfilEmLeituraConteudo"></div>
+    </div>
 
+    <!-- Tabs catálogo / ranking -->
+    <div class="perfil-tabs" id="perfilTabsEl">
+        <div class="perfil-tab active" onclick="trocarPerfilTab('catalogo')" id="ptabCatalogo">Catálogo</div>
+        <div class="perfil-tab" onclick="trocarPerfilTab('ranking')" id="ptabRanking">Ranking</div>
+    </div>
+
+    <div style="padding:10px 20px 0">
+        <input id="perfilSearchInput" placeholder="Buscar..." oninput="filtrarPerfilAtual()"
+            style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid #ddd;box-sizing:border-box;font-size:15px">
+    </div>
+
+    <div id="perfilFiltrosArea" style="padding:6px 20px 0">
+        <div class="filtros-linha" id="perfilFiltrosStatus"></div>
+        <div class="filtros-linha" id="perfilFiltrosGenero"></div>
+    </div>
+
+    <!-- HUD autor do perfil -->
+    <div class="autor-hud-backdrop" id="perfilAutorHudBackdrop" onclick="fecharPerfilAutorHud()"></div>
+    <div class="autor-hud" id="perfilAutorHud">
+        <div class="autor-hud-handle"></div>
+        <div class="autor-hud-header">
+            <span class="autor-hud-titulo">Filtrar por autor</span>
+            <button class="autor-hud-fechar" onclick="fecharPerfilAutorHud()">×</button>
+        </div>
+        <div class="autor-hud-busca">
+            <input id="perfilAutorHudBusca" placeholder="Buscar autor..." oninput="filtrarPerfilAutorHud()">
+        </div>
+        <div class="autor-hud-lista" id="perfilAutorHudLista"></div>
+    </div>
+
+    <!-- HUD gênero do perfil -->
+    <div class="autor-hud-backdrop" id="perfilGeneroHudBackdrop" onclick="fecharPerfilGeneroHud()"></div>
+    <div class="autor-hud" id="perfilGeneroHud">
+        <div class="autor-hud-handle"></div>
+        <div class="autor-hud-header">
+            <span class="autor-hud-titulo">Filtrar por gênero</span>
+            <button class="autor-hud-fechar" onclick="fecharPerfilGeneroHud()">×</button>
+        </div>
+        <div class="autor-hud-busca">
+            <input id="perfilGeneroHudBusca" placeholder="Buscar gênero..." oninput="filtrarPerfilGeneroHud()">
+        </div>
+        <div class="autor-hud-lista" id="perfilGeneroHudLista"></div>
+    </div>
+
+    <div class="perfil-conteudo">
+        <div id="perfilCatalogo"></div>
+        <div id="perfilRanking" style="display:none"></div>
+    </div>
 </div>
 
 <!-- ── OVERLAY EDITAR PERFIL ─────────────────────── -->
-
 <div id="overlayEditarPerfil">
     <div class="editar-body">
         <h2>Editar perfil</h2>
 
-    <!-- Banner -->
-    <div class="banner-picker-wrap">
-        <div class="banner-picker-label">Imagem de fundo</div>
-        <div class="banner-preview" id="bannerPreview" onclick="document.getElementById('bannerInput').click()">
-            <span class="banner-preview-hint" id="bannerHint">Toque para escolher uma imagem</span>
-            <div class="banner-preview-overlay">🖼️</div>
+        <!-- Banner -->
+        <div class="banner-picker-wrap">
+            <div class="banner-picker-label">Imagem de fundo</div>
+            <div class="banner-preview" id="bannerPreview" onclick="document.getElementById('bannerInput').click()">
+                <span class="banner-preview-hint" id="bannerHint">Toque para escolher uma imagem</span>
+                <div class="banner-preview-overlay">🖼️</div>
+            </div>
+            <input type="file" accept="image/*" id="bannerInput" style="display:none">
         </div>
-        <input type="file" accept="image/*" id="bannerInput" style="display:none">
-    </div>
 
-    <!-- Avatar -->
-    <div class="editar-avatar-wrap">
-        <div class="editar-avatar-circulo" id="editarAvatarCirculo" onclick="document.getElementById('fotoPerfilInput').click()">
-            <span id="editarAvatarIniciais">??</span>
-            <div class="editar-avatar-overlay">📷</div>
+        <!-- Avatar -->
+        <div class="editar-avatar-wrap">
+            <div class="editar-avatar-circulo" id="editarAvatarCirculo" onclick="document.getElementById('fotoPerfilInput').click()">
+                <span id="editarAvatarIniciais">??</span>
+                <div class="editar-avatar-overlay">📷</div>
+            </div>
+            <span class="editar-avatar-hint">Toque para trocar a foto</span>
+            <input type="file" accept="image/*" id="fotoPerfilInput" style="display:none">
         </div>
-        <span class="editar-avatar-hint">Toque para trocar a foto</span>
-        <input type="file" accept="image/*" id="fotoPerfilInput" style="display:none">
-    </div>
 
-    <!-- Nome -->
-    <input type="text" id="editarNomeInput" placeholder="Nome de exibição">
+        <!-- Nome -->
+        <input type="text" id="editarNomeInput" placeholder="Nome de exibição">
 
-    <!-- Cor de destaque -->
-    <div class="cor-picker-wrap">
-        <div class="cor-picker-label">Cor de destaque</div>
-        <div class="cor-opcoes" id="corOpcoes"></div>
-    </div>
+        <!-- Cor de destaque -->
+        <div class="cor-picker-wrap">
+            <div class="cor-picker-label">Cor de destaque</div>
+            <div class="cor-opcoes" id="corOpcoes"></div>
+        </div>
 
-    <!-- Livros favoritos -->
-    <div class="favoritos-edit-wrap">
-        <div class="favoritos-edit-label">Livros favoritos (até 3)</div>
-        <input id="favSearchInput" placeholder="Buscar livro..." oninput="filtrarFavoritos()"
-            style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;box-sizing:border-box;font-size:14px;margin-bottom:10px">
-        <div class="favoritos-edit-lista" id="favoritosEditLista"></div>
+        <!-- Livros favoritos -->
+        <div class="favoritos-edit-wrap">
+            <div class="favoritos-edit-label">Livros favoritos (até 3)</div>
+            <input id="favSearchInput" placeholder="Buscar livro..." oninput="filtrarFavoritos()"
+                style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid #ddd;box-sizing:border-box;font-size:14px;margin-bottom:10px">
+            <div class="favoritos-edit-lista" id="favoritosEditLista"></div>
+        </div>
     </div>
-</div>
-<div class="editar-footer">
-    <button class="btn-salvar-perfil" onclick="salvarEdicaoPerfil()">Salvar</button>
-    <button class="btn-cancelar-perfil" onclick="fecharEditarPerfil()">Cancelar</button>
-</div>
+    <div class="editar-footer">
+        <button class="btn-salvar-perfil" onclick="salvarEdicaoPerfil()">Salvar</button>
+        <button class="btn-cancelar-perfil" onclick="fecharEditarPerfil()">Cancelar</button>
+    </div>
 </div>
 
 <!-- ── OVERLAY DESCRIÇÃO DO LIVRO ────────────────── -->
-
 <div id="overlayDescricao">
     <div class="descricao-header">
         <button class="descricao-voltar" onclick="fecharDescricao()">‹</button>
@@ -2542,11 +2665,56 @@ function toggleSenha() {
 function renderEmLeitura() {
     const l = livros.find(x => x.emLeitura);
     if (!l) return emLeituraBox.innerHTML = "";
+
+    const paginaAtual = l.paginaAtual || 0;
+    const paginaTotal = l.paginaTotal || 0;
+    const pct = paginaTotal > 0 ? Math.min(100, Math.round((paginaAtual / paginaTotal) * 100)) : 0;
+
     emLeituraBox.innerHTML = `
         <div class="em-leitura">
             <img src="${l.capa}">
-            <strong>${l.titulo}</strong>
+            <div style="flex:1">
+                <strong>${l.titulo}</strong>
+                <div class="progresso-wrap">
+                    <div class="progresso-inputs">
+                        <input class="progresso-input" id="inputPagAtual" type="number" min="0"
+                            value="${paginaAtual || ""}" placeholder="pág">
+                        <span class="progresso-sep">/</span>
+                        <input class="progresso-input" id="inputPagTotal" type="number" min="1"
+                            value="${paginaTotal || ""}" placeholder="total">
+                        <span class="progresso-pct">${paginaTotal > 0 ? pct + "%" : ""}</span>
+                    </div>
+                    <div class="progresso-barra-bg">
+                        <div class="progresso-barra-fill" id="progressoBarra" style="width:${pct}%"></div>
+                    </div>
+                </div>
+            </div>
         </div>`;
+
+    // Atualiza barra e % em tempo real
+    const inputAtual = document.getElementById("inputPagAtual");
+    const inputTotal = document.getElementById("inputPagTotal");
+    const barra = document.getElementById("progressoBarra");
+
+    function atualizarProgresso() {
+        const a = parseInt(inputAtual.value) || 0;
+        const t = parseInt(inputTotal.value) || 0;
+        const p = t > 0 ? Math.min(100, Math.round((a / t) * 100)) : 0;
+        barra.style.width = p + "%";
+        document.querySelector(".progresso-pct").innerText = t > 0 ? p + "%" : "";
+    }
+
+    function salvarProgresso() {
+        const a = parseInt(inputAtual.value) || 0;
+        const t = parseInt(inputTotal.value) || 0;
+        db.collection("users").doc(usuarioLogado).collection("livros").doc(l.id)
+            .update({ paginaAtual: a, paginaTotal: t });
+    }
+
+    inputAtual.addEventListener("input", atualizarProgresso);
+    inputTotal.addEventListener("input", atualizarProgresso);
+    inputAtual.addEventListener("blur", salvarProgresso);
+    inputTotal.addEventListener("blur", salvarProgresso);
 }
 
 function ampliarImagem(src, event, livro) {
@@ -2561,6 +2729,125 @@ function ampliarImagem(src, event, livro) {
 
 function fecharImagem() {
     document.getElementById("overlayImagem").style.display = "none";
+}
+
+// ── Google Books ───────────────────────────────────
+async function buscarGBooks() {
+    if (!q) return;
+    const btn = document.getElementById("gbooksBtn");
+    btn.disabled = true;
+    btn.innerText = "...";
+    const lista = document.getElementById("gbooksLista");
+    lista.innerHTML = '<p class="gbooks-vazio">Buscando...</p>';
+    document.getElementById("gbooksBackdrop").classList.add("aberto");
+    document.getElementById("gbooksHud").classList.add("aberto");
+
+    try {
+        // Tenta Google Books primeiro
+        const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=15&printType=books`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Google Books falhou");
+        const data = await res.json();
+
+        if (data.items && data.items.length > 0) {
+            renderGBooksResultados(data.items.map(item => {
+                const info = item.volumeInfo || {};
+                return {
+                    titulo: info.title || "",
+                    autores: (info.authors || []).join(", "),
+                    ano: info.publishedDate ? info.publishedDate.substring(0, 4) : "",
+                    capa: info.imageLinks
+                        ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail || "").replace("http://", "https://")
+                        : "",
+                    sinopse: info.description ? info.description.replace(/<[^>]*>/g, "") : ""
+                };
+            }));
+            return;
+        }
+        throw new Error("Sem resultados");
+    } catch (e) {
+        // Fallback: Open Library
+        try {
+            const url2 = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=15&fields=title,author_name,first_publish_year,cover_i,key`;
+            const res2 = await fetch(url2);
+            const data2 = await res2.json();
+
+            if (data2.docs && data2.docs.length > 0) {
+                renderGBooksResultados(data2.docs.map(doc => ({
+                    titulo: doc.title || "",
+                    autores: (doc.author_name || []).join(", "),
+                    ano: doc.first_publish_year ? String(doc.first_publish_year) : "",
+                    capa: doc.cover_i
+                        ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
+                        : "",
+                    sinopse: ""
+                })));
+                return;
+            }
+        } catch {}
+
+        lista.innerHTML = '<p class="gbooks-vazio">Nenhum resultado encontrado.<br><span style="font-size:12px;color:#ccc">Verifique sua conexão ou tente outro termo.</span></p>';
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "🔍 Buscar";
+    }
+}
+
+function renderGBooksResultados(itens) {
+    const lista = document.getElementById("gbooksLista");
+    lista.innerHTML = "";
+    itens.forEach(({ titulo, autores, ano, capa, sinopse }) => {
+        const div = document.createElement("div");
+        div.className = "gbooks-item";
+        div.innerHTML = `
+            <img src="${capa}" onerror="this.style.background='#e5e7eb';this.removeAttribute('src')">
+            <div style="flex:1;min-width:0">
+                <div class="gbooks-item-titulo">${titulo}</div>
+                <div class="gbooks-item-autor">${autores}</div>
+                <div class="gbooks-item-ano">${ano}</div>
+            </div>
+        `;
+        div.onclick = () => selecionarGBooks(titulo, autores, ano, capa, sinopse);
+        lista.appendChild(div);
+    });
+}
+
+async function selecionarGBooks(titulo, autor, ano, capaUrl, sinopse) {
+    fecharGBooks();
+    tituloInput.value = titulo;
+    autorInput.value = autor;
+    lancamentoInput.value = ano;
+    if (sinopse) document.getElementById("sinopseInput").value = sinopse;
+
+    // Baixa e converte a capa para base64
+    if (capaUrl) {
+        try {
+            // Usa proxy para evitar CORS: substitui http por https
+            const urlHttps = capaUrl.replace("http://", "https://");
+            const resp = await fetch(urlHttps);
+            const blob = await resp.blob();
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const img = new Image();
+                img.onload = () => {
+                    const MAX = 300;
+                    const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+                    const canvas = document.createElement("canvas");
+                    canvas.width  = Math.round(img.width  * scale);
+                    canvas.height = Math.round(img.height * scale);
+                    canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+                    imagemBase64 = canvas.toDataURL("image/jpeg", 0.8);
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(blob);
+        } catch { /* ignora erro de capa */ }
+    }
+}
+
+function fecharGBooks() {
+    document.getElementById("gbooksBackdrop").classList.remove("aberto");
+    document.getElementById("gbooksHud").classList.remove("aberto");
 }
 
 // ── Lista de desejos ───────────────────────────────
@@ -2779,11 +3066,12 @@ function renderCatalogo() {
     renderFiltros();
     const busca = searchInput.value.toLowerCase();
     catalogo.innerHTML = "";
+    catalogo.className = "";
     let total = 0;
 
     const lista = livrosOrdenados(livros);
     lista.forEach(l => {
-        if (l.desejo) return; // não mostrar desejos no catálogo
+        if (l.desejo) return;
         if (!`${l.autor} ${l.titulo}`.toLowerCase().includes(busca)) return;
         if (filtroStatus === "lido"     && !l.lido)  return;
         if (filtroStatus === "nao-lido" &&  l.lido)  return;
@@ -2795,7 +3083,6 @@ function renderCatalogo() {
         div.className = "item";
         div.draggable = true;
         div.dataset.id = l.id;
-
         div.innerHTML = `
             <span class="drag-handle" title="Arrastar para reordenar">⠿</span>
             <div class="item-img-wrapper">
@@ -2812,10 +3099,8 @@ function renderCatalogo() {
                 </div>
             </div>
         `;
-
         div.querySelector(".item-img-wrapper img").onclick = (e) => ampliarImagem(l.capa, e, l);
         div.querySelector(".item-info").onclick = () => editarLivro(l.id);
-
         div.addEventListener("dragstart", onDragStart);
         div.addEventListener("dragover",  onDragOver);
         div.addEventListener("drop",      onDrop);
@@ -2823,13 +3108,11 @@ function renderCatalogo() {
         div.addEventListener("touchstart", onTouchStart, { passive: false });
         div.addEventListener("touchmove",  onTouchMove,  { passive: false });
         div.addEventListener("touchend",   onTouchEnd);
-
         catalogo.appendChild(div);
     });
 
     counter.innerText = total + " livros";
 
-    // Atualiza ícone do coração
     const temDesejos = livros.some(x => x.desejo);
     const btnDesejo = document.querySelector(".desejo-btn");
     if (btnDesejo) btnDesejo.innerText = temDesejos ? "❤️" : "🤍";
@@ -3293,6 +3576,5 @@ function estrelasSVG(nota) {
 
 renderCatalogo();
 </script>
-
 </body>
 </html>
