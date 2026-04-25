@@ -148,7 +148,7 @@ body {
     height: 38px;
     border-radius: 50%;
     background: white;
-    border: 1.5px solid #e5e7eb;
+    border: 1px solid rgba(0,0,0,0.08);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -158,7 +158,7 @@ body {
     transition: border-color 0.15s, transform 0.15s;
     user-select: none;
 }
-.desejo-btn:hover { border-color: #f43f5e; transform: scale(1.08); }
+.desejo-btn:hover { border-color: rgba(244,63,94,0.35); transform: scale(1.08); }
 
 /* Overlay lista de desejos */
 #overlayDesejos {
@@ -1612,6 +1612,7 @@ body {
         <input id="autorInput" placeholder="Autor">
         <input id="tituloInput" placeholder="Título">
         <input type="number" id="lancamentoInput" placeholder="Ano de lançamento" min="0" max="2100">
+        <input type="number" id="paginasInput" placeholder="Número de páginas" min="1">
         <div id="camposCatalogo">
             <select id="lidoInput" onchange="atualizarCamposLido()">
                 <option value="false">Não lido</option>
@@ -2748,7 +2749,7 @@ function renderEmLeitura() {
     if (!l) return emLeituraBox.innerHTML = "";
 
     const paginaAtual = l.paginaAtual || 0;
-    const paginaTotal = l.paginaTotal || 0;
+    const paginaTotal = l.paginaTotal || l.paginas || 0;
     const pct = paginaTotal > 0 ? Math.min(100, Math.round((paginaAtual / paginaTotal) * 100)) : 0;
 
     emLeituraBox.innerHTML = `
@@ -3276,6 +3277,7 @@ function renderCatalogo() {
                 <div class="info-extra">
                     ${l.autor}
                     ${l.lancamento ? " · " + l.lancamento : ""}
+                    ${l.paginas ? " · " + l.paginas + " pág." : ""}
                     · ${l.lido ? "Lido" : "Não lido"}
                     ${l.lido && l.nota ? " · " + estrelasSVG(l.nota) : ""}
                     ${generoBadges(l)}
@@ -3423,7 +3425,7 @@ function salvarLivro() {
     const id = overlay.dataset.editando || Date.now().toString();
     const livroExistente = livros.find(l => l.id === id);
     const capaFinal = imagemBase64 || (livroExistente ? livroExistente.capa : "");
-    const notaNova = _editandoDesejo ? 0 : (parseFloat(notaInput.value) || 0);
+    const notaNova = _editandoDesejo ? 0 : (_notaAtual || 0);
     const notaAnterior = livroExistente ? (livroExistente.nota || 0) : 0;
     const livro = {
         autor: autorInput.value,
@@ -3433,6 +3435,7 @@ function salvarLivro() {
         nota: notaNova,
         capa: capaFinal,
         descricao: _editandoDesejo ? "" : descricaoInput.value.trim(),
+        paginas: parseInt(document.getElementById("paginasInput").value) || 0,
         sinopse: document.getElementById("sinopseInput").value.trim(),
         generos: generoSelecionado.length > 0 ? [...generoSelecionado] : [],
         genero: generoSelecionado[0] || "",
@@ -3521,8 +3524,9 @@ function editarLivro(id) {
     autorInput.value = l.autor || "";
     tituloInput.value = l.titulo || "";
     lancamentoInput.value = l.lancamento || "";
+    document.getElementById("paginasInput").value = l.paginas || "";
     lidoInput.value = l.lido ? "true" : "false";
-    renderEstrelasWidget(l.nota ?? 0);
+    renderEstrelasWidget(l.nota || 0);
     descricaoInput.value = l.descricao || "";
     document.getElementById("sinopseInput").value = l.sinopse || "";
     renderGeneroPicker(l.generos || l.genero || []);
@@ -3544,6 +3548,7 @@ function novoLivro() {
     autorInput.value = "";
     tituloInput.value = "";
     lancamentoInput.value = "";
+    document.getElementById("paginasInput").value = "";
     lidoInput.value = "false";
     renderEstrelasWidget(0);
     descricaoInput.value = "";
