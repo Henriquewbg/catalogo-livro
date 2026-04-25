@@ -1702,6 +1702,9 @@ body {
             <div class="perfil-genero-stat" id="perfilGeneroStat" style="display:none">
                 📚 Mais lido: <strong id="perfilGeneroNome"></strong>
             </div>
+            <div class="perfil-genero-stat" id="perfilAutorStat" style="display:none">
+                ✍️ Autor favorito: <strong id="perfilAutorNome"></strong>
+            </div>
         </div>
     </div>
 
@@ -2367,6 +2370,20 @@ function abrirPerfil(uid, email, cor) {
                 generoStatEl.style.display = "block";
             } else {
                 generoStatEl.style.display = "none";
+            }
+
+            // Autor mais lido
+            const contagemAutores = {};
+            livrosUsuario.filter(l => l.lido && l.autor).forEach(l => {
+                contagemAutores[l.autor] = (contagemAutores[l.autor] || 0) + 1;
+            });
+            const autorTop = Object.entries(contagemAutores).sort((a, b) => b[1] - a[1])[0];
+            const autorStatEl = document.getElementById("perfilAutorStat");
+            if (autorTop) {
+                document.getElementById("perfilAutorNome").innerText = autorTop[0];
+                autorStatEl.style.display = "block";
+            } else {
+                autorStatEl.style.display = "none";
             }
 
             // Em leitura
