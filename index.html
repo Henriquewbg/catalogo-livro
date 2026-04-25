@@ -1700,10 +1700,10 @@ body {
                 </div>
             </div>
             <div class="perfil-genero-stat" id="perfilGeneroStat" style="display:none">
-                Gênero mais lido: <strong id="perfilGeneroNome"></strong>
+                📚 Mais lido: <strong id="perfilGeneroNome"></strong>
             </div>
             <div class="perfil-genero-stat" id="perfilAutorStat" style="display:none">
-                Autor mais lido: <strong id="perfilAutorNome"></strong>
+                ✍️ Autor favorito: <strong id="perfilAutorNome"></strong>
             </div>
         </div>
     </div>
@@ -3100,6 +3100,7 @@ function novoDesejo() {
     tituloInput.value = "";
     descricaoInput.value = "";
     document.getElementById("sinopseInput").value = "";
+    document.getElementById("paginasInput").value = "";
     renderGeneroPicker("");
     imagemBase64 = "";
     document.getElementById("camposCatalogo").style.display = "none";
@@ -3121,6 +3122,7 @@ function editarDesejo(id) {
     autorInput.value = l.autor || "";
     tituloInput.value = l.titulo || "";
     document.getElementById("sinopseInput").value = l.sinopse || "";
+    document.getElementById("paginasInput").value = l.paginas || "";
     renderGeneroPicker(l.generos || l.genero || []);
     imagemBase64 = l.capa || "";
     document.getElementById("camposCatalogo").style.display = "none";
