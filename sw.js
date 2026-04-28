@@ -1,33 +1,42 @@
-const CACHE = 'biblioteca-v1';
+const CACHE_NAME = "biblioteca-v2"; // muda versão aqui quando atualizar
 
-self.addEventListener('install', e => {
-    self.skipWaiting();
-});
-
-self.addEventListener('activate', e => {
-    e.waitUntil(clients.claim());
-});
-
-self.addEventListener('fetch', e => {
-    // Firebase e APIs externas sempre pela rede
-    if (e.request.url.includes('firestore') ||
-        e.request.url.includes('firebase') ||
-        e.request.url.includes('googleapis') ||
-        e.request.url.includes('gstatic') ||
-        e.request.url.includes('openlibrary')) {
-        e.respondWith(fetch(e.request).catch(() => new Response('', { status: 503 })));
-        return;
-    }
-    // Resto: cache-first
-    e.respondWith(
-        caches.match(e.request).then(cached => {
-            return cached || fetch(e.request).then(res => {
-                if (res && res.status === 200 && res.type === 'basic') {
-                    const clone = res.clone();
-                    caches.open(CACHE).then(c => c.put(e.request, clone));
-                }
-                return res;
-            });
+self.addEventListener("install", e => {
+    self.skipWaiting(); // ativa imediatamente
+    e.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.addAll([
+                "./",
+                "./index.html",
+                "./manifest.json"
+            ]);
         })
+    );
+});
+
+self.addEventListener("activate", e => {
+    e.waitUntil(
+        caches.keys().then(keys => {
+            return Promise.all(
+                keys.map(key => {
+                    if (key !== CACHE_NAME) {
+                        return caches.delete(key);
+                    }
+                })
+            );
+        })
+    );
+    self.clients.claim(); // controla a página imediatamente
+});
+
+self.addEventListener("fetch", e => {
+    e.respondWith(
+        fetch(e.request)
+            .then(res => {
+                return caches.open(CACHE_NAME).then(cache => {
+                    cache.put(e.request, res.clone()); // atualiza cache
+                    return res;
+                });
+            })
+            .catch(() => caches.match(e.request))
     );
 });
