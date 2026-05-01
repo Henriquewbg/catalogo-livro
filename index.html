@@ -61,7 +61,7 @@ body {
     position: fixed;
     top: 56px;
     right: 16px;
-    background: white;
+    background: #1e1510;
     border: 1px solid #e5e7eb;
     border-radius: 14px;
     width: 230px;
@@ -153,7 +153,7 @@ body {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: white;
+    background: #1e1510;
     border: 1px solid rgba(0,0,0,0.08);
     display: flex;
     align-items: center;
@@ -170,7 +170,7 @@ body {
 #overlayDesejos {
     position: fixed;
     inset: 0;
-    background: white;
+    background: #1e1510;
     display: none;
     z-index: 1200;
     flex-direction: column;
@@ -374,7 +374,7 @@ body {
 .overlay {
     position: fixed;
     inset: 0;
-    background: white;
+    background: #1e1510;
     display: none;
     z-index: 1000;
     flex-direction: column;
@@ -386,7 +386,7 @@ body {
 }
 .overlay-footer {
     padding: 12px 20px;
-    background: white;
+    background: #1e1510;
     border-top: 1px solid #eee;
     display: flex;
     flex-direction: column;
@@ -425,7 +425,7 @@ body {
 #overlayLeitura {
     position: fixed;
     inset: 0;
-    background: white;
+    background: #1e1510;
     display: none;
     z-index: 1100;
     flex-direction: column;
@@ -438,7 +438,7 @@ body {
 }
 #overlayLeitura .leitura-footer {
     padding: 12px 20px;
-    background: white;
+    background: #1e1510;
     border-top: 1px solid #eee;
     display: flex;
     flex-direction: column;
@@ -605,7 +605,7 @@ body {
 #overlayDescricao {
     position: fixed;
     inset: 0;
-    background: white;
+    background: #1e1510;
     display: none;
     z-index: 1500;
     overflow-y: auto;
@@ -696,7 +696,7 @@ body {
 .gbooks-hud {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    background: white;
+    background: #1e1510;
     border-radius: 18px 18px 0 0;
     z-index: 1401;
     display: none;
@@ -788,7 +788,7 @@ body {
 .gbooks-hud-backdrop.aberto { display: block; }
 .gbooks-hud {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: white; border-radius: 18px 18px 0 0;
+    background: #1e1510; border-radius: 18px 18px 0 0;
     z-index: 1401; display: none; max-height: 70vh; flex-direction: column;
 }
 .gbooks-hud.aberto { display: flex; animation: slideUpHud 0.2s ease; }
@@ -969,7 +969,7 @@ body {
 #overlayLivro {
     position: fixed;
     inset: 0;
-    background: white;
+    background: #1e1510;
     display: none;
     z-index: 1500;
     flex-direction: column;
@@ -1045,7 +1045,7 @@ body {
 }
 .progresso-barra-fill {
     height: 100%;
-    background: white;
+    background: #1e1510;
     border-radius: 3px;
     transition: width 0.3s ease;
 }
@@ -1129,7 +1129,7 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    background: white;
+    background: #1e1510;
     border-radius: 18px 18px 0 0;
     z-index: 1801;
     display: none;
@@ -1211,7 +1211,7 @@ body {
     border: 1.5px solid #e5e7eb;
     font-size: 13px;
     cursor: pointer;
-    background: white;
+    background: #1e1510;
     color: #555;
     transition: border-color 0.12s, background 0.12s, color 0.12s;
     user-select: none;
@@ -1277,7 +1277,7 @@ body {
 #overlayPerfil {
     position: fixed;
     inset: 0;
-    background: white;
+    background: #1e1510;
     display: none;
     z-index: 1200;
     overflow-y: auto;
@@ -1574,7 +1574,7 @@ body {
     z-index: 3000;
 }
 .login-card {
-    background: white;
+    background: #1e1510;
     width: 100%;
     max-width: 340px;
     padding: 32px;
@@ -1627,7 +1627,7 @@ body {
 #overlayEditarPerfil {
     position: fixed;
     inset: 0;
-    background: white;
+    background: #1e1510;
     display: none;
     z-index: 1400;
     flex-direction: column;
@@ -1639,7 +1639,7 @@ body {
 }
 #overlayEditarPerfil .editar-footer {
     padding: 12px 20px;
-    background: white;
+    background: #1e1510;
     border-top: 1px solid #eee;
     display: flex;
     flex-direction: column;
@@ -1725,6 +1725,159 @@ body {
     transition: background 0.15s;
 }
 .btn-editar-perfil:hover { background: rgba(255,255,255,0.25); }
+
+/* ── TEMA GLOBAL AMADEIRADO ─────────────────────── */
+
+/* Overlays principais */
+.overlay, #overlayLeitura, #overlayDesejos, #overlayPerfil,
+#overlayEditarPerfil, #overlayDescricao, #overlayLivro,
+#overlayImagem { background: #1a1108 !important; }
+
+/* Textos principais */
+.nome, .item-info .nome, h2, h1,
+.overlay-body h2, #tituloForm,
+.desejos-header h2, .leitura-body h2,
+.descricao-titulo, .livro-overlay-titulo,
+.perfil-user-nome, .perfil-dropdown-nome,
+.autor-hud-titulo, .gbooks-hud-titulo,
+.editar-avatar-hint, #overlayEditarPerfil h2 {
+    color: #e8d5b0 !important;
+}
+
+/* Textos secundários */
+.info-extra, .overlay-body label,
+.descricao-autor, .livro-overlay-autor, .livro-overlay-meta,
+.perfil-dropdown-email, .genero-picker-label,
+.cor-picker-label, .favoritos-edit-label,
+.banner-picker-label, .editar-avatar-hint,
+.desejos-vazio, .leitura-body p,
+.autor-hud-count, .autor-hud-nome,
+.gbooks-item-autor, .gbooks-item-ano,
+.gbooks-vazio, .nota-label,
+.perfil-em-leitura-label, .favoritos-label,
+.desejos-perfil-label, .em-comum-label,
+.livro-overlay-section {
+    color: #8a7355 !important;
+}
+
+/* Inputs e selects */
+.overlay input, .overlay select, .overlay textarea,
+#overlayEditarPerfil input[type="text"],
+#leituraSearchInput, #perfilSearchInput,
+.autor-hud-busca input, .gbooks-busca-wrap input,
+#favSearchInput {
+    background: rgba(255,255,255,0.07) !important;
+    border: 1px solid rgba(232,213,176,0.15) !important;
+    color: #e8d5b0 !important;
+    border-radius: 8px;
+}
+.overlay input::placeholder, .overlay textarea::placeholder,
+#leituraSearchInput::placeholder, #perfilSearchInput::placeholder,
+.autor-hud-busca input::placeholder, .gbooks-busca-wrap input::placeholder,
+#favSearchInput::placeholder { color: rgba(232,213,176,0.3) !important; }
+.overlay input:focus, .overlay select:focus, .overlay textarea:focus,
+#overlayEditarPerfil input:focus,
+.autor-hud-busca input:focus { border-color: rgba(232,213,176,0.4) !important; outline: none; }
+.overlay select option { background: #1e1510; color: #e8d5b0; }
+
+/* Bordas divisórias */
+.overlay-footer, .overlay-body,
+.leitura-footer, .desejos-header,
+.desejos-body .item-desejo,
+.perfil-tabs, .perfil-em-leitura-box,
+.favoritos-secao, .desejos-perfil-secao,
+.em-comum-secao, .perfil-dropdown-header,
+.perfil-dropdown-item, .descricao-header,
+.livro-overlay-header, .autor-hud-header,
+.autor-hud-busca, .gbooks-hud-header,
+#overlayEditarPerfil .editar-footer {
+    border-color: rgba(255,255,255,0.07) !important;
+}
+
+/* Item leitura */
+.item-leitura {
+    border-color: rgba(255,255,255,0.1) !important;
+    color: #e8d5b0 !important;
+}
+.item-leitura:hover { background: rgba(255,255,255,0.05) !important; border-color: rgba(232,213,176,0.4) !important; }
+.item-leitura.selecionado { background: rgba(232,213,176,0.15) !important; border-color: #e8d5b0 !important; }
+.item-leitura .nome-leitura { color: #e8d5b0 !important; }
+.item-leitura .autor-leitura { color: #8a7355 !important; }
+
+/* Botões */
+.btn-salvar, .btn-topo { background: #5c3d0a !important; color: #e8d5b0 !important; }
+.btn-salvar:hover, .btn-topo:hover { background: #7a5212 !important; }
+.btn-cancelar { background: rgba(255,255,255,0.08) !important; color: #8a7355 !important; }
+.btn-cancelar:hover { background: rgba(255,255,255,0.12) !important; }
+.btn-excluir { background: rgba(185,28,28,0.2) !important; color: #f87171 !important; }
+.btn-mover-catalogo { background: rgba(21,128,61,0.2) !important; color: #4ade80 !important; }
+.btn-salvar-perfil { background: #5c3d0a !important; color: #e8d5b0 !important; }
+.btn-cancelar-perfil { background: rgba(255,255,255,0.08) !important; color: #8a7355 !important; }
+.livro-overlay-editar { background: rgba(232,213,176,0.1) !important; color: #e8d5b0 !important; }
+.livro-overlay-editar:hover { background: rgba(232,213,176,0.18) !important; }
+.btn-remover-leitura { background: rgba(185,28,28,0.2) !important; color: #f87171 !important; }
+.desejos-voltar, .perfil-voltar, .descricao-voltar,
+.livro-overlay-voltar, .autor-hud-fechar, .gbooks-hud-fechar { color: #8a7355 !important; }
+
+/* Dropdown perfil */
+.perfil-dropdown { background: #1e1510 !important; border-color: rgba(255,255,255,0.1) !important; }
+.perfil-dropdown-item { color: #e8d5b0 !important; }
+.perfil-dropdown-item:hover { background: rgba(255,255,255,0.05) !important; }
+.perfil-dropdown-item.perigo { color: #f87171 !important; }
+.perfil-dropdown-item.perigo:hover { background: rgba(185,28,28,0.15) !important; }
+
+/* HUD autores/gêneros */
+.autor-hud { background: #1e1510 !important; }
+.autor-hud-item:hover { background: rgba(255,255,255,0.05) !important; }
+.autor-hud-item.selecionado { background: rgba(232,213,176,0.15) !important; }
+.autor-hud-item.selecionado .autor-hud-nome { color: #e8d5b0 !important; }
+.autor-hud-handle, .gbooks-hud-handle { background: rgba(255,255,255,0.15) !important; }
+
+/* Google Books HUD */
+.gbooks-hud { background: #1e1510 !important; }
+.gbooks-item:hover { background: rgba(255,255,255,0.05) !important; }
+.gbooks-item-titulo { color: #e8d5b0 !important; }
+
+/* Gênero picker */
+.genero-opcao { background: rgba(255,255,255,0.05) !important; border-color: rgba(232,213,176,0.15) !important; color: #8a7355 !important; }
+.genero-opcao:hover { border-color: rgba(232,213,176,0.4) !important; color: #e8d5b0 !important; }
+.genero-opcao.selecionado { background: rgba(232,213,176,0.15) !important; border-color: #e8d5b0 !important; color: #e8d5b0 !important; }
+
+/* Badge gênero */
+.badge-genero { background: rgba(232,213,176,0.1) !important; color: #8a7355 !important; }
+
+/* Favoritos editar */
+.favorito-edit-item { background: rgba(255,255,255,0.04) !important; border-color: rgba(255,255,255,0.08) !important; color: #e8d5b0 !important; }
+.favorito-edit-item:hover { background: rgba(255,255,255,0.08) !important; }
+.favorito-edit-item.selecionado { background: rgba(232,213,176,0.15) !important; border-color: #e8d5b0 !important; }
+.favorito-edit-nome { color: #e8d5b0 !important; }
+
+/* Overlay imagem */
+#overlayImagem { background: rgba(0,0,0,0.92) !important; }
+
+/* Em comum e desejos no perfil */
+.em-comum-secao { background: rgba(255,255,255,0.03) !important; }
+.perfil-em-leitura-box { background: transparent !important; }
+
+/* Item desejos */
+.item-desejo { border-color: rgba(255,255,255,0.07) !important; }
+.item-desejo:hover { background: rgba(255,255,255,0.04) !important; }
+.item-desejo .nome { color: #e8d5b0 !important; }
+.item-desejo .info-extra { color: #8a7355 !important; }
+
+/* Perfil tabs */
+.perfil-tab { color: #8a7355 !important; }
+.perfil-tab.active { color: #e8d5b0 !important; border-bottom-color: #e8d5b0 !important; }
+
+/* Cor picker */
+.cor-opcao.selecionada { border-color: #e8d5b0 !important; }
+
+/* Progresso leitura overlay */
+.livro-overlay-texto { color: #c8b896 !important; }
+
+/* Drag handle (se aparecer) */
+.drag-handle { color: rgba(255,255,255,0.2) !important; }
+
 </style>
 
 </head>
@@ -4161,3 +4314,4 @@ if ('serviceWorker' in navigator) {
 
 </body>
 </html>
+<!-- injected theme fix -->
