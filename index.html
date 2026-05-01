@@ -877,6 +877,15 @@ body {
     position: relative;
     padding: 0;
 }
+.livro-card-texto {
+    height: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    overflow: hidden;
+}
 .livro-capa-wrap {
     width: 80px;
     height: 120px;
@@ -930,21 +939,25 @@ body {
     margin-top: 5px;
     line-height: 1.3;
     width: 100%;
+    max-width: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding: 0 2px;
+    display: block;
 }
 .livro-autor-card {
     font-size: 9px;
     color: #8a7355;
     text-align: center;
     width: 100%;
+    max-width: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding: 0 2px;
     margin-bottom: 4px;
+    display: block;
 }
 .livro-nota-card {
     display: flex;
@@ -1735,7 +1748,7 @@ body {
 <div class="header">
     <div class="header-top">
         <div class="desejo-btn" onclick="abrirDesejos()" title="Lista de desejos">🤍</div>
-        <div class="avatar-btn" id="avatarBtn" onclick="togglePerfil()">??</div>
+        <div class="avatar-btn" id="avatarBtn" onclick="togglePerfil()"></div>
     </div>
 
 ```
@@ -1752,7 +1765,7 @@ body {
         <input id="searchInput" placeholder="Buscar..." oninput="renderCatalogo()">
         <div class="counter" id="counter"></div>
     </div>
-    <div id="filtrosArea" style="margin-top:6px">
+    <div id="filtrosArea" style="margin-top:6px;display:none">
         <div class="filtros-linha" id="filtrosStatus"></div>
         <div class="filtros-linha" id="filtrosGenero"></div>
     </div>
@@ -1806,7 +1819,7 @@ body {
 
 <div class="perfil-dropdown" id="perfilDropdown">
     <div class="perfil-dropdown-header" onclick="abrirMeuPerfil()">
-        <div class="perfil-avatar-grande" id="perfilAvatarGrande">??</div>
+        <div class="perfil-avatar-grande" id="perfilAvatarGrande"></div>
         <div>
             <div class="perfil-dropdown-nome" id="perfilNome">—</div>
             <div class="perfil-dropdown-email" id="perfilEmail">—</div>
@@ -1904,7 +1917,7 @@ body {
                 <span>Perfil</span>
             </div>
             <div class="perfil-user-info">
-                <div class="perfil-avatar-xl" id="perfilXlIniciais">??</div>
+                <div class="perfil-avatar-xl" id="perfilXlIniciais"></div>
                 <div>
                     <div class="perfil-user-nome" id="perfilXlNome">—</div>
                     <div class="perfil-user-email" id="perfilXlEmail">—</div>
@@ -2031,7 +2044,7 @@ body {
     <!-- Avatar -->
     <div class="editar-avatar-wrap">
         <div class="editar-avatar-circulo" id="editarAvatarCirculo" onclick="document.getElementById('fotoPerfilInput').click()">
-            <span id="editarAvatarIniciais">??</span>
+            <span id="editarAvatarIniciais"></span>
             <div class="editar-avatar-overlay">📷</div>
         </div>
         <span class="editar-avatar-hint">Toque para trocar a foto</span>
@@ -3412,6 +3425,7 @@ function moverParaCatalogo() {
 }
 
 function renderFiltros() {
+    document.getElementById("filtrosArea").style.display = "block";
     // Status + botão Autor
     const statusEl = document.getElementById("filtrosStatus");
     statusEl.innerHTML = "";
@@ -3597,15 +3611,12 @@ function renderCatalogo() {
             autor.innerText = l.autor;
 
             card.appendChild(capaWrap);
-            card.appendChild(titulo);
-            card.appendChild(autor);
 
-            if (l.lido && l.nota) {
-                const notaDiv = document.createElement("div");
-                notaDiv.className = "livro-nota-card";
-                notaDiv.innerHTML = estrelasSVG(l.nota);
-                card.appendChild(notaDiv);
-            }
+            const texto = document.createElement("div");
+            texto.className = "livro-card-texto";
+            texto.appendChild(titulo);
+            texto.appendChild(autor);
+            card.appendChild(texto);
 
             row.appendChild(card);
         });
