@@ -16,17 +16,21 @@
 <style>
 body {
     font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-    background: white;
+    background: #2a1f14;
     margin: 0;
 }
 
-.header { padding: 40px; }
+.header {
+    padding: 16px 20px 12px;
+    background: #1a1108;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
 
 .header-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .header-top h1 { margin: 0; }
@@ -113,22 +117,23 @@ body {
 .perfil-dropdown-item.perigo { color: #b91c1c; }
 .perfil-dropdown-item.perigo:hover { background: #fff5f5; }
 
-/* Tabs */
 .tabs {
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 .tab {
     flex: 1;
-    padding: 12px;
+    padding: 10px;
     text-align: center;
-    background: #e5e7eb;
+    background: rgba(255,255,255,0.08);
     border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
 }
-.tab.active { background: #0f172a; color: white; }
+.tab.active { background: rgba(255,255,255,0.15); color: #e8d5b0; }
 
 .btn-topo {
     width: 100%;
@@ -257,12 +262,17 @@ body {
 
 .search-container input {
     width: 100%;
-    padding: 14px;
+    padding: 12px 14px;
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(255,255,255,0.1);
     box-sizing: border-box;
+    background: rgba(255,255,255,0.07);
+    color: #e8d5b0;
+    font-size: 15px;
 }
-.counter { font-size: 14px; margin-top: 6px; color: #666; }
+.search-container input::placeholder { color: rgba(232,213,176,0.35); }
+.search-container input:focus { outline: none; border-color: rgba(232,213,176,0.3); }
+.counter { font-size: 13px; margin-top: 6px; color: #8a7355; }
 
 .item {
     display: flex;
@@ -331,13 +341,15 @@ body {
 .drag-handle:active { cursor: grabbing; }
 
 .rank {
-    background: white;
-    padding: 15px;
-    border-bottom: 1px solid #eee;
+    background: #1e1510;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
     display: flex;
     align-items: center;
 }
-.rank img { width: 70px; margin-right: 15px; border-radius: 8px; }
+.rank img { width: 60px; margin-right: 14px; border-radius: 5px; box-shadow: -2px 2px 6px rgba(0,0,0,0.4); }
+.rank strong { color: #e8d5b0; font-size: 15px; }
+.rank br + * { color: #8a7355; }
 
 #btnAdd {
     position: fixed;
@@ -490,7 +502,7 @@ body {
 .hud-titulo {
     font-size: 11px;
     letter-spacing: 2.5px;
-    color: #aaa;
+    color: rgba(232,213,176,0.4);
     text-transform: uppercase;
     padding: 18px 20px 10px;
 }
@@ -530,7 +542,7 @@ body {
 .hud-livro-titulo {
     font-size: 11px;
     font-weight: 600;
-    color: #0f172a;
+    color: #e8d5b0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -539,7 +551,7 @@ body {
 
 .hud-usuario {
     font-size: 10px;
-    color: #94a3b8;
+    color: #8a7355;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -808,7 +820,204 @@ body {
 .gbooks-item-ano    { font-size: 12px; color: #aaa; }
 .gbooks-vazio { padding: 24px; text-align: center; color: #aaa; font-size: 14px; line-height: 1.6; }
 
-/* ── Progresso de leitura ─────────────────────────── */
+/* ── Prateleira de livros ─────────────────────────── */
+.prateleira {
+    padding: 0;
+    background: #2a1f14;
+    min-height: 300px;
+}
+.prateleira-vazio {
+    padding: 40px 20px;
+    text-align: center;
+    color: rgba(232,213,176,0.4);
+    font-size: 14px;
+}
+.prateleira-grid {
+    display: flex;
+    flex-direction: column;
+}
+.prateleira-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: flex-end;
+    padding: 16px 0 0;
+    background: linear-gradient(180deg, #1e1510 0%, #2a1f14 100%);
+    gap: 0;
+}
+.prateleira-shelf-board {
+    height: 18px;
+    background: linear-gradient(180deg,
+        #e8d5b0 0%,
+        #d4b87a 30%,
+        #b89550 60%,
+        #8b6914 100%
+    );
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.6),
+        0 2px 4px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        inset 0 -2px 4px rgba(0,0,0,0.2);
+    position: relative;
+    margin: 0 0 0 0;
+}
+.prateleira-shelf-board::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -6px;
+    height: 6px;
+    background: linear-gradient(180deg, #5c3d0a 0%, #3d2800 100%);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+}
+.livro-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+}
+.livro-capa-wrap {
+    width: 90%;
+    aspect-ratio: 2/3;
+    border-radius: 1px 4px 4px 1px;
+    overflow: hidden;
+    box-shadow:
+        -4px 0 8px rgba(0,0,0,0.5),
+        2px 0 4px rgba(0,0,0,0.2),
+        0 4px 8px rgba(0,0,0,0.3);
+    position: relative;
+    background: #c8b896;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.livro-capa-wrap:active {
+    transform: translateY(-6px);
+    box-shadow:
+        -4px 0 12px rgba(0,0,0,0.6),
+        2px 0 6px rgba(0,0,0,0.3),
+        0 10px 20px rgba(0,0,0,0.5);
+}
+.livro-capa-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.livro-spine {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.05) 100%);
+}
+.livro-lido-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 2px solid white;
+}
+.livro-titulo-card {
+    font-size: 10px;
+    font-weight: 600;
+    color: #e8d5b0;
+    text-align: center;
+    margin-top: 5px;
+    line-height: 1.3;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 2px;
+}
+.livro-autor-card {
+    font-size: 9px;
+    color: #8a7355;
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 2px;
+    margin-bottom: 4px;
+}
+.livro-nota-card {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2px;
+}
+
+/* ── Overlay livro (page flip) ──────────────────── */
+#overlayLivro {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: none;
+    z-index: 1500;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.livro-overlay-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid #eee;
+}
+.livro-overlay-capa {
+    width: 80px;
+    flex-shrink: 0;
+    border-radius: 3px 8px 8px 3px;
+    box-shadow: -3px 3px 10px rgba(0,0,0,0.2);
+}
+.livro-overlay-info { flex: 1; }
+.livro-overlay-titulo { font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 4px; line-height: 1.2; }
+.livro-overlay-autor { font-size: 14px; color: #666; margin-bottom: 6px; }
+.livro-overlay-meta { font-size: 12px; color: #aaa; margin-bottom: 8px; }
+.livro-overlay-voltar {
+    background: none; border: none; font-size: 24px;
+    cursor: pointer; color: #0f172a; opacity: 0.6;
+    padding: 0; line-height: 1; flex-shrink: 0;
+}
+.livro-overlay-voltar:hover { opacity: 1; }
+.livro-overlay-editar {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #0f172a;
+    font-weight: 500;
+}
+.livro-overlay-editar:hover { background: #e2e8f0; }
+.livro-overlay-section {
+    padding: 16px 20px 4px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #aaa;
+    text-transform: uppercase;
+}
+.livro-overlay-texto {
+    padding: 4px 20px 20px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: #333;
+    white-space: pre-wrap;
+}
+.livro-overlay-vazio {
+    padding: 20px;
+    color: #ccc;
+    font-size: 14px;
+    font-style: italic;
+}
 .progresso-wrap {
     margin-top: 10px;
 }
@@ -856,21 +1065,21 @@ body {
 .filtro-pill {
     padding: 5px 12px;
     border-radius: 20px;
-    border: 1.5px solid #e5e7eb;
+    border: 1px solid rgba(232,213,176,0.2);
     font-size: 12px;
     font-weight: 500;
-    color: #555;
-    background: white;
+    color: rgba(232,213,176,0.6);
+    background: rgba(255,255,255,0.05);
     cursor: pointer;
     transition: border-color 0.12s, background 0.12s, color 0.12s;
     user-select: none;
     white-space: nowrap;
 }
-.filtro-pill:hover { border-color: #0f172a; color: #0f172a; }
+.filtro-pill:hover { border-color: rgba(232,213,176,0.5); color: #e8d5b0; }
 .filtro-pill.ativo {
-    background: #0f172a;
-    border-color: #0f172a;
-    color: white;
+    background: rgba(232,213,176,0.15);
+    border-color: rgba(232,213,176,0.5);
+    color: #e8d5b0;
 }
 .filtros-linha {
     display: flex;
@@ -1025,11 +1234,12 @@ body {
     align-items: center;
     gap: 14px;
     padding: 16px 20px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
     cursor: pointer;
     transition: background 0.15s;
+    background: #1e1510;
 }
-.user-card:hover { background: #f8fafc; }
+.user-card:hover { background: #261a0f; }
 
 .user-avatar {
     width: 48px;
@@ -1045,8 +1255,8 @@ body {
     flex-shrink: 0;
 }
 
-.user-info-nome { font-size: 16px; font-weight: 600; color: #0f172a; }
-.user-info-stats { font-size: 13px; color: #888; margin-top: 2px; }
+.user-info-nome { font-size: 16px; font-weight: 600; color: #e8d5b0; }
+.user-info-stats { font-size: 13px; color: #8a7355; margin-top: 2px; }
 
 /* ── OVERLAY PERFIL PÚBLICO ───────────────────────── */
 #overlayPerfil {
@@ -1600,8 +1810,8 @@ body {
 </div>
 
 <div id="catalogo"></div>
-<div id="ranking" style="display:none"></div>
-<div id="comunidade" style="display:none"></div>
+<div id="ranking" style="display:none;background:#1a1108;min-height:60vh"></div>
+<div id="comunidade" style="display:none;background:#1a1108;min-height:60vh"></div>
 
 <button id="btnAdd" onclick="novoLivro()">＋</button>
 
@@ -1827,6 +2037,32 @@ body {
     <div class="editar-footer">
         <button class="btn-salvar-perfil" onclick="salvarEdicaoPerfil()">Salvar</button>
         <button class="btn-cancelar-perfil" onclick="fecharEditarPerfil()">Cancelar</button>
+    </div>
+</div>
+
+<!-- ── OVERLAY LIVRO (prateleira) ────────────────── -->
+<div id="overlayLivro">
+    <div class="livro-overlay-header">
+        <button class="livro-overlay-voltar" onclick="fecharOverlayLivro()">‹</button>
+        <img class="livro-overlay-capa" id="overlayLivroCapa" src="">
+        <div class="livro-overlay-info">
+            <div class="livro-overlay-titulo" id="overlayLivroTitulo"></div>
+            <div class="livro-overlay-autor" id="overlayLivroAutor"></div>
+            <div class="livro-overlay-meta" id="overlayLivroMeta"></div>
+            <div id="overlayLivroNota"></div>
+            <button class="livro-overlay-editar" id="overlayLivroBtnEditar">✏️ Editar livro</button>
+        </div>
+    </div>
+    <div id="overlayLivroSinopseBox" style="display:none">
+        <div class="livro-overlay-section">Sinopse</div>
+        <div class="livro-overlay-texto" id="overlayLivroSinopse"></div>
+    </div>
+    <div id="overlayLivroResenhaBox" style="display:none">
+        <div class="livro-overlay-section">Resenha</div>
+        <div class="livro-overlay-texto" id="overlayLivroResenha"></div>
+    </div>
+    <div id="overlayLivroVazio" class="livro-overlay-vazio" style="display:none">
+        Nenhuma sinopse ou resenha cadastrada.
     </div>
 </div>
 
@@ -3269,53 +3505,103 @@ function renderCatalogo() {
     renderFiltros();
     const busca = searchInput.value.toLowerCase();
     catalogo.innerHTML = "";
-    catalogo.className = "";
-    let total = 0;
+    catalogo.className = "prateleira";
 
     const lista = livrosOrdenados(livros);
-    lista.forEach(l => {
-        if (l.desejo) return;
-        if (!`${l.autor} ${l.titulo}`.toLowerCase().includes(busca)) return;
-        if (filtroStatus === "lido"     && !l.lido)  return;
-        if (filtroStatus === "nao-lido" &&  l.lido)  return;
-        if (filtroGenero && !(l.generos && l.generos.includes(filtroGenero)) && l.genero !== filtroGenero) return;
-        if (filtroAutor  && l.autor  !== filtroAutor)  return;
-        total++;
-
-        const div = document.createElement("div");
-        div.className = "item";
-        div.draggable = true;
-        div.dataset.id = l.id;
-        div.innerHTML = `
-            <span class="drag-handle" title="Arrastar para reordenar">⠿</span>
-            <div class="item-img-wrapper">
-                <img src="${l.capa}" title="Ver capa">
-            </div>
-            <div class="item-info">
-                <div class="nome">${l.titulo}</div>
-                <div class="info-extra">
-                    ${l.autor}
-                    ${l.lancamento ? " · " + l.lancamento : ""}
-                    ${l.paginas ? " · " + l.paginas + " pág." : ""}
-                    · ${l.lido ? "Lido" : "Não lido"}
-                    ${l.lido && l.nota ? " · " + estrelasSVG(l.nota) : ""}
-                    ${generoBadges(l)}
-                </div>
-            </div>
-        `;
-        div.querySelector(".item-img-wrapper img").onclick = (e) => ampliarImagem(l.capa, e, l);
-        div.querySelector(".item-info").onclick = () => editarLivro(l.id);
-        div.addEventListener("dragstart", onDragStart);
-        div.addEventListener("dragover",  onDragOver);
-        div.addEventListener("drop",      onDrop);
-        div.addEventListener("dragend",   onDragEnd);
-        div.addEventListener("touchstart", onTouchStart, { passive: false });
-        div.addEventListener("touchmove",  onTouchMove,  { passive: false });
-        div.addEventListener("touchend",   onTouchEnd);
-        catalogo.appendChild(div);
+    const listaFiltrada = lista.filter(l => {
+        if (l.desejo) return false;
+        if (!`${l.autor} ${l.titulo}`.toLowerCase().includes(busca)) return false;
+        if (filtroStatus === "lido"     && !l.lido)  return false;
+        if (filtroStatus === "nao-lido" &&  l.lido)  return false;
+        if (filtroGenero && !(l.generos && l.generos.includes(filtroGenero)) && l.genero !== filtroGenero) return false;
+        if (filtroAutor  && l.autor  !== filtroAutor)  return false;
+        return true;
     });
 
-    counter.innerText = total + " livros";
+    const grid = document.createElement("div");
+    grid.className = "prateleira-grid";
+
+    if (listaFiltrada.length === 0) {
+        const vazio = document.createElement("div");
+        vazio.className = "prateleira-vazio";
+        vazio.innerText = "Nenhum livro encontrado.";
+        catalogo.appendChild(vazio);
+        counter.innerText = "0 livros";
+        const temDesejos = livros.some(x => x.desejo);
+        const btnDesejo = document.querySelector(".desejo-btn");
+        if (btnDesejo) btnDesejo.innerText = temDesejos ? "❤️" : "🤍";
+        return;
+    }
+    for (let i = 0; i < listaFiltrada.length; i += 3) {
+        const fileira = listaFiltrada.slice(i, i + 3);
+
+        const row = document.createElement("div");
+        row.className = "prateleira-row";
+
+        fileira.forEach(l => {
+            const card = document.createElement("div");
+            card.className = "livro-card";
+            card.dataset.id = l.id;
+
+            const capaWrap = document.createElement("div");
+            capaWrap.className = "livro-capa-wrap";
+
+            const img = document.createElement("img");
+            img.src = l.capa || "";
+            img.alt = l.titulo;
+            capaWrap.appendChild(img);
+
+            const spine = document.createElement("div");
+            spine.className = "livro-spine";
+            capaWrap.appendChild(spine);
+
+            if (l.lido) {
+                const badge = document.createElement("div");
+                badge.className = "livro-lido-badge";
+                capaWrap.appendChild(badge);
+            }
+
+            capaWrap.onclick = () => abrirOverlayLivro(l);
+
+            const titulo = document.createElement("div");
+            titulo.className = "livro-titulo-card";
+            titulo.innerText = l.titulo;
+
+            const autor = document.createElement("div");
+            autor.className = "livro-autor-card";
+            autor.innerText = l.autor;
+
+            card.appendChild(capaWrap);
+            card.appendChild(titulo);
+            card.appendChild(autor);
+
+            if (l.lido && l.nota) {
+                const notaDiv = document.createElement("div");
+                notaDiv.className = "livro-nota-card";
+                notaDiv.innerHTML = estrelasSVG(l.nota);
+                card.appendChild(notaDiv);
+            }
+
+            row.appendChild(card);
+        });
+
+        // Preenche espaços vazios na última fileira
+        while (row.children.length < 3) {
+            const vazio = document.createElement("div");
+            vazio.className = "livro-card";
+            row.appendChild(vazio);
+        }
+
+        grid.appendChild(row);
+
+        // Prateleira embaixo de cada fileira
+        const shelf = document.createElement("div");
+        shelf.className = "prateleira-shelf-board";
+        grid.appendChild(shelf);
+    }
+
+    catalogo.appendChild(grid);
+    counter.innerText = listaFiltrada.length + " livros";
 
     const temDesejos = livros.some(x => x.desejo);
     const btnDesejo = document.querySelector(".desejo-btn");
@@ -3434,6 +3720,53 @@ function onTouchEnd(e) {
         el.classList.remove("drag-over");
     });
     touchSrcId = null;
+}
+
+// ── Overlay livro (prateleira) ─────────────────────
+function abrirOverlayLivro(l) {
+    document.getElementById("overlayLivroCapa").src = l.capa || "";
+    document.getElementById("overlayLivroTitulo").innerText = l.titulo;
+    document.getElementById("overlayLivroAutor").innerText = l.autor;
+
+    const metaParts = [];
+    if (l.lancamento) metaParts.push(l.lancamento);
+    if (l.paginas) metaParts.push(l.paginas + " páginas");
+    metaParts.push(l.lido ? "Lido" : "Não lido");
+    document.getElementById("overlayLivroMeta").innerText = metaParts.join(" · ");
+
+    const notaEl = document.getElementById("overlayLivroNota");
+    notaEl.innerHTML = l.nota ? estrelasSVG(l.nota) + " " + generoBadges(l) : generoBadges(l);
+
+    document.getElementById("overlayLivroBtnEditar").onclick = () => {
+        fecharOverlayLivro();
+        editarLivro(l.id);
+    };
+
+    const sinopseBox = document.getElementById("overlayLivroSinopseBox");
+    const resenhaBox = document.getElementById("overlayLivroResenhaBox");
+    const vazioBox   = document.getElementById("overlayLivroVazio");
+
+    if (l.sinopse) {
+        sinopseBox.style.display = "block";
+        document.getElementById("overlayLivroSinopse").innerText = l.sinopse;
+    } else {
+        sinopseBox.style.display = "none";
+    }
+    if (l.descricao) {
+        resenhaBox.style.display = "block";
+        document.getElementById("overlayLivroResenha").innerText = l.descricao;
+    } else {
+        resenhaBox.style.display = "none";
+    }
+    vazioBox.style.display = (!l.sinopse && !l.descricao) ? "block" : "none";
+
+    document.getElementById("overlayLivro").style.display = "flex";
+    document.body.style.overflow = "hidden";
+}
+
+function fecharOverlayLivro() {
+    document.getElementById("overlayLivro").style.display = "none";
+    document.body.style.overflow = "auto";
 }
 
 // ── CRUD livros ────────────────────────────────────
@@ -3675,7 +4008,7 @@ function renderRanking() {
             ranking.appendChild(div);
         });
     if (ranking.innerHTML === "") {
-        ranking.innerHTML = "<p style='color:#888; padding:20px'>Nenhum livro encontrado.</p>";
+        ranking.innerHTML = "<p style='color:#8a7355; padding:20px'>Nenhum livro encontrado.</p>";
     }
 }
 
@@ -3782,6 +4115,12 @@ function estrelasSVG(nota) {
 }
 
 renderCatalogo();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
